@@ -10,11 +10,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NotesKeeper">
         <activity
+            android:name=".CreateNoteActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan"
+            android:label="@string/new_note">
+        </activity>
+        <activity
             android:name=".NotesScrollActivity"
-            android:label="@string/noteScroll_title"
-            android:exported="true">
+            android:exported="true"
+            android:label="@string/noteScroll_title">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

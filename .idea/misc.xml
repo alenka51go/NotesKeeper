@@ -10,7 +10,9 @@
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.3405" />
         <entry key="app/src/main/res/drawable/ic_plus_24.xml" value="0.3575" />
         <entry key="app/src/main/res/layout/activity_all_notes.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/activity_create_note.xml" value="0.338768115942029" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.338768115942029" />
+        <entry key="app/src/main/res/layout/activity_note_create.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_notes_scroll.xml" value="0.33" />
         <entry key="app/src/main/res/layout/short_note_info.xml" value="0.1" />
       </map>

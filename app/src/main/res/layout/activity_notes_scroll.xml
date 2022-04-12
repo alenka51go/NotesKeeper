@@ -51,6 +51,7 @@
                 android:text="@string/create_note">
             </TextView>
             <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/create_note_button"
                 style="@style/FabMenuButton"
                 app:srcCompat="@drawable/ic_baseline_article_24"
                 android:contentDescription="@string/create_note" />
@@ -59,17 +60,18 @@
 
         <LinearLayout
             style="@style/FabMenuLayout"
-            android:id="@+id/fab_add_shared_note_action"
+            android:id="@+id/fab_add_contact_action"
             app:layout_behavior="com.ajaysinghdewari.floatingactionbuttonmenu.activities.utils.MoveUpwardBehavior">
 
             <TextView
                 style="@style/FabMenuText"
-                android:text="@string/create_shared_note">
+                android:text="@string/add_contact">
             </TextView>
             <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/add_contact_button"
                 style="@style/FabMenuButton"
-                app:srcCompat="@drawable/ic_baseline_assignment_ind_24"
-                android:contentDescription="@string/create_shared_note" />
+                app:srcCompat="@drawable/ic_baseline_person_add_24"
+                android:contentDescription="@string/add_contact" />
         </LinearLayout>
 
         <LinearLayout
@@ -83,6 +85,7 @@
             </TextView>
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/change_user_button"
                 style="@style/FabMenuButton"
                 app:srcCompat="@drawable/ic_baseline_accessibility_24"
                 android:contentDescription="@string/change_user"/>

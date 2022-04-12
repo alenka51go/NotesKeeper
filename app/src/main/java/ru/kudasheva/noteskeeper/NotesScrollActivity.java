@@ -2,6 +2,7 @@ package ru.kudasheva.noteskeeper;
 
 import android.animation.Animator;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -67,25 +68,48 @@ public class NotesScrollActivity extends AppCompatActivity {
         );
     }
 
+    private void setOnActionButtonsListener() {
+        FloatingActionButton fabCreate = findViewById(R.id.create_note_button);
+        FloatingActionButton fabAddContact = findViewById(R.id.add_contact_button);
+        FloatingActionButton fabChangeUse = findViewById(R.id.change_user_button);
+
+        fabCreate.setOnClickListener((View v) -> {
+            Intent intent = new Intent(NotesScrollActivity.this, CreateNoteActivity.class);
+            startActivity(intent);
+        });
+
+        fabAddContact.setOnClickListener((View v) -> {
+            // TODO добавить действие
+        });
+
+        fabChangeUse.setOnClickListener((View v) -> {
+            // TODO добавить действие
+        });
+    }
+
     private void setOnMenuListener() {
         FloatingActionButton fabMenu = findViewById(R.id.fab_menu_action);
         LinearLayout fabCreate = findViewById(R.id.fab_add_note_action);
-        LinearLayout fabCreateShared = findViewById(R.id.fab_add_shared_note_action);
+        LinearLayout fabAddContact = findViewById(R.id.fab_add_contact_action);
         LinearLayout fabChangeUse = findViewById(R.id.fab_change_user_action);
+
+        setOnActionButtonsListener();
 
         fabMenu.setOnClickListener((View v) -> {
             if (!isMenuOpen) {
                 isMenuOpen=true;
+                fabMenu.animate().rotationBy(-45f);
                 fabCreate.setVisibility(View.VISIBLE);
-                fabCreateShared.setVisibility(View.VISIBLE);
+                fabAddContact.setVisibility(View.VISIBLE);
                 fabChangeUse.setVisibility(View.VISIBLE);
                 fabCreate.animate().translationY(-getResources().getDimension(R.dimen.standard_200));
-                fabCreateShared.animate().translationY(-getResources().getDimension(R.dimen.standard_135));
+                fabAddContact.animate().translationY(-getResources().getDimension(R.dimen.standard_135));
                 fabChangeUse.animate().translationY(-getResources().getDimension(R.dimen.standard_70));
             } else {
                 isMenuOpen = false;
+                fabMenu.animate().rotationBy(45f);
                 fabCreate.animate().translationY(0);
-                fabCreateShared.animate().translationY(0);
+                fabAddContact.animate().translationY(0);
                 fabChangeUse.animate().translationY(0);
                 fabChangeUse.animate().translationY(0).setListener(new Animator.AnimatorListener() {
                     @Override
@@ -95,7 +119,7 @@ public class NotesScrollActivity extends AppCompatActivity {
                     public void onAnimationEnd(Animator animator) {
                         if (!isMenuOpen) {
                             fabCreate.setVisibility(View.GONE);
-                            fabCreateShared.setVisibility(View.GONE);
+                            fabAddContact.setVisibility(View.GONE);
                             fabChangeUse.setVisibility(View.GONE);
                         }
                     }

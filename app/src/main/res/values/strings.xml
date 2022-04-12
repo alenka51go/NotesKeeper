@@ -8,4 +8,10 @@
     <string name="change_user">Change user</string>
     <string name="create_note">Create note</string>
     <string name="create_shared_note">Create shared note</string>
+    <string name="add_contact">Add new contact</string>
+    <string name="enter_title">Enter title</string>
+    <string name="enter_text">Note...</string>
+    <string name="save">Save</string>
+    <string name="add_friends">Add friends</string>
+    <string name="new_note">New note</string>
 </resources>
