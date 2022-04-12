@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">NotesKeeper</string>
+    <string name="user_name">Name</string>
+    <string name="notes_header_stub">Header</string>
+    <string name="notes_date_stub">31.05.2022</string>
+    <string name="noteScroll_title">Your Notes</string>
+    <string name="fab_note_action_content_description">some description</string>
+    <string name="change_user">Change user</string>
+    <string name="create_note">Create note</string>
+    <string name="create_shared_note">Create shared note</string>
+</resources>
