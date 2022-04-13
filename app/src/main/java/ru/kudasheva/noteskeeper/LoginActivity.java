@@ -42,19 +42,29 @@ public class LoginActivity extends AppCompatActivity {
         final EditText pass = (EditText) prompt.findViewById(R.id.sign_up_box);
 
         alertDialogBuilder.setCancelable(false)
-                .setPositiveButton(R.string.register_now, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.register_now, null).create();
+        final AlertDialog dialog = alertDialogBuilder.create();
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                Button btnPositive = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                btnPositive.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int id) {
+                    public void onClick(View view) {
                         // TODO тут пока костомная проверка на существование пользователя
-                        String enteredNick = pass.getText().toString();
-                        if (enteredNick.equals("Volodia")) {
-                            nameAlreadyExistErrorMessage(enteredNick);
+                        String text = pass.getText().toString();
+                        if (text.equals("Volodia")) {
+                            nameAlreadyExistErrorMessage(text);
                         } else {
-                            name = enteredNick;
+                            name = text;
+                            dialog.dismiss();
                         }
                     }
-                }).create();
-        final AlertDialog dialog = alertDialogBuilder.create();
+                });
+            }
+        });
+
         dialog.show();
     }
 
@@ -80,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void nameAlreadyExistErrorMessage(String inputName) {
-        String errorMessage = inputName + " already exists!\n Please, try again.";
+        String errorMessage = inputName + " already exists!";
         Toast toast = Toast.makeText(this, errorMessage,Toast.LENGTH_LONG);
         toast.show();
     }
