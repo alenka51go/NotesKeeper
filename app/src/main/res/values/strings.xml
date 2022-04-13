@@ -24,4 +24,9 @@
     <string name="comment_stub">Comment...</string>
     <string name="send">SEND!</string>
     <string name="leave_a_comment">Leave a comment...</string>
+    <string name="userLogin">Login</string>
+    <string name="register">Are you new here?</string>
+    <string name="register_now">Sign up now</string>
+    <string name="nickname">Username</string>
+    <string name="register_button">Sign up!</string>
 </resources>

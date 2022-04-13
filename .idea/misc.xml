@@ -7,6 +7,7 @@
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.3405" />
         <entry key="app/src/main/res/drawable/backdround_corners_comment_layout.xml" value="0.2465" />
         <entry key="app/src/main/res/drawable/background_coners.xml" value="0.252" />
+        <entry key="app/src/main/res/drawable/background_corner_login.xml" value="0.23" />
         <entry key="app/src/main/res/drawable/background_corners.xml" value="0.3575" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.3405" />
         <entry key="app/src/main/res/drawable/ic_plus_24.xml" value="0.3575" />
@@ -19,6 +20,7 @@
         <entry key="app/src/main/res/layout/activity_notes_scroll.xml" value="0.33" />
         <entry key="app/src/main/res/layout/comment.xml" value="0.33" />
         <entry key="app/src/main/res/layout/note.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/register_box.xml" value="0.33" />
         <entry key="app/src/main/res/layout/short_note_info.xml" value="0.1" />
         <entry key="app/src/main/res/menu/popup_note_action_menu.xml" value="0.3507692307692308" />
       </map>
