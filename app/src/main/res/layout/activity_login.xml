@@ -41,7 +41,6 @@
             android:autofillHints="@string/enter_name"
             android:hint="@string/enter_name"
             android:inputType="textPersonName"
-            android:paddingHorizontal="60dp"
             android:textSize="30sp">
         </EditText>
     </RelativeLayout>

@@ -14,6 +14,11 @@ import java.util.List;
 
 public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAdapter.CustomViewHolder> {
     private final List<NoteShortCard> noteList = new ArrayList<>();
+    private final OnNoteClickListener OnNoteClickListener;
+
+    public CustomRecyclerAdapter(OnNoteClickListener onUserClickListener) {
+        this.OnNoteClickListener = onUserClickListener;
+    }
 
     @NonNull
     @Override
@@ -43,7 +48,7 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
         notifyDataSetChanged();
     }
 
-    static class CustomViewHolder extends RecyclerView.ViewHolder {
+    class CustomViewHolder extends RecyclerView.ViewHolder {
         private final TextView notesHeader;
         private final TextView date;
 
@@ -51,11 +56,20 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
             super(itemView);
             notesHeader = itemView.findViewById(R.id.notes_header);
             date = itemView.findViewById(R.id.notes_date);
+
+            itemView.setOnClickListener(v -> {
+                NoteShortCard note = noteList.get(getLayoutPosition());
+                OnNoteClickListener.onNoteClick(note);
+            });
         }
 
         public void bind(NoteShortCard noteShortCard) {
             notesHeader.setText(noteShortCard.getHeader());
             date.setText(noteShortCard.getDate());
         }
+    }
+
+    public interface OnNoteClickListener {
+        void onNoteClick(NoteShortCard note);
     }
 }

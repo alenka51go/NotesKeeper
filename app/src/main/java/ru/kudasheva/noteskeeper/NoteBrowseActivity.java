@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,6 +25,15 @@ public class NoteBrowseActivity extends AppCompatActivity {
 
         setRecyclerView();
         setActionButton();
+        loadDates();
+    }
+
+    private void loadDates() {
+        // TODO заглушка
+        Bundle arguments = getIntent().getExtras();
+        String title = arguments.get("Title").toString();
+        TextView header = findViewById(R.id.header_browse);
+        header.setText(title);
     }
 
     @SuppressLint("NonConstantResourceId")

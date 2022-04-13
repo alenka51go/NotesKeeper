@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 public class NotesScrollActivity extends AppCompatActivity {
+    private static final String TAG = NotesScrollActivity.class.getSimpleName();
     boolean isMenuOpen = false;
 
     @Override
@@ -43,7 +45,16 @@ public class NotesScrollActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recyclerViewNotes);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        CustomRecyclerAdapter noteAdapter = new CustomRecyclerAdapter();
+        CustomRecyclerAdapter.OnNoteClickListener onUserClickListener = note -> {
+            Log.d(TAG, note.getHeader());
+
+            // TODO заглушка пердать данные о заметке
+
+            Intent intent = new Intent(NotesScrollActivity.this, NoteBrowseActivity.class);
+            intent.putExtra("Title", note.getHeader());
+            startActivity(intent);
+        };
+        CustomRecyclerAdapter noteAdapter = new CustomRecyclerAdapter(onUserClickListener);
         recyclerView.setAdapter(noteAdapter);
 
         Collection<NoteShortCard> notes = loadNotes();
