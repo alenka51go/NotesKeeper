@@ -6,9 +6,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -17,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class NoteBrowseActivity extends AppCompatActivity {
+    private static final String TAG = NoteBrowseActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +28,19 @@ public class NoteBrowseActivity extends AppCompatActivity {
 
         setRecyclerView();
         setActionButton();
+        setSendButton();
         loadDates();
+    }
+
+    private void setSendButton() {
+        Button sendButton = findViewById(R.id.send_button);
+        sendButton.setOnClickListener(v ->{
+            EditText leaveCommentBox = findViewById(R.id.comment_box);
+            String newComment = leaveCommentBox.getText().toString();
+            Log.d(TAG, newComment);
+            // TODO собрать данные о пользователе и опубликовать их с комментом
+            leaveCommentBox.setText("");
+        });
     }
 
     private void loadDates() {
@@ -36,7 +51,6 @@ public class NoteBrowseActivity extends AppCompatActivity {
         header.setText(title);
     }
 
-    @SuppressLint("NonConstantResourceId")
     private void setActionButton() {
         Button button = findViewById(R.id.button_action);
         button.setOnClickListener((View v) -> {
@@ -45,13 +59,9 @@ public class NoteBrowseActivity extends AppCompatActivity {
 
             menu.setOnMenuItemClickListener((MenuItem menuItem) -> {
                 int action = menuItem.getItemId();
-                switch (action) {
-                    case R.id.leaveCommentItem:
-                        // TODO
-                        break;
-                    case R.id.deleteNoteItem:
-                        // TODO
-                        break;
+                if (action == R.id.deleteNoteItem) {
+                    // TODO вернуть информацию об удалении заметки
+                    finish();
                 }
                 return true;
             });

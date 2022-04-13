@@ -11,6 +11,7 @@
         android:theme="@style/Theme.NotesKeeper">
         <activity
             android:name=".NoteBrowseActivity"
+            android:windowSoftInputMode="adjustPan"
             android:exported="false">
         </activity>
         <activity
