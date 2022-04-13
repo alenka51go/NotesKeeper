@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NotesKeeper</string>
+    <string name="app_name">Notes Keeper</string>
     <string name="user_name">Name</string>
     <string name="notes_header_stub">Header</string>
     <string name="notes_date_stub">31.05.2022</string>
@@ -14,4 +14,8 @@
     <string name="save">Save</string>
     <string name="add_friends">Add friends</string>
     <string name="new_note">New note</string>
+    <string name="enter_name">Enter name</string>
+    <string name="log_in">Log in!</string>
+    <string name="note_img">Note img</string>
+    <string name="app_name_with_carry">Notes\n keeper</string>
 </resources>

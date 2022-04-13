@@ -83,7 +83,8 @@ public class NotesScrollActivity extends AppCompatActivity {
         });
 
         fabChangeUse.setOnClickListener((View v) -> {
-            // TODO добавить действие
+            Intent intent = new Intent(NotesScrollActivity.this, LoginActivity.class);
+            startActivity(intent);
         });
     }
 
