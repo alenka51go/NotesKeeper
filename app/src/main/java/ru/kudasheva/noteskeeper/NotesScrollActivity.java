@@ -90,7 +90,8 @@ public class NotesScrollActivity extends AppCompatActivity {
         });
 
         fabAddContact.setOnClickListener((View v) -> {
-            // TODO добавить действие (всплывающее окно)
+            Intent intent = new Intent(NotesScrollActivity.this, FriendsActivity.class);
+            startActivity(intent);
         });
 
         fabChangeUse.setOnClickListener((View v) -> {

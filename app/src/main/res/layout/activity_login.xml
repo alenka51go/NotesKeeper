@@ -43,7 +43,7 @@
             android:layout_centerInParent="true"
             android:layout_marginHorizontal="35dp"
             android:autofillHints="@string/enter_name"
-            android:background="@drawable/background_corner_login"
+            android:background="@drawable/background_corner_input_box"
             android:hint="@string/userLogin"
             android:inputType="textPersonName"
             android:textSize="20sp">

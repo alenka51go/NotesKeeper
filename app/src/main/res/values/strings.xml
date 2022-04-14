@@ -10,9 +10,9 @@
     <string name="create_shared_note">Create shared note</string>
     <string name="add_contact">Add new contact</string>
     <string name="enter_title">Enter title</string>
-    <string name="enter_text">Note...</string>
+    <string name="enter_text">Note…</string>
     <string name="save">Save</string>
-    <string name="add_friends">Add friends</string>
+    <string name="add_friends">add friend</string>
     <string name="new_note">New note</string>
     <string name="enter_name">Enter name</string>
     <string name="log_in">Log in!</string>
@@ -21,12 +21,16 @@
     <string name="delete_note">Delete note</string>
     <string name="leave_comment">Leave a comment</string>
     <string name="actions">Actions</string>
-    <string name="comment_stub">Comment...</string>
+    <string name="comment_stub">Comment…</string>
     <string name="send">SEND!</string>
-    <string name="leave_a_comment">Leave a comment...</string>
+    <string name="leave_a_comment">Leave a comment…</string>
     <string name="userLogin">Login</string>
     <string name="register">Are you new here?</string>
     <string name="register_now">Sign up now</string>
     <string name="nickname">Username</string>
     <string name="register_button">Sign up!</string>
+    <string name="your_friends">Friends</string>
+    <string name="find_friend">Find friend</string>
+    <string name="friend_name">Friend name</string>
+
 </resources>

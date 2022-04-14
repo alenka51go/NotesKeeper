@@ -65,13 +65,13 @@
 
             <TextView
                 style="@style/FabMenuText"
-                android:text="@string/add_contact">
+                android:text="@string/your_friends">
             </TextView>
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/add_contact_button"
                 style="@style/FabMenuButton"
                 app:srcCompat="@drawable/ic_baseline_person_add_24"
-                android:contentDescription="@string/add_contact" />
+                android:contentDescription="@string/your_friends" />
         </LinearLayout>
 
         <LinearLayout

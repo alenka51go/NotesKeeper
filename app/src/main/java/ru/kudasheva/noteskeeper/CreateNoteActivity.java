@@ -81,29 +81,19 @@ public class CreateNoteActivity extends AppCompatActivity {
 
             builder.setCancelable(false);
 
-            builder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    for (int i = 0; i < checkedItems.length; i++) {
-                        if (checkedItems[i] && !selectedFriend.contains(contactList[i])) {
-                            selectedFriend.add(contactList[i]);
-                        }
+            builder.setPositiveButton("Done", (dialog, which) -> {
+                for (int i = 0; i < checkedItems.length; i++) {
+                    if (checkedItems[i] && !selectedFriend.contains(contactList[i])) {
+                        selectedFriend.add(contactList[i]);
                     }
                 }
             });
 
-            builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                }
+            builder.setNegativeButton("CANCEL", (dialog, which) -> {
             });
 
-            builder.setNeutralButton("CLEAR ALL", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Arrays.fill(checkedItems, false);
-                }
-            });
+            builder.setNeutralButton("CLEAR ALL", (dialog, which) ->
+                    Arrays.fill(checkedItems, false));
 
             AlertDialog alertDialog = builder.create();
             alertDialog.show();

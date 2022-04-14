@@ -10,10 +10,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NotesKeeper">
         <activity
+            android:name=".FriendsActivity"
+            android:exported="false" />
+        <activity
             android:name=".NoteBrowseActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:exported="false">
-        </activity>
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan"></activity>
         <activity
             android:name=".LoginActivity"
             android:exported="true"
@@ -28,13 +30,11 @@
             android:name=".CreateNoteActivity"
             android:exported="false"
             android:label="@string/new_note"
-            android:windowSoftInputMode="adjustPan">
-        </activity>
+            android:windowSoftInputMode="adjustPan"></activity>
         <activity
             android:name=".NotesScrollActivity"
             android:exported="false"
-            android:label="@string/noteScroll_title">
-        </activity>
+            android:label="@string/noteScroll_title"></activity>
     </application>
 
 </manifest>

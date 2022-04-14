@@ -3,7 +3,6 @@ package ru.kudasheva.noteskeeper;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -36,14 +35,13 @@ public class LoginActivity extends AppCompatActivity {
 
     private void setSignUpDialog() {
         LayoutInflater li = LayoutInflater.from(LoginActivity.this);
-        View prompt = li.inflate(R.layout.register_box, null);
+        View prompt = li.inflate(R.layout.dialog_box, null);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
         alertDialogBuilder.setView(prompt);
-        final EditText pass = (EditText) prompt.findViewById(R.id.sign_up_box);
+        final EditText pass = (EditText) prompt.findViewById(R.id.text_box);
 
-        alertDialogBuilder.setCancelable(false)
+        final AlertDialog dialog = alertDialogBuilder.setCancelable(false)
                 .setPositiveButton(R.string.register_now, null).create();
-        final AlertDialog dialog = alertDialogBuilder.create();
 
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
