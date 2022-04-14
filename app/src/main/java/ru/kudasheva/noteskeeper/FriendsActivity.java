@@ -66,7 +66,7 @@ public class FriendsActivity extends AppCompatActivity {
     }
 
     private void setRecyclerView() {
-        RecyclerView recyclerView = findViewById(R.id.recyclerView_list_friends);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view_list_of_friends);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         FriendsRecyclerAdapter friendsAdapter = new FriendsRecyclerAdapter();

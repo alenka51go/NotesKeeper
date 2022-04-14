@@ -41,10 +41,10 @@ public class CreateNoteActivity extends AppCompatActivity {
     private void setOnSaveButton() {
         Button button = findViewById(R.id.save_note_button);
         button.setOnClickListener((View v) -> {
-            EditText title = findViewById(R.id.edit_title);
+            EditText title = findViewById(R.id.enter_title_box);
             header = title.getText().toString();
 
-            EditText body = findViewById(R.id.edit_text_body);
+            EditText body = findViewById(R.id.enter_note_box);
             noteText = body.getText().toString();
 
             Log.d(TAG, header);

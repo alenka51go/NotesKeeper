@@ -14,14 +14,14 @@
         android:background="@drawable/background_friend">
 
         <TextView
-            android:id="@+id/text_all_friend"
+            android:id="@+id/text_friend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_centerInParent="true"
             android:layout_marginHorizontal="10dp"
             android:layout_toStartOf="@+id/button_find_friends"
-            android:text="@string/your_friends"
+            android:text="@string/friends"
             android:textColor="@color/dark"
             android:textSize="30sp">
         </TextView>
@@ -39,7 +39,7 @@
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView_list_friends"
+        android:id="@+id/recycler_view_list_of_friends"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="90"

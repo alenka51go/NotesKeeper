@@ -6,7 +6,7 @@
     android:weightSum="100">
 
     <EditText
-        android:id="@+id/edit_title"
+        android:id="@+id/enter_title_box"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="10"
@@ -27,7 +27,7 @@
     </Button>
 
     <EditText
-        android:id="@+id/edit_text_body"
+        android:id="@+id/enter_note_box"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="70"

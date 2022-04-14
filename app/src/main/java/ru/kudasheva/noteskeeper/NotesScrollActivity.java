@@ -1,7 +1,6 @@
 package ru.kudasheva.noteskeeper;
 
 import android.animation.Animator;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,7 +41,7 @@ public class NotesScrollActivity extends AppCompatActivity {
     }
 
     private void setRecyclerView() {
-        RecyclerView recyclerView = findViewById(R.id.recyclerViewNotes);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view_notes_short_card);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         CustomRecyclerAdapter.OnNoteClickListener onUserClickListener = note -> {
@@ -81,7 +80,7 @@ public class NotesScrollActivity extends AppCompatActivity {
 
     private void setOnActionButtonsListener() {
         FloatingActionButton fabCreate = findViewById(R.id.create_note_button);
-        FloatingActionButton fabAddContact = findViewById(R.id.add_contact_button);
+        FloatingActionButton fabAddContact = findViewById(R.id.view_friend_button);
         FloatingActionButton fabChangeUse = findViewById(R.id.change_user_button);
 
         fabCreate.setOnClickListener((View v) -> {
@@ -101,7 +100,7 @@ public class NotesScrollActivity extends AppCompatActivity {
     }
 
     private void setOnMenuListener() {
-        FloatingActionButton fabMenu = findViewById(R.id.fab_menu_action);
+        FloatingActionButton fabMenu = findViewById(R.id.fab_menu_button);
         LinearLayout fabCreate = findViewById(R.id.fab_add_note_action);
         LinearLayout fabAddContact = findViewById(R.id.fab_add_contact_action);
         LinearLayout fabChangeUse = findViewById(R.id.fab_change_user_action);

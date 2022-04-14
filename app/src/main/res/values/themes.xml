@@ -34,8 +34,8 @@
     <style name="FabMenuLayout">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_alignEnd">@id/recyclerViewNotes</item>
-        <item name="android:layout_alignBottom">@id/recyclerViewNotes</item>
+        <item name="android:layout_alignEnd">@id/recycler_view_notes_short_card</item>
+        <item name="android:layout_alignBottom">@id/recycler_view_notes_short_card</item>
         <item name="android:orientation">horizontal</item>
         <item name="android:visibility">gone</item>
     </style>

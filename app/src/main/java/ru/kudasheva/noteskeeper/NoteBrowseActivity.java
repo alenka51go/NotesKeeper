@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -47,7 +46,7 @@ public class NoteBrowseActivity extends AppCompatActivity {
         // TODO заглушка
         Bundle arguments = getIntent().getExtras();
         String title = arguments.get("Title").toString();
-        TextView header = findViewById(R.id.header_browse);
+        TextView header = findViewById(R.id.title_box);
         header.setText(title);
     }
 
@@ -65,13 +64,12 @@ public class NoteBrowseActivity extends AppCompatActivity {
                 }
                 return true;
             });
-
             menu.show();
         });
     }
 
     private void setRecyclerView() {
-        RecyclerView recyclerView = findViewById(R.id.recyclerView_browse);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view_note_and_comments);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         MultipleTypesAdapter noteAdapter = new MultipleTypesAdapter();

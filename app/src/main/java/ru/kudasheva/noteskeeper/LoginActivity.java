@@ -27,7 +27,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setRegisterListener() {
-        Button signUpButton = findViewById(R.id.registration_button);
+        Button signUpButton = findViewById(R.id.sign_in_button);
         signUpButton.setOnClickListener(v -> {
             setSignUpDialog();
         });
@@ -71,7 +71,7 @@ public class LoginActivity extends AppCompatActivity {
     private void setLoginListener() {
         Button loginButton = findViewById(R.id.log_in_button);
         loginButton.setOnClickListener((View v) -> {
-            EditText name_box = findViewById(R.id.name_enter_box);
+            EditText name_box = findViewById(R.id.login_enter_box);
             String user_name = name_box.getText().toString();
 
             // TODO заглушка для дебага глазами, тут будет проверка существования пользователя
