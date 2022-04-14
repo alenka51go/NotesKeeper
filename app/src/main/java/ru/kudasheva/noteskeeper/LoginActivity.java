@@ -41,7 +41,9 @@ public class LoginActivity extends AppCompatActivity {
         final EditText pass = (EditText) prompt.findViewById(R.id.text_box);
 
         final AlertDialog dialog = alertDialogBuilder.setCancelable(false)
-                .setPositiveButton(R.string.register_now, null).create();
+                .setPositiveButton(R.string.register_now, null)
+                .setNeutralButton("CANCEL", (dialog_, which) -> {})
+                .create();
 
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override

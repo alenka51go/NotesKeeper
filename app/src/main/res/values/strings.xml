@@ -12,7 +12,7 @@
     <string name="enter_title">Enter title</string>
     <string name="enter_text">Note…</string>
     <string name="save">Save</string>
-    <string name="add_friends">add friend</string>
+    <string name="add_friends">ADD FRIEND</string>
     <string name="new_note">New note</string>
     <string name="enter_name">Enter name</string>
     <string name="log_in">Log in!</string>
@@ -26,7 +26,7 @@
     <string name="leave_a_comment">Leave a comment…</string>
     <string name="userLogin">Login</string>
     <string name="register">Are you new here?</string>
-    <string name="register_now">Sign up now</string>
+    <string name="register_now">SIGN UP NOW</string>
     <string name="nickname">Username</string>
     <string name="register_button">Sign up!</string>
     <string name="your_friends">Friends</string>

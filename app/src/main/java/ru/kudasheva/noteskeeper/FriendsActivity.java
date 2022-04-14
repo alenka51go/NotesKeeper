@@ -44,7 +44,9 @@ public class FriendsActivity extends AppCompatActivity {
         final EditText pass = (EditText) prompt.findViewById(R.id.text_box);
 
         final AlertDialog dialog = alertDialogBuilder.setCancelable(false)
-                .setPositiveButton(R.string.add_friends, null).create();
+                .setPositiveButton(R.string.add_friends, null)
+                .setNeutralButton("cancel", (dialog_, which) -> {})
+                .create();
 
         dialog.setOnShowListener(dialogInterface -> {
             Button btnPositive = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
@@ -77,6 +79,15 @@ public class FriendsActivity extends AppCompatActivity {
     private Collection<FriendInfoCard> loadFriends() {
         // TODO заглука зашрузить друзей
         return Arrays.asList(
+                new FriendInfoCard("Harry1"),
+                new FriendInfoCard("Harry2"),
+                new FriendInfoCard("Harry3"),
+                new FriendInfoCard("Harry4"),
+                new FriendInfoCard("Harry5"),
+                new FriendInfoCard("Harry6"),
+                new FriendInfoCard("Harry7"),
+                new FriendInfoCard("Harry8"),
+                new FriendInfoCard("Harry9"),
                 new FriendInfoCard("Harry1"),
                 new FriendInfoCard("Harry2"),
                 new FriendInfoCard("Harry3"),

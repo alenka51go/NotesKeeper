@@ -7,9 +7,11 @@
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.3405" />
         <entry key="app/src/main/res/drawable/backdround_corners_comment_layout.xml" value="0.2465" />
         <entry key="app/src/main/res/drawable/background_coners.xml" value="0.252" />
+        <entry key="app/src/main/res/drawable/background_corner_input_box.xml" value="0.2805" />
         <entry key="app/src/main/res/drawable/background_corner_login.xml" value="0.23" />
         <entry key="app/src/main/res/drawable/background_corners.xml" value="0.3575" />
         <entry key="app/src/main/res/drawable/background_friend.xml" value="0.2805" />
+        <entry key="app/src/main/res/drawable/background_title_friends.xml" value="0.2805" />
         <entry key="app/src/main/res/drawable/ic_baseline_person_add_24.xml" value="0.3425" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.3405" />
         <entry key="app/src/main/res/drawable/ic_plus_24.xml" value="0.3575" />
