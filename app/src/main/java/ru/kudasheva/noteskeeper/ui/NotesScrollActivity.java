@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import ru.kudasheva.noteskeeper.R;
+import ru.kudasheva.noteskeeper.ui.login.LoginActivity;
 
 public class NotesScrollActivity extends AppCompatActivity {
     private static final String TAG = NotesScrollActivity.class.getSimpleName();

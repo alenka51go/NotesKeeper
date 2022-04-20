@@ -1,4 +1,4 @@
-package ru.kudasheva.noteskeeper.ui;
+package ru.kudasheva.noteskeeper.ui.login;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders;
 import ru.kudasheva.noteskeeper.R;
 import ru.kudasheva.noteskeeper.databinding.ActivityLoginBinding;
 import ru.kudasheva.noteskeeper.databinding.DialogBoxBinding;
+import ru.kudasheva.noteskeeper.ui.NotesScrollActivity;
 import ru.kudasheva.noteskeeper.viewmodel.LoginViewModel;
 
 public class LoginActivity extends AppCompatActivity {
@@ -33,12 +34,12 @@ public class LoginActivity extends AppCompatActivity {
 
     private void observeLiveData() {
         loginViewModel.openActivityCommand.observe(this, (activityCode) -> {
-            if (activityCode == LoginViewModel.Commands.openNoteScrollActivity) {
+            if (activityCode == LoginViewModel.Commands.OPEN_NOTE_SCROLL_ACTIVITY) {
                 Intent intent = new Intent(LoginActivity.this, NotesScrollActivity.class);
                 startActivity(intent);
 
                 finish();
-            } else if (activityCode == LoginViewModel.Commands.openDialog) {
+            } else if (activityCode == LoginViewModel.Commands.OPEN_DIALOG) {
                 setDialogActivity();
             }
         });
@@ -53,8 +54,7 @@ public class LoginActivity extends AppCompatActivity {
                 .setView(dialogBoxBinding.getRoot())
                 .setCancelable(false)
                 .setPositiveButton(R.string.register_now, null)
-                .setNeutralButton(android.R.string.cancel, (dialog_, which) -> {
-                })
+                .setNeutralButton(android.R.string.cancel, (dialog_, which) -> {})
                 .create();
 
         dialog.setOnShowListener(dialogInterface -> {
@@ -65,7 +65,6 @@ public class LoginActivity extends AppCompatActivity {
                 }
             });
         });
-
 
         dialog.show();
     }
