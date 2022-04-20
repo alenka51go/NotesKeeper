@@ -3,17 +3,18 @@ package ru.kudasheva.noteskeeper.data;
 import java.util.Arrays;
 import java.util.List;
 
-import ru.kudasheva.noteskeeper.CommentInfoCard;
-import ru.kudasheva.noteskeeper.FriendInfoCard;
-import ru.kudasheva.noteskeeper.NoteFullCard;
-import ru.kudasheva.noteskeeper.NoteShortCard;
+import ru.kudasheva.noteskeeper.ui.CommentInfoCard;
+import ru.kudasheva.noteskeeper.ui.FriendInfoCard;
+import ru.kudasheva.noteskeeper.ui.NoteFullCard;
+import ru.kudasheva.noteskeeper.ui.NoteShortCard;
 
 public class StubDataRepository implements DataRepository {
     private String userName = "";
 
     @Override
-    public void setUserName(String name) {
+    public boolean checkIfUserExist(String name) {
         userName = name;
+        return true;
     }
 
     @Override
@@ -22,24 +23,23 @@ public class StubDataRepository implements DataRepository {
     }
 
     @Override
-    public int addNewUser(String userName) {
-        return 0;
+    public boolean signUpNewUser(String userName) {
+        return true;
     }
 
     @Override
-    public int addNewFriend(String userName) {
-        FriendInfoCard newFriend = new FriendInfoCard(userName);
-        if (stubFriendsInfoCard.contains(newFriend)) {
-            return 1;
+    public List<FriendInfoCard> addNewFriend(FriendInfoCard infoCard) {
+        if (stubFriendsInfoCard.contains(infoCard)) {
+            return null;
         }
-        stubFriendsInfoCard.add(newFriend);
-        return 0;
+        stubFriendsInfoCard.add(infoCard);
+        return stubFriendsInfoCard;
     }
 
     @Override
-    public int addNewComment(CommentInfoCard info) {
+    public List<CommentInfoCard> addNewComment(CommentInfoCard info) {
         stubCommentInfoCards.add(info);
-        return 0;
+        return stubCommentInfoCards;
     }
 
     @Override

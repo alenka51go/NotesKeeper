@@ -3,6 +3,7 @@
     package="ru.kudasheva.noteskeeper">
 
     <application
+        android:name="MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -10,16 +11,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NotesKeeper">
         <activity
-            android:name=".FriendsActivity"
+            android:name=".ui.FriendsActivity"
             android:exported="false" />
         <activity
-            android:name=".NoteBrowseActivity"
+            android:name=".ui.NoteBrowseActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustPan"></activity>
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".LoginActivity"
-            android:exported="true"
-            android:label="@string/app_name">
+            android:name=".ui.LoginActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,14 +27,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CreateNoteActivity"
+            android:name=".ui.CreateNoteActivity"
             android:exported="false"
             android:label="@string/new_note"
-            android:windowSoftInputMode="adjustPan"></activity>
+            android:windowSoftInputMode="adjustPan">
+        </activity>
         <activity
-            android:name=".NotesScrollActivity"
+            android:name=".ui.NotesScrollActivity"
             android:exported="false"
-            android:label="@string/noteScroll_title"></activity>
+            android:label="@string/noteScroll_title">
+        </activity>
     </application>
+
 
 </manifest>

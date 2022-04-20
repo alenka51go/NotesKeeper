@@ -1,4 +1,4 @@
-package ru.kudasheva.noteskeeper;
+package ru.kudasheva.noteskeeper.ui;
 
 public class NoteShortCard {
     private final String header;

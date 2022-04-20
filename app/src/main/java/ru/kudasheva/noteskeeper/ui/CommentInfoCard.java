@@ -1,4 +1,4 @@
-package ru.kudasheva.noteskeeper;
+package ru.kudasheva.noteskeeper.ui;
 
 public class CommentInfoCard extends InfoCard {
     public CommentInfoCard(String note, String name, String date) {

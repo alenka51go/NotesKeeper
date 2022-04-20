@@ -1,4 +1,4 @@
-package ru.kudasheva.noteskeeper;
+package ru.kudasheva.noteskeeper.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import java.util.Arrays;
 import java.util.Collection;
+
+import ru.kudasheva.noteskeeper.R;
 
 public class FriendsActivity extends AppCompatActivity {
     String name;

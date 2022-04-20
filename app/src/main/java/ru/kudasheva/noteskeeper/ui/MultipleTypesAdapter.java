@@ -1,4 +1,4 @@
-package ru.kudasheva.noteskeeper;
+package ru.kudasheva.noteskeeper.ui;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import ru.kudasheva.noteskeeper.R;
 
 public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdapter.AbstractViewHolder> {
     private final List<InfoCard> dataSet = new ArrayList<>();

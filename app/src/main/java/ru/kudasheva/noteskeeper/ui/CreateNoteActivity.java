@@ -1,4 +1,4 @@
-package ru.kudasheva.noteskeeper;
+package ru.kudasheva.noteskeeper.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,6 +17,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import ru.kudasheva.noteskeeper.R;
 
 public class CreateNoteActivity extends AppCompatActivity {
     private static final String TAG = CreateNoteActivity.class.getSimpleName();

@@ -1,81 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:weightSum="100">
-
-    <RelativeLayout
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="viewModel"
+            type="ru.kudasheva.noteskeeper.viewmodel.LoginViewModel" />
+    </data>
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="30dp"
-        android:layout_weight="50">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="100">
 
-        <ImageView
-            android:id="@+id/icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/note_img"
-            android:src="@drawable/note_img" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="center"
-            android:padding="30dp"
-            android:text="@string/app_name_with_carry"
-            android:textSize="50sp"
-            android:textStyle="bold">
-        </TextView>
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="15">
-
-        <EditText
-            android:id="@+id/login_enter_box"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerInParent="true"
-            android:layout_marginHorizontal="35dp"
-            android:autofillHints="@string/enter_name"
-            android:background="@drawable/background_corner_input_box"
-            android:hint="@string/user_login"
-            android:inputType="textPersonName"
-            android:textSize="20sp">
-        </EditText>
-    </RelativeLayout>
+            android:layout_height="0dp"
+            android:layout_marginTop="30dp"
+            android:layout_weight="50">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_gravity="center"
-        android:layout_weight="35">
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/note_img"
+                android:src="@drawable/note_img" />
 
-        <Button
-            android:id="@+id/log_in_button"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:padding="30dp"
+                android:text="@string/app_name_with_carry"
+                android:textSize="50sp"
+                android:textStyle="bold"/>
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginHorizontal="35dp"
-            android:layout_marginTop="5dp"
-            android:text="@string/log_in">
-        </Button>
+            android:layout_height="0dp"
+            android:layout_weight="15">
 
-        <Button
-            android:id="@+id/sign_in_button"
+            <EditText
+                android:id="@+id/login_enter_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerInParent="true"
+                android:layout_marginHorizontal="35dp"
+                android:autofillHints="@string/enter_name"
+                android:background="@drawable/background_corner_input_box"
+                android:hint="@string/user_login"
+                android:inputType="textPersonName"
+                android:text="@{viewModel.userNameLiveData}"
+                android:textSize="20sp"/>
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginHorizontal="35dp"
-            android:layout_marginBottom="20dp"
-            android:text="@string/are_you_new_here">
-        </Button>
-    </RelativeLayout>
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="35">
 
-</LinearLayout>
+            <Button
+                android:id="@+id/log_in_button"
+                android:onClickListener="@{(v) -> viewModel.onLogInClicked()}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginHorizontal="35dp"
+                android:layout_marginTop="5dp"
+                android:text="@string/log_in"/>
+
+            <Button
+                android:id="@+id/sign_up_button"
+                android:onClick="@{viewModel::onSignUpClicked}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginHorizontal="35dp"
+                android:layout_marginBottom="20dp"
+                android:text="@string/are_you_new_here"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+</layout>

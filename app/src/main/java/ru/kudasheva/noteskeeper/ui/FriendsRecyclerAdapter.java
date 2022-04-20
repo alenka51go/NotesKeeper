@@ -1,4 +1,4 @@
-package ru.kudasheva.noteskeeper;
+package ru.kudasheva.noteskeeper.ui;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import ru.kudasheva.noteskeeper.R;
 
 public class FriendsRecyclerAdapter extends RecyclerView.Adapter<FriendsRecyclerAdapter.FriendViewHolder> {
     private final List<FriendInfoCard> friends = new ArrayList<>();

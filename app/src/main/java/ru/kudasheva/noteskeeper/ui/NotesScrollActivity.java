@@ -1,4 +1,4 @@
-package ru.kudasheva.noteskeeper;
+package ru.kudasheva.noteskeeper.ui;
 
 import android.animation.Animator;
 import android.content.Intent;
@@ -17,6 +17,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Arrays;
 import java.util.Collection;
+
+import ru.kudasheva.noteskeeper.R;
 
 public class NotesScrollActivity extends AppCompatActivity {
     private static final String TAG = NotesScrollActivity.class.getSimpleName();
