@@ -1,7 +1,7 @@
 package ru.kudasheva.noteskeeper;
 
-public class NoteRowType extends RowType {
-    public NoteRowType(String note, String name, String date) {
+public class NoteFullCard extends InfoCard {
+    public NoteFullCard(String note, String name, String date) {
         super(note, name, date);
     }
     @Override

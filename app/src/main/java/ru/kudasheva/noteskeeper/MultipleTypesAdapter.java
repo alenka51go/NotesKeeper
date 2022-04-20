@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdapter.AbstractViewHolder> {
-    private final List<RowType> dataSet = new ArrayList<>();
+    private final List<InfoCard> dataSet = new ArrayList<>();
 
-    void setItems(List<RowType> dates) {
+    void setItems(List<InfoCard> dates) {
         dataSet.addAll(dates);
     }
 
@@ -31,7 +31,7 @@ public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdap
     @Override
     public AbstractViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        if (viewType == RowType.NOTE_ROW_TYPE) {
+        if (viewType == InfoCard.NOTE_ROW_TYPE) {
             View view = inflater.inflate(R.layout.note, parent, false);
             return new NoteViewHolder(view);
         }
@@ -65,7 +65,7 @@ public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdap
             textBody = itemView.findViewById(getTextBody());
         }
 
-        abstract void bindContent(RowType item);
+        abstract void bindContent(InfoCard item);
     }
 
     public static class NoteViewHolder extends AbstractViewHolder {
@@ -74,8 +74,8 @@ public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdap
         }
 
         @Override
-        void bindContent(RowType item) {
-            NoteRowType actualItem = (NoteRowType)item;
+        void bindContent(InfoCard item) {
+            NoteFullCard actualItem = (NoteFullCard)item;
             userName.setText(actualItem.getName());
             date.setText(actualItem.getDate());
             textBody.setText(actualItem.getText());
@@ -100,8 +100,8 @@ public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdap
             super(itemView);
         }
         @Override
-        void bindContent(RowType item) {
-            CommentRowType actualItem = (CommentRowType)item;
+        void bindContent(InfoCard item) {
+            CommentInfoCard actualItem = (CommentInfoCard)item;
             userName.setText(actualItem.getName());
             date.setText(actualItem.getDate());
             textBody.setText(actualItem.getText());

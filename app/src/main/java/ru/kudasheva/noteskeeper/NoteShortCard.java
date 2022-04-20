@@ -4,7 +4,7 @@ public class NoteShortCard {
     private final String header;
     private final String date;
 
-    NoteShortCard(String header, String date) {
+    public NoteShortCard(String header, String date) {
         this.header = header;
         this.date = date;
     }

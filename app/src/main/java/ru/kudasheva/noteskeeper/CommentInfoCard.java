@@ -1,7 +1,7 @@
 package ru.kudasheva.noteskeeper;
 
-public class CommentRowType extends RowType {
-    public CommentRowType(String note, String name, String date) {
+public class CommentInfoCard extends InfoCard {
+    public CommentInfoCard(String note, String name, String date) {
         super(note, name, date);
     }
 

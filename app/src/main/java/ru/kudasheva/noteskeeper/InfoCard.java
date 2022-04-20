@@ -1,6 +1,6 @@
 package ru.kudasheva.noteskeeper;
 
-public abstract class  RowType {
+public abstract class InfoCard {
     static int NOTE_ROW_TYPE =   0;
     static int COMMENT_ROW_TYPE = 1;
 
@@ -8,7 +8,7 @@ public abstract class  RowType {
     private final String creationDate;
     private final String textBody;
 
-    public RowType(String note, String name, String date) {
+    public InfoCard(String note, String name, String date) {
         textBody = note;
         creationDate = date;
         userName = name;
