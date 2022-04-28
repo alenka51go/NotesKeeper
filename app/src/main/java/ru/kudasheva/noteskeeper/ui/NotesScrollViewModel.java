@@ -17,8 +17,28 @@ public class NotesScrollViewModel extends ViewModel {
         username = dataRepo.getUserName();
     }
 
+    public void loadShortNodes() {
+        dataRepo.getListOfNoteShortCard();
+    }
+
+    public void onCreateNoteButtonClicked() {
+        activityCommand.setValue(Commands.OPEN_CREATE_NOTE_ACTIVITY);
+    }
+
+    public void onFriendListButtonClicked() {
+        activityCommand.setValue(Commands.OPEN_FRIENDS_LIST_ACTIVITY);
+    }
+
+    public void onChangeUserButtonClicked() {
+        activityCommand.setValue(Commands.OPEN_LOGIN_ACTIVITY);
+    }
+
+
 
     public enum Commands {
-        MAKE_INITIALIZATION
+        MAKE_INITIALIZATION,
+        OPEN_CREATE_NOTE_ACTIVITY,
+        OPEN_FRIENDS_LIST_ACTIVITY,
+        OPEN_LOGIN_ACTIVITY
     }
 }

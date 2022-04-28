@@ -48,6 +48,15 @@ public class NotesScrollActivity extends AppCompatActivity {
             if (activityCode == NotesScrollViewModel.Commands.MAKE_INITIALIZATION) {
                 setRecyclerView();
                 setOnMenuListener();
+            } else if(activityCode == NotesScrollViewModel.Commands.OPEN_CREATE_NOTE_ACTIVITY) {
+                Intent intent = new Intent(NotesScrollActivity.this, CreateNoteActivity.class);
+                startActivity(intent);
+            } else if (activityCode == NotesScrollViewModel.Commands.OPEN_FRIENDS_LIST_ACTIVITY) {
+                Intent intent = new Intent(NotesScrollActivity.this, FriendsActivity.class);
+                startActivity(intent);
+            } else if (activityCode == NotesScrollViewModel.Commands.OPEN_LOGIN_ACTIVITY) {
+                Intent intent = new Intent(NotesScrollActivity.this, LoginActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -91,34 +100,11 @@ public class NotesScrollActivity extends AppCompatActivity {
         );
     }
 
-    private void setOnActionButtonsListener() {
-        FloatingActionButton fabCreate = findViewById(R.id.create_note_button);
-        FloatingActionButton fabAddContact = findViewById(R.id.view_friend_button);
-        FloatingActionButton fabChangeUse = findViewById(R.id.change_user_button);
-
-        fabCreate.setOnClickListener((View v) -> {
-            Intent intent = new Intent(NotesScrollActivity.this, CreateNoteActivity.class);
-            startActivity(intent);
-        });
-
-        fabAddContact.setOnClickListener((View v) -> {
-            Intent intent = new Intent(NotesScrollActivity.this, FriendsActivity.class);
-            startActivity(intent);
-        });
-
-        fabChangeUse.setOnClickListener((View v) -> {
-            Intent intent = new Intent(NotesScrollActivity.this, LoginActivity.class);
-            startActivity(intent);
-        });
-    }
-
     private void setOnMenuListener() {
         FloatingActionButton fabMenu = findViewById(R.id.fab_menu_button);
         LinearLayout fabCreate = findViewById(R.id.fab_add_note_action);
         LinearLayout fabAddContact = findViewById(R.id.fab_add_contact_action);
         LinearLayout fabChangeUse = findViewById(R.id.fab_change_user_action);
-
-        setOnActionButtonsListener();
 
         fabMenu.setOnClickListener((View v) -> {
             if (!isMenuOpen) {
