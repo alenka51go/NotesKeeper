@@ -2,13 +2,13 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
+
         <variable
             name="viewModel"
             type="ru.kudasheva.noteskeeper.ui.NotesScrollViewModel" />
     </data>
 
-    <LinearLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -25,7 +25,7 @@
             android:paddingTop="10dp"
             android:paddingEnd="15dp"
             android:text="@{viewModel.username}"
-            android:textSize="35sp"/>
+            android:textSize="35sp" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -45,7 +45,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                tools:listitem="@layout/short_note_info"/>
+                tools:listitem="@layout/short_note_info" />
 
             <LinearLayout
                 android:id="@+id/fab_add_note_action"
@@ -55,13 +55,13 @@
 
                 <TextView
                     style="@style/FabMenuText"
-                    android:text="@string/create_note"/>
+                    android:text="@string/create_note" />
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/create_note_button"
-                    android:onClick="@{v -> viewModel.onCreateNoteButtonClicked()}"
                     style="@style/FabMenuButton"
                     android:contentDescription="@string/create_note"
+                    android:onClick="@{v -> viewModel.onCreateNoteButtonClicked()}"
                     app:srcCompat="@drawable/ic_baseline_article_24" />
             </LinearLayout>
 
@@ -74,31 +74,31 @@
 
                 <TextView
                     style="@style/FabMenuText"
-                    android:text="@string/friends"/>
+                    android:text="@string/friends" />
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/view_friend_button"
-                    android:onClick="@{v -> viewModel.onFriendListButtonClicked()}"
                     style="@style/FabMenuButton"
                     android:contentDescription="@string/friends"
+                    android:onClick="@{v -> viewModel.onFriendListButtonClicked()}"
                     app:srcCompat="@drawable/ic_baseline_person_add_24" />
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/fab_change_user_action"
-                android:onClick="@{v -> viewModel.onChangeUserButtonClicked()}"
                 style="@style/FabMenuLayout"
+                android:onClick="@{v -> viewModel.onChangeUserButtonClicked()}"
                 app:layout_behavior="com.ajaysinghdewari.floatingactionbuttonmenu.activities.utils.MoveUpwardBehavior">
 
                 <TextView
                     style="@style/FabMenuText"
-                    android:text="@string/change_user"/>
+                    android:text="@string/change_user" />
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/change_user_button"
-                    android:onClick="@{v -> viewModel.onChangeUserButtonClicked()}"
                     style="@style/FabMenuButton"
                     android:contentDescription="@string/change_user"
+                    android:onClick="@{v -> viewModel.onChangeUserButtonClicked()}"
                     app:srcCompat="@drawable/ic_baseline_accessibility_24" />
             </LinearLayout>
 
@@ -108,6 +108,7 @@
                 android:layout_alignEnd="@id/recycler_view_notes_short_card"
                 android:layout_alignBottom="@id/recycler_view_notes_short_card"
                 android:contentDescription="@string/fab_note_action_content_description"
+                android:onClick="@{v -> viewModel.onMenuClicked()}"
                 app:srcCompat="@drawable/ic_baseline_add_24" />
         </RelativeLayout>
 

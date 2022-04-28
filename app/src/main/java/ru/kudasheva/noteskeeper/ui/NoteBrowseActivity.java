@@ -45,11 +45,9 @@ public class NoteBrowseActivity extends AppCompatActivity {
     }
 
     private void loadDates() {
-        // TODO заглушка
-        Bundle arguments = getIntent().getExtras();
-        String title = arguments.get("Title").toString();
+
         TextView header = findViewById(R.id.title_box);
-        header.setText(title);
+        header.setText("Title");
     }
 
     private void setActionButton() {

@@ -1,6 +1,7 @@
 package ru.kudasheva.noteskeeper.ui;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,10 +26,11 @@ import ru.kudasheva.noteskeeper.login.LoginActivity;
 
 public class NotesScrollActivity extends AppCompatActivity {
     private static final String TAG = NotesScrollActivity.class.getSimpleName();
-    boolean isMenuOpen = false;
 
     private NotesScrollViewModel notesScrollViewModel;
     private ActivityNotesScrollBinding binding;
+
+    private CustomRecyclerAdapter noteAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,111 +39,68 @@ public class NotesScrollActivity extends AppCompatActivity {
         notesScrollViewModel = ViewModelProviders.of(this).get(NotesScrollViewModel.class);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_notes_scroll);
         binding.setViewModel(notesScrollViewModel);
+        setRecyclerView();
 
         observeLiveData();
-
-        notesScrollViewModel.startPosition();
     }
 
     private void observeLiveData() {
         notesScrollViewModel.activityCommand.observe(this, (activityCode) -> {
-            if (activityCode == NotesScrollViewModel.Commands.MAKE_INITIALIZATION) {
-                setRecyclerView();
-                setOnMenuListener();
-            } else if(activityCode == NotesScrollViewModel.Commands.OPEN_CREATE_NOTE_ACTIVITY) {
+            if (activityCode == NotesScrollViewModel.Commands.OPEN_CREATE_NOTE_ACTIVITY) {
                 Intent intent = new Intent(NotesScrollActivity.this, CreateNoteActivity.class);
                 startActivity(intent);
+
             } else if (activityCode == NotesScrollViewModel.Commands.OPEN_FRIENDS_LIST_ACTIVITY) {
                 Intent intent = new Intent(NotesScrollActivity.this, FriendsActivity.class);
                 startActivity(intent);
+
             } else if (activityCode == NotesScrollViewModel.Commands.OPEN_LOGIN_ACTIVITY) {
                 Intent intent = new Intent(NotesScrollActivity.this, LoginActivity.class);
                 startActivity(intent);
-            }
-        });
-    }
 
+            } else if (activityCode == NotesScrollViewModel.Commands.OPEN_BROWSE_NOTE_ACTIVITY) {
+                Intent intent = new Intent(NotesScrollActivity.this, NoteBrowseActivity.class);
+                startActivity(intent);
 
-    private void setRecyclerView() {
-        RecyclerView recyclerView = findViewById(R.id.recycler_view_notes_short_card);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            } else if (activityCode == NotesScrollViewModel.Commands.OPEN_MENU) {
+                binding.fabMenuButton.animate().rotationBy(-45f);
+                binding.fabAddNoteAction.setVisibility(View.VISIBLE);
+                binding.fabAddContactAction.setVisibility(View.VISIBLE);
+                binding.fabChangeUserAction.setVisibility(View.VISIBLE);
+                binding.fabAddNoteAction.animate().translationY(-getResources().getDimension(R.dimen.standard_200));
+                binding.fabAddContactAction.animate().translationY(-getResources().getDimension(R.dimen.standard_135));
+                binding.fabChangeUserAction.animate().translationY(-getResources().getDimension(R.dimen.standard_70));
 
-        CustomRecyclerAdapter.OnNoteClickListener onUserClickListener = note -> {
-            Log.d(TAG, note.getHeader());
-
-            // TODO заглушка пердать данные о заметке
-
-            Intent intent = new Intent(NotesScrollActivity.this, NoteBrowseActivity.class);
-            intent.putExtra("Title", note.getHeader());
-            startActivity(intent);
-        };
-        CustomRecyclerAdapter noteAdapter = new CustomRecyclerAdapter(onUserClickListener);
-        recyclerView.setAdapter(noteAdapter);
-
-        Collection<NoteShortCard> notes = loadNotes();
-        noteAdapter.setItems(notes);
-    }
-
-    private Collection<NoteShortCard> loadNotes() {
-        // TODO заглушка
-        return Arrays.asList(
-                new NoteShortCard("First note", "10.01.22"),
-                new NoteShortCard("Second note", "10.01.22"),
-                new NoteShortCard("Third note", "10.01.22"),
-                new NoteShortCard("Fourth note", "10.01.22"),
-                new NoteShortCard("Fifth note", "10.01.22"),
-                new NoteShortCard("Sixth note", "10.01.22"),
-                new NoteShortCard("Seventh note", "10.01.22"),
-                new NoteShortCard("Eighth note", "10.01.22"),
-                new NoteShortCard("Ninth note", "10.01.22"),
-                new NoteShortCard("Tenth note", "10.01.22"),
-                new NoteShortCard("Eleventh note", "10.01.22"),
-                new NoteShortCard("Twelfth note", "10.01.22")
-        );
-    }
-
-    private void setOnMenuListener() {
-        FloatingActionButton fabMenu = findViewById(R.id.fab_menu_button);
-        LinearLayout fabCreate = findViewById(R.id.fab_add_note_action);
-        LinearLayout fabAddContact = findViewById(R.id.fab_add_contact_action);
-        LinearLayout fabChangeUse = findViewById(R.id.fab_change_user_action);
-
-        fabMenu.setOnClickListener((View v) -> {
-            if (!isMenuOpen) {
-                isMenuOpen=true;
-                fabMenu.animate().rotationBy(-45f);
-                fabCreate.setVisibility(View.VISIBLE);
-                fabAddContact.setVisibility(View.VISIBLE);
-                fabChangeUse.setVisibility(View.VISIBLE);
-                fabCreate.animate().translationY(-getResources().getDimension(R.dimen.standard_200));
-                fabAddContact.animate().translationY(-getResources().getDimension(R.dimen.standard_135));
-                fabChangeUse.animate().translationY(-getResources().getDimension(R.dimen.standard_70));
-            } else {
-                isMenuOpen = false;
-                fabMenu.animate().rotationBy(45f);
-                fabCreate.animate().translationY(0);
-                fabAddContact.animate().translationY(0);
-                fabChangeUse.animate().translationY(0);
-                fabChangeUse.animate().translationY(0).setListener(new Animator.AnimatorListener() {
+            } else if (activityCode == NotesScrollViewModel.Commands.CLOSE_MENU) {
+                binding.fabMenuButton.animate().rotationBy(45f);
+                binding.fabAddNoteAction.animate().translationY(0);
+                binding.fabAddContactAction.animate().translationY(0);
+                binding.fabChangeUserAction.animate().translationY(0).setListener(new AnimatorListenerAdapter() {
                     @Override
-                    public void onAnimationStart(Animator animator) {
-                    }
-                    @Override
-                    public void onAnimationEnd(Animator animator) {
-                        if (!isMenuOpen) {
-                            fabCreate.setVisibility(View.GONE);
-                            fabAddContact.setVisibility(View.GONE);
-                            fabChangeUse.setVisibility(View.GONE);
-                        }
-                    }
-                    @Override
-                    public void onAnimationCancel(Animator animator) {
-                    }
-                    @Override
-                    public void onAnimationRepeat(Animator animator) {
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        notesScrollViewModel.animationEnd();
                     }
                 });
+
+            } else if (activityCode == NotesScrollViewModel.Commands.HIDE_EXTRA_MENU_INFO) {
+                binding.fabAddNoteAction.setVisibility(View.GONE);
+                binding.fabAddContactAction.setVisibility(View.GONE);
+                binding.fabChangeUserAction.setVisibility(View.GONE);
             }
         });
+
+        notesScrollViewModel.notes.observe(this, notes -> noteAdapter.setItems(notes));
+    }
+
+    private void setRecyclerView() {
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        binding.recyclerViewNotesShortCard.setLayoutManager(layoutManager);
+
+        CustomRecyclerAdapter.OnNoteClickListener onUserClickListener = note ->
+                notesScrollViewModel.clickedOnNote(note);
+
+        noteAdapter = new CustomRecyclerAdapter(onUserClickListener);
+        binding.recyclerViewNotesShortCard.setAdapter(noteAdapter);
     }
 }
