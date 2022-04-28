@@ -1,103 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:weightSum="100">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <TextView
-        android:id="@+id/user_name"
+    <data>
+        <variable
+            name="viewModel"
+            type="ru.kudasheva.noteskeeper.ui.NotesScrollViewModel" />
+    </data>
+
+    <LinearLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_weight="10"
-        android:layout_height="0dip"
-        android:text="@string/user_name"
-        android:textSize="35sp"
-        android:layout_margin="5dp"
-        android:paddingStart="20dp"
-        android:paddingTop="10dp"
-        android:paddingEnd="15dp">
-    </TextView>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="100">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="90">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view_notes_short_card"
+        <TextView
+            android:id="@+id/user_name"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="0dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:scrollbars="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            tools:listitem="@layout/short_note_info">
-        </androidx.recyclerview.widget.RecyclerView>
+            android:layout_height="0dip"
+            android:layout_margin="5dp"
+            android:layout_weight="10"
+            android:paddingStart="20dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="15dp"
+            android:text="@{viewModel.username}"
+            android:textSize="35sp"/>
 
-        <LinearLayout
-            style="@style/FabMenuLayout"
-            android:id="@+id/fab_add_note_action"
-            app:layout_behavior="com.ajaysinghdewari.floatingactionbuttonmenu.activities.utils.MoveUpwardBehavior">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_weight="90">
 
-            <TextView
-                style="@style/FabMenuText"
-                android:text="@string/create_note">
-            </TextView>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view_notes_short_card"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:scrollbars="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                tools:listitem="@layout/short_note_info"/>
+
+            <LinearLayout
+                android:id="@+id/fab_add_note_action"
+                style="@style/FabMenuLayout"
+                app:layout_behavior="com.ajaysinghdewari.floatingactionbuttonmenu.activities.utils.MoveUpwardBehavior">
+
+                <TextView
+                    style="@style/FabMenuText"
+                    android:text="@string/create_note"/>
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/create_note_button"
+                    style="@style/FabMenuButton"
+                    android:contentDescription="@string/create_note"
+                    app:srcCompat="@drawable/ic_baseline_article_24" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/fab_add_contact_action"
+                style="@style/FabMenuLayout"
+                app:layout_behavior="com.ajaysinghdewari.floatingactionbuttonmenu.activities.utils.MoveUpwardBehavior">
+
+                <TextView
+                    style="@style/FabMenuText"
+                    android:text="@string/friends"/>
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/view_friend_button"
+                    style="@style/FabMenuButton"
+                    android:contentDescription="@string/friends"
+                    app:srcCompat="@drawable/ic_baseline_person_add_24" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/fab_change_user_action"
+                style="@style/FabMenuLayout"
+                app:layout_behavior="com.ajaysinghdewari.floatingactionbuttonmenu.activities.utils.MoveUpwardBehavior">
+
+                <TextView
+                    style="@style/FabMenuText"
+                    android:text="@string/change_user"/>
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/change_user_button"
+                    style="@style/FabMenuButton"
+                    android:contentDescription="@string/change_user"
+                    app:srcCompat="@drawable/ic_baseline_accessibility_24" />
+            </LinearLayout>
+
             <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/create_note_button"
+                android:id="@+id/fab_menu_button"
                 style="@style/FabMenuButton"
-                app:srcCompat="@drawable/ic_baseline_article_24"
-                android:contentDescription="@string/create_note" />
-        </LinearLayout>
+                android:layout_alignEnd="@id/recycler_view_notes_short_card"
+                android:layout_alignBottom="@id/recycler_view_notes_short_card"
+                android:contentDescription="@string/fab_note_action_content_description"
+                app:srcCompat="@drawable/ic_baseline_add_24" />
+        </RelativeLayout>
 
-
-        <LinearLayout
-            style="@style/FabMenuLayout"
-            android:id="@+id/fab_add_contact_action"
-            app:layout_behavior="com.ajaysinghdewari.floatingactionbuttonmenu.activities.utils.MoveUpwardBehavior">
-
-            <TextView
-                style="@style/FabMenuText"
-                android:text="@string/friends">
-            </TextView>
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/view_friend_button"
-                style="@style/FabMenuButton"
-                app:srcCompat="@drawable/ic_baseline_person_add_24"
-                android:contentDescription="@string/friends" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/fab_change_user_action"
-            style="@style/FabMenuLayout"
-            app:layout_behavior="com.ajaysinghdewari.floatingactionbuttonmenu.activities.utils.MoveUpwardBehavior">
-
-            <TextView
-                style="@style/FabMenuText"
-                android:text="@string/change_user">
-            </TextView>
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/change_user_button"
-                style="@style/FabMenuButton"
-                app:srcCompat="@drawable/ic_baseline_accessibility_24"
-                android:contentDescription="@string/change_user"/>
-        </LinearLayout>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_menu_button"
-            style="@style/FabMenuButton"
-            android:layout_alignEnd="@id/recycler_view_notes_short_card"
-            android:layout_alignBottom="@id/recycler_view_notes_short_card"
-            android:contentDescription="@string/fab_note_action_content_description"
-            app:srcCompat="@drawable/ic_baseline_add_24" />
-    </RelativeLayout>
-
-</LinearLayout>
+    </LinearLayout>
+</layout>

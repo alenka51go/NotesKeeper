@@ -1,4 +1,4 @@
-package ru.kudasheva.noteskeeper.ui.login;
+package ru.kudasheva.noteskeeper.login;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -14,7 +14,6 @@ import ru.kudasheva.noteskeeper.R;
 import ru.kudasheva.noteskeeper.databinding.ActivityLoginBinding;
 import ru.kudasheva.noteskeeper.databinding.DialogBoxBinding;
 import ru.kudasheva.noteskeeper.ui.NotesScrollActivity;
-import ru.kudasheva.noteskeeper.viewmodel.LoginViewModel;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = LoginActivity.class.getSimpleName();
@@ -33,7 +32,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void observeLiveData() {
-        loginViewModel.openActivityCommand.observe(this, (activityCode) -> {
+        loginViewModel.activityCommand.observe(this, (activityCode) -> {
             if (activityCode == LoginViewModel.Commands.OPEN_NOTE_SCROLL_ACTIVITY) {
                 Intent intent = new Intent(LoginActivity.this, NotesScrollActivity.class);
                 startActivity(intent);

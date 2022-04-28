@@ -1,8 +1,8 @@
 package ru.kudasheva.noteskeeper.ui;
 
 public class NoteShortCard {
-    private final String header;
-    private final String date;
+    public String header;
+    public String date;
 
     public NoteShortCard(String header, String date) {
         this.header = header;

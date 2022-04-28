@@ -3,7 +3,7 @@
     <data>
         <variable
             name="viewModel"
-            type="ru.kudasheva.noteskeeper.viewmodel.LoginViewModel" />
+            type="ru.kudasheva.noteskeeper.login.LoginViewModel" />
     </data>
     <LinearLayout
         android:layout_width="match_parent"
@@ -51,7 +51,7 @@
                 android:background="@drawable/background_corner_input_box"
                 android:hint="@string/user_login"
                 android:inputType="textPersonName"
-                android:text="@{viewModel.userNameLiveData}"
+                android:text="@={viewModel.userNameLiveData}"
                 android:textSize="20sp"/>
         </RelativeLayout>
 

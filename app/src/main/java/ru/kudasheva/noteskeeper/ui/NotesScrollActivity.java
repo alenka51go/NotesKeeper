@@ -6,10 +6,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,29 +20,38 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import ru.kudasheva.noteskeeper.R;
-import ru.kudasheva.noteskeeper.ui.login.LoginActivity;
+import ru.kudasheva.noteskeeper.databinding.ActivityNotesScrollBinding;
+import ru.kudasheva.noteskeeper.login.LoginActivity;
 
 public class NotesScrollActivity extends AppCompatActivity {
     private static final String TAG = NotesScrollActivity.class.getSimpleName();
     boolean isMenuOpen = false;
 
+    private NotesScrollViewModel notesScrollViewModel;
+    private ActivityNotesScrollBinding binding;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_notes_scroll);
+        notesScrollViewModel = ViewModelProviders.of(this).get(NotesScrollViewModel.class);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_notes_scroll);
+        binding.setViewModel(notesScrollViewModel);
 
-        setUserName();
-        setRecyclerView();
-        setOnMenuListener();
+        observeLiveData();
+
+        notesScrollViewModel.startPosition();
     }
 
-    private void setUserName() {
-        // TODO загушка
-        String userName = "Alena Kudasheva";
-        TextView name = findViewById(R.id.user_name);
-        name.setText(userName);
+    private void observeLiveData() {
+        notesScrollViewModel.activityCommand.observe(this, (activityCode) -> {
+            if (activityCode == NotesScrollViewModel.Commands.MAKE_INITIALIZATION) {
+                setRecyclerView();
+                setOnMenuListener();
+            }
+        });
     }
+
 
     private void setRecyclerView() {
         RecyclerView recyclerView = findViewById(R.id.recycler_view_notes_short_card);

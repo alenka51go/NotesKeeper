@@ -3,36 +3,37 @@ package ru.kudasheva.noteskeeper.ui;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import ru.kudasheva.noteskeeper.R;
+import ru.kudasheva.noteskeeper.databinding.ShortNoteInfoBinding;
 
 public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAdapter.CustomViewHolder> {
     private final List<NoteShortCard> noteList = new ArrayList<>();
-    private final OnNoteClickListener OnNoteClickListener;
+    private final OnNoteClickListener onNoteClickListener;
 
     public CustomRecyclerAdapter(OnNoteClickListener onUserClickListener) {
-        this.OnNoteClickListener = onUserClickListener;
+        this.onNoteClickListener = onUserClickListener;
     }
 
     @NonNull
     @Override
     public CustomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.short_note_info, parent, false);
-        return new CustomViewHolder(view);
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        ShortNoteInfoBinding binding = ShortNoteInfoBinding.inflate(inflater, parent, false);
+        return new CustomViewHolder(binding.getRoot());
     }
 
     @Override
     public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
-        holder.bind(noteList.get(position));
+        NoteShortCard note = noteList.get(position);
+        holder.binding.setShortNote(note);
     }
 
     @Override
@@ -45,29 +46,16 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
         notifyDataSetChanged();
     }
 
-    public void clearItems() {
-        noteList.clear();
-        notifyDataSetChanged();
-    }
-
-    class CustomViewHolder extends RecyclerView.ViewHolder {
-        private final TextView notesHeader;
-        private final TextView date;
+     class CustomViewHolder extends RecyclerView.ViewHolder {
+        ShortNoteInfoBinding binding;
 
         public CustomViewHolder(View itemView) {
             super(itemView);
-            notesHeader = itemView.findViewById(R.id.notes_header);
-            date = itemView.findViewById(R.id.notes_date);
-
+            binding = DataBindingUtil.bind(itemView);
             itemView.setOnClickListener(v -> {
                 NoteShortCard note = noteList.get(getLayoutPosition());
-                OnNoteClickListener.onNoteClick(note);
+                onNoteClickListener.onNoteClick(note);
             });
-        }
-
-        public void bind(NoteShortCard noteShortCard) {
-            notesHeader.setText(noteShortCard.getHeader());
-            date.setText(noteShortCard.getDate());
         }
     }
 
