@@ -4,20 +4,21 @@ import java.util.List;
 
 import ru.kudasheva.noteskeeper.ui.CommentInfoCard;
 import ru.kudasheva.noteskeeper.ui.FriendInfoCard;
+import ru.kudasheva.noteskeeper.ui.InfoCard;
 import ru.kudasheva.noteskeeper.ui.NoteFullCard;
-import ru.kudasheva.noteskeeper.ui.NoteShortCard;
+import ru.kudasheva.noteskeeper.notescroll.NoteShortCard;
 
 public interface DataRepository{
     boolean checkIfUserExist(String name);
-    String getUserName();
+    String getUsername();
 
     boolean signUpNewUser(String userName);
     List<FriendInfoCard> addNewFriend(FriendInfoCard infoCard);
-    List<CommentInfoCard> addNewComment(CommentInfoCard info);
+    void addComment(CommentInfoCard info);
 
     NoteFullCard getNoteFullCard(String title);
 
     List<NoteShortCard> getListOfNoteShortCard();
     List<FriendInfoCard> getListOfFriendInfoCards();
-    List<CommentInfoCard> getListOfCommentInfoCard();
+    List<InfoCard> getListOfCommentInfoCard();
 }

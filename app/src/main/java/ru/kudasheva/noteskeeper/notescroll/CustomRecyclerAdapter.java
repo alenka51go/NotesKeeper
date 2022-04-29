@@ -1,4 +1,4 @@
-package ru.kudasheva.noteskeeper.ui;
+package ru.kudasheva.noteskeeper.notescroll;
 
 import android.view.LayoutInflater;
 import android.view.View;

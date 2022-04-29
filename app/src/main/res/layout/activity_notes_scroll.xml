@@ -5,7 +5,7 @@
 
         <variable
             name="viewModel"
-            type="ru.kudasheva.noteskeeper.ui.NotesScrollViewModel" />
+            type="ru.kudasheva.noteskeeper.notescroll.NotesScrollViewModel" />
     </data>
 
     <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"

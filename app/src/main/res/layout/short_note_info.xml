@@ -4,7 +4,7 @@
     <data>
         <variable
             name="shortNote"
-            type="ru.kudasheva.noteskeeper.ui.NoteShortCard" />
+            type="ru.kudasheva.noteskeeper.notescroll.NoteShortCard" />
     </data>
 
     <LinearLayout

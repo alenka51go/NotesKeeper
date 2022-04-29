@@ -6,22 +6,23 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.BindingAdapter;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ru.kudasheva.noteskeeper.R;
+import ru.kudasheva.noteskeeper.databinding.CommentBinding;
+import ru.kudasheva.noteskeeper.databinding.NoteBinding;
 
 public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdapter.AbstractViewHolder> {
-    private final List<InfoCard> dataSet = new ArrayList<>();
+    private List<InfoCard> dataSet = new ArrayList<>();
 
     void setItems(List<InfoCard> dates) {
-        dataSet.addAll(dates);
-    }
-
-    void clearItems() {
-        dataSet.clear();
+        dataSet = dates;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -34,11 +35,11 @@ public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdap
     public AbstractViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (viewType == InfoCard.NOTE_ROW_TYPE) {
-            View view = inflater.inflate(R.layout.note, parent, false);
-            return new NoteViewHolder(view);
+            NoteBinding binding = NoteBinding.inflate(inflater, parent, false);
+            return new NoteViewHolder(binding.getRoot());
         }
-        View view = inflater.inflate(R.layout.comment, parent, false);
-        return new CommentViewHolder(view);
+        CommentBinding binding = CommentBinding.inflate(inflater, parent, false);
+        return new CommentViewHolder(binding.getRoot());
     }
 
     @Override
@@ -52,73 +53,38 @@ public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdap
     }
 
     public abstract static class AbstractViewHolder extends RecyclerView.ViewHolder {
-        public TextView userName;
-        public TextView date;
-        public TextView textBody;
-
-        abstract int getUserName();
-        abstract int getDate();
-        abstract int getTextBody();
-
         public AbstractViewHolder(@NonNull View itemView) {
             super(itemView);
-            userName = itemView.findViewById(getUserName());
-            date = itemView.findViewById(getDate());
-            textBody = itemView.findViewById(getTextBody());
         }
 
         abstract void bindContent(InfoCard item);
     }
 
     public static class NoteViewHolder extends AbstractViewHolder {
+        NoteBinding binding;
+
         public NoteViewHolder(@NonNull View itemView) {
             super(itemView);
+            binding = DataBindingUtil.bind(itemView);
         }
 
         @Override
         void bindContent(InfoCard item) {
-            NoteFullCard actualItem = (NoteFullCard)item;
-            userName.setText(actualItem.getName());
-            date.setText(actualItem.getDate());
-            textBody.setText(actualItem.getText());
-        }
-
-        @Override
-        int getUserName() {
-            return R.id.user_name_browse;
-        }
-        @Override
-        int getDate() {
-            return R.id.date_browse;
-        }
-        @Override
-        int getTextBody() {
-            return R.id.note_body_browse;
+            binding.setFullNote((NoteFullCard) item);
         }
     }
 
     public static class CommentViewHolder extends AbstractViewHolder {
+        CommentBinding binding;
+
         public CommentViewHolder(@NonNull View itemView) {
             super(itemView);
+            binding = DataBindingUtil.bind(itemView);
         }
+
         @Override
         void bindContent(InfoCard item) {
-            CommentInfoCard actualItem = (CommentInfoCard)item;
-            userName.setText(actualItem.getName());
-            date.setText(actualItem.getDate());
-            textBody.setText(actualItem.getText());
-        }
-        @Override
-        int getUserName() {
-            return R.id.text_comment;
-        }
-        @Override
-        int getDate() {
-            return R.id.date_comment;
-        }
-        @Override
-        int getTextBody() {
-            return R.id.name_comment;
+            binding.setComment((CommentInfoCard) item);
         }
     }
 }

@@ -1,76 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:weightSum="100">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <RelativeLayout
+    <data>
+
+        <variable
+            name="viewModel"
+            type="ru.kudasheva.noteskeeper.ui.NoteBrowseViewModel" />
+    </data>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="8"
-        android:layout_marginHorizontal="10dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="100">
 
-        <TextView
-            android:id="@+id/title_box"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_toStartOf="@+id/button_action"
-            android:text="@string/notes_header_stub"
-            android:textSize="30sp">
-        </TextView>
-
-        <Button
-            android:id="@+id/button_action"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerInParent="true"
-            android:text="@string/actions">
-        </Button>
-    </RelativeLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_note_and_comments"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="82"
-        tools:listitem="@layout/note"
-        android:layout_marginHorizontal="10dp">
-    </androidx.recyclerview.widget.RecyclerView>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="10"
-        android:layout_marginHorizontal="15dp">
-
-        <EditText
-            android:id="@+id/comment_box"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_centerInParent="true"
-            android:layout_marginEnd="5dp"
-            android:layout_toStartOf="@id/send_button"
-            android:autofillHints="@string/leave_a_comment"
-            android:hint="@string/leave_a_comment"
-            android:inputType="textMultiLine"
-            android:maxLines="4">
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="10dp"
+            android:layout_weight="8">
 
-        </EditText>
+            <TextView
+                android:id="@+id/title_box"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@+id/button_action"
+                android:text="@{viewModel.title}"
+                android:textSize="30sp" />
 
-        <Button
-            android:id="@+id/send_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/send"
-            android:layout_alignParentEnd="true"
-            android:layout_centerInParent="true">
-        </Button>
-    </RelativeLayout>
+            <Button
+                android:id="@+id/button_action"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:onClick="@{v -> viewModel.onActionMenuClicked()}"
+                android:text="@string/actions" />
+        </RelativeLayout>
 
-</LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_note_and_comments"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="10dp"
+            android:layout_weight="82"
+            tools:listitem="@layout/note" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="15dp"
+            android:layout_weight="10">
+
+            <EditText
+                android:id="@+id/comment_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerInParent="true"
+                android:layout_marginEnd="5dp"
+                android:layout_toStartOf="@id/send_button"
+                android:autofillHints="@string/leave_a_comment"
+                android:hint="@string/leave_a_comment"
+                android:inputType="textMultiLine"
+                android:maxLines="4"
+                android:text="@={viewModel.userCommentLiveData}" />
+
+
+            <Button
+                android:id="@+id/send_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:onClick="@{v -> viewModel.onSendButtonClicked()}"
+                android:text="@string/send" />
+        </RelativeLayout>
+
+    </LinearLayout>
+</layout>

@@ -13,7 +13,7 @@ import androidx.lifecycle.ViewModelProviders;
 import ru.kudasheva.noteskeeper.R;
 import ru.kudasheva.noteskeeper.databinding.ActivityLoginBinding;
 import ru.kudasheva.noteskeeper.databinding.DialogBoxBinding;
-import ru.kudasheva.noteskeeper.ui.NotesScrollActivity;
+import ru.kudasheva.noteskeeper.notescroll.NotesScrollActivity;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = LoginActivity.class.getSimpleName();
@@ -24,6 +24,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
         binding.setViewModel(loginViewModel);

@@ -1,4 +1,4 @@
-package ru.kudasheva.noteskeeper.ui;
+package ru.kudasheva.noteskeeper.notescroll;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -11,11 +11,12 @@ import ru.kudasheva.noteskeeper.data.DataRepository;
 public class NotesScrollViewModel extends ViewModel {
     private final DataRepository dataRepo = MyApplication.getDataRepo();
 
+    public String username = dataRepo.getUsername();
     private boolean isMenuOpen = false;
 
     public MutableLiveData<List<NoteShortCard>> notes = new MutableLiveData<>(loadShortNodes());
     public MutableLiveData<NotesScrollViewModel.Commands> activityCommand = new MutableLiveData<>();
-    public String username;
+    public NoteShortCard noteToShow;
 
     public List<NoteShortCard> loadShortNodes() {
         return dataRepo.getListOfNoteShortCard();
@@ -51,7 +52,13 @@ public class NotesScrollViewModel extends ViewModel {
 
     public void clickedOnNote(NoteShortCard note) {
         // TODO load note somewhere
+        noteToShow = note;
         activityCommand.setValue(Commands.OPEN_BROWSE_NOTE_ACTIVITY);
+    }
+
+    public void onResume() {
+        // подгружаем заметки пользователя
+        notes.setValue(loadShortNodes());
     }
 
 

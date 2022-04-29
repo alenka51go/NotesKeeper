@@ -33,7 +33,7 @@
             android:windowSoftInputMode="adjustPan">
         </activity>
         <activity
-            android:name=".ui.NotesScrollActivity"
+            android:name=".notescroll.NotesScrollActivity"
             android:exported="false"
             android:label="@string/noteScroll_title">
         </activity>

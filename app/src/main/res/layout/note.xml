@@ -1,40 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <TextView
-        android:id="@+id/user_name_browse"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:text="@string/user_name"
-        android:gravity="bottom"
-        android:layout_marginHorizontal="5dp"
-        android:textSize="18sp">
-    </TextView>
+    <data>
+        <variable
+            name="fullNote"
+            type="ru.kudasheva.noteskeeper.ui.NoteFullCard" />
+    </data>
 
-    <TextView
-        android:id="@+id/date_browse"
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:text="@string/notes_date_stub"
-        android:gravity="top"
-        android:layout_marginHorizontal="5dp"
-        android:textSize="15sp">
-    </TextView>
-
-    <TextView
-        android:id="@+id/note_body_browse"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="5dp"
-        android:layout_marginVertical="5dp"
-        android:background="@color/note"
-        android:nestedScrollingEnabled="true"
-        android:padding="10dp"
-        android:scrollbars="vertical"
-        android:text="@string/new_note"
-        android:textSize="18sp">
-    </TextView>
-</LinearLayout>
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/user_name_browse"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginHorizontal="5dp"
+            android:gravity="bottom"
+            android:text="@{fullNote.name}"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/date_browse"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_marginHorizontal="5dp"
+            android:gravity="top"
+            android:text="@{fullNote.date}"
+            android:textSize="15sp"/>
+
+        <TextView
+            android:id="@+id/note_body_browse"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="5dp"
+            android:layout_marginVertical="5dp"
+            android:background="@color/note"
+            android:nestedScrollingEnabled="true"
+            android:padding="10dp"
+            android:scrollbars="vertical"
+            android:text="@{fullNote.text}"
+            android:textSize="18sp"/>
+    </LinearLayout>
+</layout>

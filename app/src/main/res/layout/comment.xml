@@ -1,42 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:weightSum="100"
-    android:layout_margin="4dp"
-    android:background="@drawable/backdround_corners_comment_layout">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <TextView
-        android:id="@+id/name_comment"
+    <data>
+        <variable
+            name="comment"
+            type="ru.kudasheva.noteskeeper.ui.CommentInfoCard" />
+    </data>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/user_name"
-        android:layout_marginHorizontal="3dp"
-        android:layout_marginBottom="0dp"
-        android:layout_marginTop="5dp">
-    </TextView>
+        android:layout_margin="4dp"
+        android:background="@drawable/backdround_corners_comment_layout"
+        android:orientation="vertical"
+        android:weightSum="100">
 
-    <TextView
-        android:id="@+id/date_comment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/notes_date_stub"
-        android:layout_marginHorizontal="3dp"
-        android:layout_marginBottom="0dp"
-        android:layout_marginTop="5dp"
-        android:textSize="12sp">
-    </TextView>
+        <TextView
+            android:id="@+id/name_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="3dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="0dp"
+            android:text="@{comment.name}"/>
 
-    <TextView
-        android:id="@+id/text_comment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/comment_stub"
-        android:layout_marginHorizontal="3dp"
-        android:layout_marginVertical="10dp"
-        android:padding="10dp"
-        android:background="@drawable/background_corners">
-    </TextView>
+        <TextView
+            android:id="@+id/date_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="3dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="0dp"
+            android:text="@{comment.date}"
+            android:textSize="12sp"/>
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/text_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="3dp"
+            android:layout_marginVertical="10dp"
+            android:background="@drawable/background_corners"
+            android:padding="10dp"
+            android:text="@{comment.text}"/>
+
+    </LinearLayout>
+</layout>
