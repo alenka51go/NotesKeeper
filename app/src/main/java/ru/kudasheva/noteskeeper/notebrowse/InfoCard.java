@@ -1,4 +1,4 @@
-package ru.kudasheva.noteskeeper.ui;
+package ru.kudasheva.noteskeeper.notebrowse;
 
 public abstract class InfoCard {
     static int NOTE_ROW_TYPE =   0;

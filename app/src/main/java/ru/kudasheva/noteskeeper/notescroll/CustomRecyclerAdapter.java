@@ -15,7 +15,7 @@ import java.util.List;
 import ru.kudasheva.noteskeeper.databinding.ShortNoteInfoBinding;
 
 public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAdapter.CustomViewHolder> {
-    private final List<NoteShortCard> noteList = new ArrayList<>();
+    private List<NoteShortCard> noteList = new ArrayList<>();
     private final OnNoteClickListener onNoteClickListener;
 
     public CustomRecyclerAdapter(OnNoteClickListener onUserClickListener) {
@@ -42,7 +42,7 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
     }
 
     public void setItems(Collection<NoteShortCard> notes) {
-        noteList.addAll(notes);
+        noteList = (List<NoteShortCard>) notes;
         notifyDataSetChanged();
     }
 

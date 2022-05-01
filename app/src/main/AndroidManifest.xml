@@ -14,7 +14,7 @@
             android:name=".ui.FriendsActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.NoteBrowseActivity"
+            android:name=".notebrowse.NoteBrowseActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
         <activity

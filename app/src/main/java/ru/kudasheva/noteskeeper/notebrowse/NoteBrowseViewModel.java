@@ -1,4 +1,4 @@
-package ru.kudasheva.noteskeeper.ui;
+package ru.kudasheva.noteskeeper.notebrowse;
 
 import android.util.Log;
 
@@ -31,9 +31,9 @@ public class NoteBrowseViewModel  extends ViewModel {
     public void onSendButtonClicked() {
         Log.d(TAG, username);
         Log.d(TAG, userCommentLiveData.getValue());
-        Log.d(TAG, getCurrentTime());
+        Log.d(TAG, getCurrentDate());
 
-        CommentInfoCard comment = new CommentInfoCard(userCommentLiveData.getValue(), username, getCurrentTime());
+        CommentInfoCard comment = new CommentInfoCard(userCommentLiveData.getValue(), username, getCurrentDate());
         dataRepo.addComment(comment);
         noteAndComments.setValue(updateNoteAndCommentsList());
 
@@ -48,7 +48,7 @@ public class NoteBrowseViewModel  extends ViewModel {
         return noteList;
     }
 
-    private String getCurrentTime() {
+    private String getCurrentDate() {
         Date currentDate = Calendar.getInstance().getTime();
         SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
         return df.format(currentDate);
@@ -59,7 +59,8 @@ public class NoteBrowseViewModel  extends ViewModel {
     }
 
     public void deleteNote() {
-
+        /// TODO
+        activityCommand.setValue(Commands.CLOSE_ACTIVITY);
     }
 
     public void loadNoteInfo(String title) {
@@ -68,6 +69,7 @@ public class NoteBrowseViewModel  extends ViewModel {
     }
 
     enum Commands {
-        SHOW_MENU
+        SHOW_MENU,
+        CLOSE_ACTIVITY
     }
 }

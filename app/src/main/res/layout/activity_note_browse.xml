@@ -6,7 +6,7 @@
 
         <variable
             name="viewModel"
-            type="ru.kudasheva.noteskeeper.ui.NoteBrowseViewModel" />
+            type="ru.kudasheva.noteskeeper.notebrowse.NoteBrowseViewModel" />
     </data>
 
     <LinearLayout

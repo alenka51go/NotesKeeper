@@ -18,7 +18,7 @@ import ru.kudasheva.noteskeeper.databinding.ActivityNotesScrollBinding;
 import ru.kudasheva.noteskeeper.login.LoginActivity;
 import ru.kudasheva.noteskeeper.ui.CreateNoteActivity;
 import ru.kudasheva.noteskeeper.ui.FriendsActivity;
-import ru.kudasheva.noteskeeper.ui.NoteBrowseActivity;
+import ru.kudasheva.noteskeeper.notebrowse.NoteBrowseActivity;
 
 public class NotesScrollActivity extends AppCompatActivity {
     private static final String TAG = NotesScrollActivity.class.getSimpleName();

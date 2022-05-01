@@ -1,19 +1,16 @@
-package ru.kudasheva.noteskeeper.ui;
+package ru.kudasheva.noteskeeper.notebrowse;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.BindingAdapter;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.kudasheva.noteskeeper.R;
 import ru.kudasheva.noteskeeper.databinding.CommentBinding;
 import ru.kudasheva.noteskeeper.databinding.NoteBinding;
 

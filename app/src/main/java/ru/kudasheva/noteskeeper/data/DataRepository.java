@@ -2,10 +2,10 @@ package ru.kudasheva.noteskeeper.data;
 
 import java.util.List;
 
-import ru.kudasheva.noteskeeper.ui.CommentInfoCard;
+import ru.kudasheva.noteskeeper.notebrowse.CommentInfoCard;
 import ru.kudasheva.noteskeeper.ui.FriendInfoCard;
-import ru.kudasheva.noteskeeper.ui.InfoCard;
-import ru.kudasheva.noteskeeper.ui.NoteFullCard;
+import ru.kudasheva.noteskeeper.notebrowse.InfoCard;
+import ru.kudasheva.noteskeeper.notebrowse.NoteFullCard;
 import ru.kudasheva.noteskeeper.notescroll.NoteShortCard;
 
 public interface DataRepository{
@@ -15,6 +15,7 @@ public interface DataRepository{
     boolean signUpNewUser(String userName);
     List<FriendInfoCard> addNewFriend(FriendInfoCard infoCard);
     void addComment(CommentInfoCard info);
+    void addNote(NoteData info);
 
     NoteFullCard getNoteFullCard(String title);
 

@@ -4,7 +4,7 @@
     <data>
         <variable
             name="comment"
-            type="ru.kudasheva.noteskeeper.ui.CommentInfoCard" />
+            type="ru.kudasheva.noteskeeper.notebrowse.CommentInfoCard" />
     </data>
 
     <LinearLayout

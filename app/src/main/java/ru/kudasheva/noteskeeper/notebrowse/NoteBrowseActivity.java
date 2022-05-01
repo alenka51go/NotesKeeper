@@ -1,4 +1,4 @@
-package ru.kudasheva.noteskeeper.ui;
+package ru.kudasheva.noteskeeper.notebrowse;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -42,6 +42,8 @@ public class NoteBrowseActivity extends AppCompatActivity {
         noteBrowseViewModel.activityCommand.observe(this, activityCommand -> {
             if (activityCommand == NoteBrowseViewModel.Commands.SHOW_MENU) {
                 showMenu();
+            } else if (activityCommand == NoteBrowseViewModel.Commands.CLOSE_ACTIVITY) {
+                finish();
             }
         });
     }

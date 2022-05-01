@@ -1,116 +1,58 @@
 package ru.kudasheva.noteskeeper.ui;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.DialogInterface;
-import androidx.appcompat.app.AlertDialog;
+import android.app.AlertDialog;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProviders;
 
 import ru.kudasheva.noteskeeper.R;
+import ru.kudasheva.noteskeeper.databinding.ActivityNoteCreateBinding;
+import ru.kudasheva.noteskeeper.databinding.DialogBoxBinding;
+
 
 public class CreateNoteActivity extends AppCompatActivity {
     private static final String TAG = CreateNoteActivity.class.getSimpleName();
 
-    List<String> selectedFriend = new ArrayList<>();
-    final String[]  contactList  = getContacts();
-    final boolean[] checkedItems = new boolean[contactList.length];
-
-    String header;
-    String noteText;
-    String dateText;
+    private CreateNoteViewModel createNoteViewModel;
+    private ActivityNoteCreateBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_note_create);
 
-        setAddFriendButton();
-        setOnSaveButton();
+        createNoteViewModel = ViewModelProviders.of(this).get(CreateNoteViewModel.class);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_note_create);
+        binding.setViewModel(createNoteViewModel);
+
+        observeLiveData();
     }
 
-    private void setOnSaveButton() {
-        Button button = findViewById(R.id.save_note_button);
-        button.setOnClickListener((View v) -> {
-            EditText title = findViewById(R.id.enter_title_box);
-            header = title.getText().toString();
-
-            EditText body = findViewById(R.id.enter_note_box);
-            noteText = body.getText().toString();
-
-            Log.d(TAG, header);
-            Log.d(TAG, noteText);
-            for (String friend : selectedFriend) {
-                Log.d(TAG, friend);
+    private void observeLiveData() {
+        createNoteViewModel.activityCommand.observe(this, activityCommand -> {
+            if (activityCommand == CreateNoteViewModel.Commands.CLOSE_ACTIVITY) {
+                finish();
+            } else if (activityCommand == CreateNoteViewModel.Commands.OPEN_SELECTED_FRIEND_DIALOG) {
+                setDialogActivity();
             }
-
-            Date currentDate = new Date();
-
-            DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
-            dateText = dateFormat.format(currentDate);
-            Log.d(TAG, dateText);
-
-            // TODO вернуться на главную страницу и схранить новую заметку в базу
-
-            finish();
         });
     }
 
-    private void setAddFriendButton() {
-        Button button = findViewById(R.id.add_friend_button);
-        button.setOnClickListener((View v) -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(CreateNoteActivity.this);
+    private void setDialogActivity() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(CreateNoteActivity.this);
 
-            builder.setTitle("Select friends for sharing");
+        AlertDialog dialog = builder
+                .setCancelable(false)
+                .setTitle(R.string.select_friends)
+                .setMultiChoiceItems(createNoteViewModel.contactList, createNoteViewModel.checkedItems,
+                        (dialog_, which, isChecked) -> createNoteViewModel.setCheckedItem(which, isChecked))
+                .setPositiveButton(android.R.string.ok, (dialog_, which) -> createNoteViewModel.okClicked())
+                .setNegativeButton(android.R.string.cancel, (dialog_, which) -> {
+                })
+                .setNeutralButton(android.R.string.selectAll, (dialog_, which) -> createNoteViewModel.selectedAllClicked())
+                .create();
 
-            builder.setMultiChoiceItems(contactList, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                    checkedItems[which] = isChecked;
-                }
-            });
-
-            builder.setCancelable(false);
-
-            builder.setPositiveButton("Done", (dialog, which) -> {
-                for (int i = 0; i < checkedItems.length; i++) {
-                    if (checkedItems[i] && !selectedFriend.contains(contactList[i])) {
-                        selectedFriend.add(contactList[i]);
-                    }
-                }
-            });
-
-            builder.setNegativeButton("CANCEL", (dialog, which) -> {
-            });
-
-            builder.setNeutralButton("CLEAR ALL", (dialog, which) ->
-                    Arrays.fill(checkedItems, false));
-
-            AlertDialog alertDialog = builder.create();
-            alertDialog.show();
-        });
-    }
-
-    private String[]  getContacts() {
-        // TODO заглушка
-        return new String[]{
-            "Harry",
-            "Ron",
-            "Hermione",
-            "Draco",
-            "Fred",
-            "Volodia"
-        };
+        dialog.show();
     }
 }

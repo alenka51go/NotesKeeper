@@ -6,11 +6,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import ru.kudasheva.noteskeeper.ui.CommentInfoCard;
+import ru.kudasheva.noteskeeper.notebrowse.CommentInfoCard;
 import ru.kudasheva.noteskeeper.ui.FriendInfoCard;
-import ru.kudasheva.noteskeeper.ui.InfoCard;
-import ru.kudasheva.noteskeeper.ui.NoteBrowseActivity;
-import ru.kudasheva.noteskeeper.ui.NoteFullCard;
+import ru.kudasheva.noteskeeper.notebrowse.InfoCard;
+import ru.kudasheva.noteskeeper.notebrowse.NoteFullCard;
 import ru.kudasheva.noteskeeper.notescroll.NoteShortCard;
 
 public class StubDataRepository implements DataRepository {
@@ -52,6 +51,11 @@ public class StubDataRepository implements DataRepository {
     }
 
     @Override
+    public void addNote(NoteData info) {
+
+    }
+
+    @Override
     public NoteFullCard getNoteFullCard(String title) {
         return stubNoteFullCard;
     }
@@ -72,15 +76,15 @@ public class StubDataRepository implements DataRepository {
     }
 
     private final List<FriendInfoCard> stubFriendsInfoCard = Arrays.asList(
-            new FriendInfoCard("Harry1"),
-            new FriendInfoCard("Harry2"),
-            new FriendInfoCard("Harry3"),
-            new FriendInfoCard("Harry4"),
-            new FriendInfoCard("Harry5"),
-            new FriendInfoCard("Harry6"),
-            new FriendInfoCard("Harry7"),
-            new FriendInfoCard("Harry8"),
-            new FriendInfoCard("Harry9")
+            new FriendInfoCard("Bob"),
+            new FriendInfoCard("Alice"),
+            new FriendInfoCard("Ron"),
+            new FriendInfoCard("Harry"),
+            new FriendInfoCard("Hermione"),
+            new FriendInfoCard("Draco"),
+            new FriendInfoCard("Dobby"),
+            new FriendInfoCard("Volodia"),
+            new FriendInfoCard("Lyona")
     );
 
     private final List<NoteShortCard> stubNoteShortCards = Arrays.asList(

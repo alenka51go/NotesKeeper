@@ -32,5 +32,6 @@
     <string name="friends">Friends</string>
     <string name="find_friend">Find friend</string>
     <string name="friend_name">Friend name</string>
+    <string name="select_friends">Select friends for sharing</string>
 
 </resources>

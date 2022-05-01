@@ -1,58 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:weightSum="100">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <EditText
-        android:id="@+id/enter_title_box"
+    <data>
+        <variable
+            name="viewModel"
+            type="ru.kudasheva.noteskeeper.ui.CreateNoteViewModel" />
+    </data>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="10"
-        android:layout_margin="15dp"
-        android:textSize="25sp"
-        android:hint="@string/enter_title"
-        android:inputType="text"
-        android:autofillHints="Note">
-    </EditText>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="100">
 
-    <Button
-        android:id="@+id/add_friend_button"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="10"
-        android:layout_margin="13dp"
-        android:text="@string/add_friends">
-    </Button>
+        <EditText
+            android:id="@+id/enter_title_box"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="15dp"
+            android:layout_weight="10"
+            android:autofillHints="Note"
+            android:hint="@string/enter_title"
+            android:text="@={viewModel.title}"
+            android:inputType="text"
+            android:textSize="25sp"/>
 
-    <EditText
-        android:id="@+id/enter_note_box"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="70"
-        android:inputType="textMultiLine"
+        <Button
+            android:id="@+id/add_friend_button"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="13dp"
+            android:layout_weight="10"
+            android:onClick="@{v -> viewModel.onAddFriendButtonClicked()}"
+            android:text="@string/add_friends"/>
 
-        android:layout_margin="13dp"
-        android:padding="10dp"
-        android:textSize="20sp"
-        android:hint="@string/enter_text"
-        android:autofillHints="Note"
-        android:lines="20"
-        android:minLines="6"
-        android:gravity="top|start"
-        android:scrollHorizontally="false"
-        android:scrollbars="vertical"
-        android:background="@color/note">
-    </EditText>
+        <EditText
+            android:id="@+id/enter_note_box"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="13dp"
+            android:layout_weight="70"
+            android:text="@={viewModel.noteBody}"
 
-    <Button
-        android:id="@+id/save_note_button"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="10"
-        android:layout_margin="13dp"
-        android:text="@string/save">
-    </Button>
+            android:autofillHints="Note"
+            android:background="@color/note"
+            android:gravity="top|start"
+            android:hint="@string/enter_text"
+            android:inputType="textMultiLine"
+            android:lines="20"
+            android:minLines="6"
+            android:padding="10dp"
+            android:scrollbars="vertical"
+            android:scrollHorizontally="false"
+            android:textSize="20sp"/>
 
-</LinearLayout>
+        <Button
+            android:id="@+id/save_note_button"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="13dp"
+            android:layout_weight="10"
+            android:onClick="@{v -> viewModel.onSaveNoteButtonClicked()}"
+            android:text="@string/save"/>
+
+    </LinearLayout>
+</layout>
