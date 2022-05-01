@@ -1,4 +1,4 @@
-package ru.kudasheva.noteskeeper.ui;
+package ru.kudasheva.noteskeeper.createnote;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModelProviders;
 
 import ru.kudasheva.noteskeeper.R;
 import ru.kudasheva.noteskeeper.databinding.ActivityNoteCreateBinding;
-import ru.kudasheva.noteskeeper.databinding.DialogBoxBinding;
 
 
 public class CreateNoteActivity extends AppCompatActivity {

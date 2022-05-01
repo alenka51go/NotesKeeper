@@ -4,7 +4,7 @@
     <data>
         <variable
             name="viewModel"
-            type="ru.kudasheva.noteskeeper.ui.CreateNoteViewModel" />
+            type="ru.kudasheva.noteskeeper.createnote.CreateNoteViewModel" />
     </data>
 
     <LinearLayout

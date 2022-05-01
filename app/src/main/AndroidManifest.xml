@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NotesKeeper">
         <activity
-            android:name=".ui.FriendsActivity"
+            android:name=".friends.FriendsActivity"
             android:exported="false" />
         <activity
             android:name=".notebrowse.NoteBrowseActivity"
@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.CreateNoteActivity"
+            android:name=".createnote.CreateNoteActivity"
             android:exported="false"
             android:label="@string/new_note"
             android:windowSoftInputMode="adjustPan">

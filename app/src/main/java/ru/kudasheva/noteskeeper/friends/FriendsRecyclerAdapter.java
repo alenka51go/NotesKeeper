@@ -1,4 +1,4 @@
-package ru.kudasheva.noteskeeper.ui;
+package ru.kudasheva.noteskeeper.friends;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -13,22 +14,23 @@ import java.util.Collection;
 import java.util.List;
 
 import ru.kudasheva.noteskeeper.R;
+import ru.kudasheva.noteskeeper.databinding.FriendInfoBinding;
 
 public class FriendsRecyclerAdapter extends RecyclerView.Adapter<FriendsRecyclerAdapter.FriendViewHolder> {
-    private final List<FriendInfoCard> friends = new ArrayList<>();
-
+    private List<FriendInfoCard> friends = new ArrayList<>();
 
     @NonNull
     @Override
     public FriendsRecyclerAdapter.FriendViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.friend_info, parent, false);
-        return new FriendsRecyclerAdapter.FriendViewHolder(view);
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        FriendInfoBinding binding = FriendInfoBinding.inflate(inflater, parent, false);
+        return new FriendViewHolder(binding.getRoot());
     }
 
     @Override
     public void onBindViewHolder(@NonNull FriendsRecyclerAdapter.FriendViewHolder holder, int position) {
-        holder.bind(friends.get(position));
+        FriendInfoCard friend = friends.get(position);
+        holder.binding.setFriendInfo(friend);
     }
 
     @Override
@@ -37,25 +39,16 @@ public class FriendsRecyclerAdapter extends RecyclerView.Adapter<FriendsRecycler
     }
 
     public void setItems(Collection<FriendInfoCard> notes) {
-        friends.addAll(notes);
-        notifyDataSetChanged();
-    }
-
-    public void clearItems() {
-        friends.clear();
+        friends = (List<FriendInfoCard>) notes;
         notifyDataSetChanged();
     }
 
     static class FriendViewHolder extends RecyclerView.ViewHolder {
-        private final TextView name;
+        FriendInfoBinding binding;
 
         public FriendViewHolder(@NonNull View itemView) {
             super(itemView);
-            name = itemView.findViewById(R.id.text_friend_name);
-        }
-
-        public void bind(FriendInfoCard friendInfoCard) {
-            name.setText(friendInfoCard.getName());
+            binding = DataBindingUtil.bind(itemView);
         }
     }
 }

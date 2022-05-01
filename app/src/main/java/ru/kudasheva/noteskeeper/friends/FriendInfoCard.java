@@ -1,4 +1,4 @@
-package ru.kudasheva.noteskeeper.ui;
+package ru.kudasheva.noteskeeper.friends;
 
 import java.util.Objects;
 

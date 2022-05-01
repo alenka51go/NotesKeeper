@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import ru.kudasheva.noteskeeper.notebrowse.CommentInfoCard;
-import ru.kudasheva.noteskeeper.ui.FriendInfoCard;
+import ru.kudasheva.noteskeeper.friends.FriendInfoCard;
 import ru.kudasheva.noteskeeper.notebrowse.InfoCard;
 import ru.kudasheva.noteskeeper.notebrowse.NoteFullCard;
 import ru.kudasheva.noteskeeper.notescroll.NoteShortCard;
@@ -34,12 +34,10 @@ public class StubDataRepository implements DataRepository {
     }
 
     @Override
-    public List<FriendInfoCard> addNewFriend(FriendInfoCard infoCard) {
-        if (stubFriendsInfoCard.contains(infoCard)) {
-            return null;
+    public void addNewFriend(FriendInfoCard infoCard) {
+        if (!stubFriendsInfoCard.contains(infoCard)) {
+            stubFriendsInfoCard.add(infoCard);
         }
-        stubFriendsInfoCard.add(infoCard);
-        return stubFriendsInfoCard;
     }
 
     @Override
@@ -75,7 +73,7 @@ public class StubDataRepository implements DataRepository {
         return stubCommentInfoCards;
     }
 
-    private final List<FriendInfoCard> stubFriendsInfoCard = Arrays.asList(
+    private final List<FriendInfoCard> stubFriendsInfoCard = new ArrayList<>(Arrays.asList(
             new FriendInfoCard("Bob"),
             new FriendInfoCard("Alice"),
             new FriendInfoCard("Ron"),
@@ -85,7 +83,7 @@ public class StubDataRepository implements DataRepository {
             new FriendInfoCard("Dobby"),
             new FriendInfoCard("Volodia"),
             new FriendInfoCard("Lyona")
-    );
+    ));
 
     private final List<NoteShortCard> stubNoteShortCards = Arrays.asList(
             new NoteShortCard("First note", "10.01.22"),

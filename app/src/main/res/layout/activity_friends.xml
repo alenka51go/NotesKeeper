@@ -1,49 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_weight="100">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <RelativeLayout
+    <data>
+        <variable
+            name="viewModel"
+            type="ru.kudasheva.noteskeeper.friends.FriendsViewModel" />
+    </data>
+
+    <LinearLayout
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="10"
-        android:orientation="horizontal"
-        android:background="@drawable/background_friend">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/text_friend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_centerInParent="true"
-            android:layout_marginHorizontal="10dp"
-            android:layout_toStartOf="@+id/button_find_friends"
-            android:text="@string/friends"
-            android:textColor="@color/dark"
-            android:textSize="30sp">
-        </TextView>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="10"
+            android:background="@drawable/background_friend"
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/button_find_friends"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerInParent="true"
-            android:text="@string/find_friend"
-            android:layout_marginHorizontal="10dp">
-        </Button>
+            <TextView
+                android:id="@+id/text_friend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerInParent="true"
+                android:layout_marginHorizontal="10dp"
+                android:layout_toStartOf="@+id/button_find_friends"
+                android:text="@string/friends"
+                android:textColor="@color/dark"
+                android:textSize="30sp"/>
 
-    </RelativeLayout>
+            <Button
+                android:id="@+id/button_find_friends"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:layout_marginHorizontal="10dp"
+                android:onClick="@{v -> viewModel.onFindFriendsButtonClicked()}"
+                android:text="@string/find_friend"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_list_of_friends"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="90"
-        tools:listitem="@layout/friend_info">
-    </androidx.recyclerview.widget.RecyclerView>
+        </RelativeLayout>
 
-</LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_list_of_friends"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="90"
+            tools:listitem="@layout/friend_info"/>
+
+    </LinearLayout>
+</layout>

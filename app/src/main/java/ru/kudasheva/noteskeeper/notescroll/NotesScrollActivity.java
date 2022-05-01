@@ -16,8 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import ru.kudasheva.noteskeeper.R;
 import ru.kudasheva.noteskeeper.databinding.ActivityNotesScrollBinding;
 import ru.kudasheva.noteskeeper.login.LoginActivity;
-import ru.kudasheva.noteskeeper.ui.CreateNoteActivity;
-import ru.kudasheva.noteskeeper.ui.FriendsActivity;
+import ru.kudasheva.noteskeeper.createnote.CreateNoteActivity;
+import ru.kudasheva.noteskeeper.friends.FriendsActivity;
 import ru.kudasheva.noteskeeper.notebrowse.NoteBrowseActivity;
 
 public class NotesScrollActivity extends AppCompatActivity {

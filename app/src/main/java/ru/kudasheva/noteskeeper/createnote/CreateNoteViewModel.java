@@ -1,8 +1,5 @@
-package ru.kudasheva.noteskeeper.ui;
+package ru.kudasheva.noteskeeper.createnote;
 
-import android.os.Build;
-
-import androidx.annotation.RequiresApi;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -17,6 +14,7 @@ import java.util.Locale;
 import ru.kudasheva.noteskeeper.MyApplication;
 import ru.kudasheva.noteskeeper.data.DataRepository;
 import ru.kudasheva.noteskeeper.data.NoteData;
+import ru.kudasheva.noteskeeper.friends.FriendInfoCard;
 
 public class CreateNoteViewModel extends ViewModel {
     private final DataRepository dataRepo = MyApplication.getDataRepo();
