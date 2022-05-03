@@ -1,11 +1,15 @@
+/*
 package ru.kudasheva.noteskeeper.data;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
+import ru.kudasheva.noteskeeper.data.models.Note;
 import ru.kudasheva.noteskeeper.notebrowse.CommentInfoCard;
 import ru.kudasheva.noteskeeper.friends.FriendInfoCard;
 import ru.kudasheva.noteskeeper.notebrowse.InfoCard;
@@ -16,6 +20,16 @@ public class StubDataRepository implements DataRepository {
     private static final String TAG = StubDataRepository.class.getSimpleName();
 
     private String username = "";
+
+    @Override
+    public void initDatabase(Context context, String username) {
+
+    }
+
+    @Override
+    public void closeDatabase() {
+
+    }
 
     @Override
     public boolean checkIfUserExist(String name) {
@@ -29,7 +43,7 @@ public class StubDataRepository implements DataRepository {
     }
 
     @Override
-    public boolean signUpNewUser(String userName) {
+    public boolean signUpNewUser(String username) {
         return true;
     }
 
@@ -49,8 +63,13 @@ public class StubDataRepository implements DataRepository {
     }
 
     @Override
-    public void addNote(NoteData info) {
+    public void addNote(Map<String, Object> info) {
 
+    }
+
+    @Override
+    public List<Note> getAllNotes() {
+        return null;
     }
 
     @Override
@@ -118,3 +137,4 @@ public class StubDataRepository implements DataRepository {
             "Alena Kudasheva",
             "12.12.12");
 }
+*/

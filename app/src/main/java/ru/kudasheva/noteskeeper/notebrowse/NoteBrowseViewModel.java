@@ -10,17 +10,22 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import ru.kudasheva.noteskeeper.MyApplication;
 import ru.kudasheva.noteskeeper.data.DataRepository;
+import ru.kudasheva.noteskeeper.data.models.Comment;
+import ru.kudasheva.noteskeeper.data.models.Note;
 
 public class NoteBrowseViewModel  extends ViewModel {
     private static final String TAG = NoteBrowseViewModel.class.getSimpleName();
 
     private final DataRepository dataRepo = MyApplication.getDataRepo();
     private final String username = dataRepo.getUsername();
+    private String noteId;
 
     public String title;
 
@@ -33,8 +38,12 @@ public class NoteBrowseViewModel  extends ViewModel {
         Log.d(TAG, userCommentLiveData.getValue());
         Log.d(TAG, getCurrentDate());
 
-        CommentInfoCard comment = new CommentInfoCard(userCommentLiveData.getValue(), username, getCurrentDate());
-        dataRepo.addComment(comment);
+        Map<String, Object> commentInfo = new HashMap<>();
+        commentInfo.put("username", username);
+        commentInfo.put("text", userCommentLiveData.getValue());
+        commentInfo.put("date", getCurrentDate());
+
+        dataRepo.addComment(noteId, commentInfo);
         noteAndComments.setValue(updateNoteAndCommentsList());
 
         // TODO разобраться почему не отображается очищение, хотя под капотом есть очищение
@@ -42,8 +51,21 @@ public class NoteBrowseViewModel  extends ViewModel {
     }
 
     private List<InfoCard> updateNoteAndCommentsList() {
-        List<InfoCard> noteList = new ArrayList<>(Collections.singletonList(dataRepo.getNoteFullCard(title)));
-        List<InfoCard> commentsList = dataRepo.getListOfCommentInfoCard();
+
+        Note note = dataRepo.getNoteById(noteId);
+        title = note.getTitle();
+
+        NoteFullCard noteFullCard = new NoteFullCard(noteId, note.getText(), note.getUsername(), note.getDate());
+        List<InfoCard> noteList = new ArrayList<>(Collections.singletonList(noteFullCard));
+
+        List<InfoCard> commentsList = new ArrayList<>();
+        List<Comment> rawComments = note.getComments();
+        for (Comment comment : rawComments) {
+            CommentInfoCard commentInfoCard = new CommentInfoCard(comment.getText(),
+                    comment.getUsername(), comment.getDate());
+            commentsList.add(commentInfoCard);
+        }
+
         noteList.addAll(commentsList);
         return noteList;
     }
@@ -59,12 +81,12 @@ public class NoteBrowseViewModel  extends ViewModel {
     }
 
     public void deleteNote() {
-        /// TODO
+        // TODO
         activityCommand.setValue(Commands.CLOSE_ACTIVITY);
     }
 
-    public void loadNoteInfo(String title) {
-        this.title = title;
+    public void loadNoteInfo(String noteId) {
+        this.noteId = noteId;
         noteAndComments.setValue(updateNoteAndCommentsList());
     }
 

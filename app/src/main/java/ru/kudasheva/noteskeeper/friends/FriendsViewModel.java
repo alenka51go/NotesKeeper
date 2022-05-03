@@ -3,6 +3,7 @@ package ru.kudasheva.noteskeeper.friends;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ru.kudasheva.noteskeeper.MyApplication;
@@ -22,7 +23,7 @@ public class FriendsViewModel extends ViewModel {
 
     public boolean checkIfUserExist(String username) {
         if (dataRepo.checkIfUserExist(username)) {
-            dataRepo.addNewFriend(new FriendInfoCard(username));
+            dataRepo.addNewFriend(username);
             friends.setValue(loadFriends());
             return true;
         } else {
@@ -32,7 +33,18 @@ public class FriendsViewModel extends ViewModel {
     }
 
     private List<FriendInfoCard> loadFriends() {
-        return dataRepo.getListOfFriendInfoCards();
+        List<FriendInfoCard> friendInfoCards = new ArrayList<>();
+        List<String> rawFriends = dataRepo.getFriends();
+
+        if (rawFriends != null) {
+            for (String friendInfo : rawFriends) {
+                FriendInfoCard friendInfoCard = new FriendInfoCard(friendInfo);
+                friendInfoCards.add(friendInfoCard);
+            }
+        }
+
+
+        return friendInfoCards;
     }
 
     enum Commands {

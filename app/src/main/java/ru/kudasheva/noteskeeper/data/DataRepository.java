@@ -1,25 +1,25 @@
 package ru.kudasheva.noteskeeper.data;
 
-import java.util.List;
+import android.content.Context;
 
-import ru.kudasheva.noteskeeper.notebrowse.CommentInfoCard;
-import ru.kudasheva.noteskeeper.friends.FriendInfoCard;
-import ru.kudasheva.noteskeeper.notebrowse.InfoCard;
-import ru.kudasheva.noteskeeper.notebrowse.NoteFullCard;
-import ru.kudasheva.noteskeeper.notescroll.NoteShortCard;
+import java.util.List;
+import java.util.Map;
+
+import ru.kudasheva.noteskeeper.data.models.Note;
 
 public interface DataRepository{
-    boolean checkIfUserExist(String name);
-    String getUsername();
+    public void initDatabase(Context context, String username);
+    public void closeDatabase();
 
-    boolean signUpNewUser(String userName);
-    void addNewFriend(FriendInfoCard infoCard);
-    void addComment(CommentInfoCard info);
-    void addNote(NoteData info);
+    public String getUsername();
+    public Note getNoteById(String docId);
+    public List<Note> getAllNotes();
+    public List<String> getFriends();
 
-    NoteFullCard getNoteFullCard(String title);
+    public boolean checkIfUserExist(String name);
 
-    List<NoteShortCard> getListOfNoteShortCard();
-    List<FriendInfoCard> getListOfFriendInfoCards();
-    List<InfoCard> getListOfCommentInfoCard();
+    public void addNote(Map<String, Object> info);
+    public boolean addNewFriend(String friendName);
+    public boolean addComment(String docId, Map<String, Object> info);
+
 }

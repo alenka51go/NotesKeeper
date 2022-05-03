@@ -25,8 +25,7 @@ public class NoteBrowseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         noteBrowseViewModel = ViewModelProviders.of(this).get(NoteBrowseViewModel.class);
-        // скорее всего лучше будет использовать id, чтобы подгружать заметки
-        noteBrowseViewModel.loadNoteInfo(getIntent().getExtras().getString("Title"));
+        noteBrowseViewModel.loadNoteInfo(getIntent().getExtras().getString("Id"));
         binding = DataBindingUtil.setContentView(this, R.layout.activity_note_browse);
         binding.setViewModel(noteBrowseViewModel);
         setRecyclerView();

@@ -71,16 +71,6 @@
                 android:layout_marginTop="5dp"
                 android:text="@string/log_in"/>
 
-            <Button
-                android:id="@+id/sign_up_button"
-                android:onClick="@{viewModel::onSignUpClicked}"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginHorizontal="35dp"
-                android:layout_marginBottom="20dp"
-                android:text="@string/are_you_new_here"/>
         </RelativeLayout>
 
     </LinearLayout>

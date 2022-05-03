@@ -1,6 +1,6 @@
 package ru.kudasheva.noteskeeper.login;
 
-import android.view.View;
+import android.content.Context;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -20,30 +20,23 @@ public class LoginViewModel extends ViewModel {
     public void onLogInClicked() {
         String username = userNameLiveData.getValue();
 
-        if (dataRepo.checkIfUserExist(username)) {
+        // TODO сделать проверку на существование пользователя в базе
+        /*if (dataRepo.checkIfUserExist(username)) {
+            dataRepo.initDatabase(MyApplication.getAppContext(), username);
             activityCommand.postValue(Commands.OPEN_NOTE_SCROLL_ACTIVITY);
         } else {
             snackBarMessage.setValue(username + " doesn't exist!");
-        }
+        }*/
+
+        dataRepo.initDatabase(MyApplication.getAppContext(), username);
+        activityCommand.postValue(Commands.OPEN_NOTE_SCROLL_ACTIVITY);
     }
 
-    public void onSignUpClicked(View view) {
-        activityCommand.setValue(Commands.OPEN_DIALOG);
-    }
-
-    public boolean checkPossibilityOfAdditionNewUser(String newUsername) {
-        if (dataRepo.signUpNewUser(newUsername)) {
-            activityCommand.setValue(Commands.CLOSE_DIALOG);
-            return true;
-        } else {
-            snackBarMessage.setValue(newUsername + " already exist!");
-            return false;
-        }
+    public void setApplicationContext(Context applicationContext) {
+        MyApplication.setAppContext(applicationContext);
     }
 
     public enum Commands {
-        OPEN_NOTE_SCROLL_ACTIVITY,
-        OPEN_DIALOG,
-        CLOSE_DIALOG
+        OPEN_NOTE_SCROLL_ACTIVITY
     }
 }

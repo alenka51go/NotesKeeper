@@ -1,7 +1,5 @@
 package ru.kudasheva.noteskeeper.login;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -12,7 +10,6 @@ import androidx.lifecycle.ViewModelProviders;
 
 import ru.kudasheva.noteskeeper.R;
 import ru.kudasheva.noteskeeper.databinding.ActivityLoginBinding;
-import ru.kudasheva.noteskeeper.databinding.DialogBoxBinding;
 import ru.kudasheva.noteskeeper.notescroll.NotesScrollActivity;
 
 public class LoginActivity extends AppCompatActivity {
@@ -26,6 +23,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
+        loginViewModel.setApplicationContext(getApplicationContext());
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
         binding.setViewModel(loginViewModel);
 
@@ -39,34 +37,10 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
 
                 finish();
-            } else if (activityCode == LoginViewModel.Commands.OPEN_DIALOG) {
-                setDialogActivity();
             }
         });
 
         loginViewModel.snackBarMessage.observe(this, this::showErrorMessage);
-    }
-
-    void setDialogActivity() {
-        DialogBoxBinding dialogBoxBinding = DialogBoxBinding.inflate(getLayoutInflater());
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
-        AlertDialog dialog = alertDialogBuilder
-                .setView(dialogBoxBinding.getRoot())
-                .setCancelable(false)
-                .setPositiveButton(R.string.register_now, null)
-                .setNeutralButton(android.R.string.cancel, (dialog_, which) -> {})
-                .create();
-
-        dialog.setOnShowListener(dialogInterface -> {
-            dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener((view) -> {
-                String text = dialogBoxBinding.textBox.getText().toString();
-                if (loginViewModel.checkPossibilityOfAdditionNewUser(text)) {
-                    dialog.dismiss();
-                }
-            });
-        });
-
-        dialog.show();
     }
 
     private void showErrorMessage(String errorMessage) {

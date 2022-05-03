@@ -8,12 +8,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import ru.kudasheva.noteskeeper.MyApplication;
 import ru.kudasheva.noteskeeper.data.DataRepository;
-import ru.kudasheva.noteskeeper.data.NoteData;
 import ru.kudasheva.noteskeeper.friends.FriendInfoCard;
 
 public class CreateNoteViewModel extends ViewModel {
@@ -34,13 +35,30 @@ public class CreateNoteViewModel extends ViewModel {
     }
 
     public void onSaveNoteButtonClicked() {
-        NoteData note = new NoteData(username, title, noteBody, getCurrentDate(), selectedFriends);
-        dataRepo.addNote(note);
+        Map<String, Object> noteInfo = new HashMap<>();
+        noteInfo.put("username", username);
+        noteInfo.put("title", title);
+        noteInfo.put("text", noteBody);
+        noteInfo.put("date", getCurrentDate());
+        noteInfo.put("friends", selectedFriends);
+        noteInfo.put("comments", new ArrayList<>());
+
+        dataRepo.addNote(noteInfo);
         activityCommand.setValue(Commands.CLOSE_ACTIVITY);
     }
 
     private String[] getContacts() {
-        List<FriendInfoCard> friendsInfo = dataRepo.getListOfFriendInfoCards();
+        List<FriendInfoCard> friendsInfo = new ArrayList<>();
+        List<String> rawFriends = dataRepo.getFriends();
+
+        if (rawFriends != null) {
+            for (String friendInfo : rawFriends) {
+                FriendInfoCard friendInfoCard = new FriendInfoCard(friendInfo);
+                friendsInfo.add(friendInfoCard);
+            }
+        }
+
+
         String[] friendsNames = new String[friendsInfo.size()];
 
         for (int i = 0; i < friendsInfo.size(); i++) {

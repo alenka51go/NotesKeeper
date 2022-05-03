@@ -61,9 +61,8 @@ public class NotesScrollActivity extends AppCompatActivity {
                 startActivity(intent);
 
             } else if (activityCode == NotesScrollViewModel.Commands.OPEN_BROWSE_NOTE_ACTIVITY) {
-                // скорее всего сюда стоит предавать какой-нибудь id заметки, чтобы потом NoteBrowseVM смогла ее загрузить
                 Intent intent = new Intent(NotesScrollActivity.this, NoteBrowseActivity.class);
-                intent.putExtra("Title", notesScrollViewModel.noteToShow.header);
+                intent.putExtra("Id", notesScrollViewModel.noteToShow.id);
                 startActivity(intent);
 
             } else if (activityCode == NotesScrollViewModel.Commands.OPEN_MENU) {

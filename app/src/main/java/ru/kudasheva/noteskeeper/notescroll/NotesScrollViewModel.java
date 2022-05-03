@@ -3,23 +3,35 @@ package ru.kudasheva.noteskeeper.notescroll;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ru.kudasheva.noteskeeper.MyApplication;
 import ru.kudasheva.noteskeeper.data.DataRepository;
+import ru.kudasheva.noteskeeper.data.models.Note;
 
 public class NotesScrollViewModel extends ViewModel {
     private final DataRepository dataRepo = MyApplication.getDataRepo();
+    private boolean isMenuOpen = false;
 
     public String username = dataRepo.getUsername();
-    private boolean isMenuOpen = false;
 
     public MutableLiveData<List<NoteShortCard>> notes = new MutableLiveData<>(loadShortNodes());
     public MutableLiveData<NotesScrollViewModel.Commands> activityCommand = new MutableLiveData<>();
     public NoteShortCard noteToShow;
 
     public List<NoteShortCard> loadShortNodes() {
-        return dataRepo.getListOfNoteShortCard();
+        List<Note> rawNotes = dataRepo.getAllNotes();
+        List<NoteShortCard> shortNotes = new ArrayList<>();
+
+        if (rawNotes != null) {
+            for (Note rawNote : rawNotes) {
+                NoteShortCard shortNote = new NoteShortCard(rawNote.getId(), rawNote.getTitle(), rawNote.getDate());
+                shortNotes.add(shortNote);
+            }
+        }
+
+        return shortNotes;
     }
 
     public void onCreateNoteButtonClicked() {
@@ -31,6 +43,7 @@ public class NotesScrollViewModel extends ViewModel {
     }
 
     public void onChangeUserButtonClicked() {
+        dataRepo.closeDatabase();
         activityCommand.setValue(Commands.OPEN_LOGIN_ACTIVITY);
     }
 
@@ -51,13 +64,11 @@ public class NotesScrollViewModel extends ViewModel {
     }
 
     public void clickedOnNote(NoteShortCard note) {
-        // TODO load note somewhere
         noteToShow = note;
         activityCommand.setValue(Commands.OPEN_BROWSE_NOTE_ACTIVITY);
     }
 
     public void onResume() {
-        // подгружаем заметки пользователя
         notes.setValue(loadShortNodes());
     }
 
