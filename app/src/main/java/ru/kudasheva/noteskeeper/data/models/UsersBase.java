@@ -2,16 +2,22 @@ package ru.kudasheva.noteskeeper.data.models;
 
 import java.util.List;
 
-public class Users {
+public class UsersBase {
     private String id;
     private String rev;
-    private List<String> usernames;
+    private List<User> usernames;
 
     public boolean contains(String username) {
         if (username == null) {
             return false;
         }
-        return usernames.contains(username);
+        // TODO тут возможно будет проходить какая-то другая проверка?
+        for (User user : usernames) {
+            if (user.getUsername().equals(username)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public String getId () {
@@ -22,7 +28,7 @@ public class Users {
         return rev;
     }
 
-    public List<String> getAllUsers() {
+    public List<User> getAllUsers() {
         return usernames;
     }
 }

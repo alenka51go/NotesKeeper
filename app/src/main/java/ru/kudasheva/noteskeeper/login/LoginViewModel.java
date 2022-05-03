@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 import ru.kudasheva.noteskeeper.MyApplication;
 import ru.kudasheva.noteskeeper.data.DataRepository;
 import ru.kudasheva.noteskeeper.data.SingleLiveEvent;
+import ru.kudasheva.noteskeeper.data.models.User;
 
 public class LoginViewModel extends ViewModel {
     private static final String TAG = LoginViewModel.class.getSimpleName();
@@ -15,17 +16,25 @@ public class LoginViewModel extends ViewModel {
 
     public SingleLiveEvent<String> snackBarMessage = new SingleLiveEvent<>();
     public MutableLiveData<Commands> activityCommand = new MutableLiveData<>();
-    public MutableLiveData<String> userNameLiveData = new MutableLiveData<>();
+    public MutableLiveData<String> firstname = new MutableLiveData<>();
+    public MutableLiveData<String> lastname = new MutableLiveData<>();
 
     public void onLogInClicked() {
-        String username = userNameLiveData.getValue();
+        String firstnameValue = firstname.getValue();
+        String lastnameValue = lastname.getValue();
 
-        if (username == null || username.isEmpty()) {
-            snackBarMessage.setValue("Enter username");
+        if (firstnameValue == null || firstnameValue.isEmpty()) {
+            snackBarMessage.setValue("Enter first name");
             return;
         }
 
-        // TODO сделать проверку на существование пользователя в базе
+        String username = firstnameValue;
+
+        if (lastnameValue != null && !lastnameValue.isEmpty()) {
+            username += ' ' + lastnameValue;
+        }
+
+        // FIXME сделать проверку на существование пользователя в базе, видимо?
         /*if (dataRepo.checkIfUserExist(username)) {
             dataRepo.initDatabase(MyApplication.getAppContext(), username);
             activityCommand.postValue(Commands.OPEN_NOTE_SCROLL_ACTIVITY);
@@ -33,7 +42,9 @@ public class LoginViewModel extends ViewModel {
             snackBarMessage.setValue(username + " doesn't exist!");
         }*/
 
-        dataRepo.initDatabase(MyApplication.getAppContext(), username);
+        User user = new User(username);
+
+        dataRepo.initDatabase(MyApplication.getAppContext(), user);
         activityCommand.postValue(Commands.OPEN_NOTE_SCROLL_ACTIVITY);
     }
 

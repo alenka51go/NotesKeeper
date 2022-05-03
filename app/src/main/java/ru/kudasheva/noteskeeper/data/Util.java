@@ -12,7 +12,7 @@ import java.util.Set;
 
 import ru.kudasheva.noteskeeper.data.models.Friends;
 import ru.kudasheva.noteskeeper.data.models.Note;
-import ru.kudasheva.noteskeeper.data.models.Users;
+import ru.kudasheva.noteskeeper.data.models.UsersBase;
 
 public class Util {
     public static String TAG = RemoteDataRepository.class.getSimpleName();
@@ -43,11 +43,11 @@ public class Util {
         return note;
     }
 
-    public static Users convertUsers(String json) {
+    public static UsersBase convertUsers(String json) {
         ObjectMapper objectMapper = new ObjectMapper();
-        Users users = null;
+        UsersBase users = null;
         try {
-            users = objectMapper.readValue(json, Users.class);
+            users = objectMapper.readValue(json, UsersBase.class);
         } catch (JsonProcessingException e) {
             Log.d(TAG, e.getMessage());
         }

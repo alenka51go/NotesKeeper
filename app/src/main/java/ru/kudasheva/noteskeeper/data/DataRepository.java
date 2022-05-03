@@ -6,9 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 import ru.kudasheva.noteskeeper.data.models.Note;
+import ru.kudasheva.noteskeeper.data.models.User;
 
 public interface DataRepository{
-    public void initDatabase(Context context, String username);
+    public void initDatabase(Context context, User user);
     public void closeDatabase();
 
     public String getUsername();

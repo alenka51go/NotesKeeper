@@ -38,38 +38,55 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="15">
+            android:layout_weight="25">
 
             <EditText
-                android:id="@+id/login_enter_box"
+                android:id="@+id/login_firstname_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/login_lastname_box"
+                android:layout_centerInParent="true"
+                android:layout_marginHorizontal="35dp"
+                android:layout_marginBottom="67dp"
+                android:autofillHints="@string/firstname"
+                android:background="@drawable/background_corner_input_box"
+                android:hint="@string/firstname"
+                android:inputType="textPersonName"
+                android:text="@={viewModel.firstname}"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/login_lastname_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
+
                 android:layout_centerInParent="true"
                 android:layout_marginHorizontal="35dp"
-                android:autofillHints="@string/enter_name"
+                android:autofillHints="@string/lastname"
                 android:background="@drawable/background_corner_input_box"
-                android:hint="@string/user_login"
+                android:hint="@string/lastname"
                 android:inputType="textPersonName"
-                android:text="@={viewModel.userNameLiveData}"
-                android:textSize="20sp"/>
+                android:text="@={viewModel.lastname}"
+                android:textSize="20sp" />
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center"
-            android:layout_weight="35">
+            android:layout_weight="25">
 
             <Button
                 android:id="@+id/log_in_button"
-                android:onClickListener="@{(v) -> viewModel.onLogInClicked()}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
                 android:layout_marginHorizontal="35dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="30dp"
                 android:layout_marginTop="5dp"
-                android:text="@string/log_in"/>
+                android:onClickListener="@{(v) -> viewModel.onLogInClicked()}"
+                android:text="@string/log_in" />
 
         </RelativeLayout>
 

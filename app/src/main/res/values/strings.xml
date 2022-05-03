@@ -16,6 +16,8 @@
     <string name="new_note">New note</string>
     <string name="enter_name">Enter name</string>
     <string name="log_in">Log in!</string>
+    <string name="firstname">First name</string>
+    <string name="lastname">Last name</string>
     <string name="note_img">Note img</string>
     <string name="app_name_with_carry">Notes\n keeper</string>
     <string name="delete_note">Delete note</string>

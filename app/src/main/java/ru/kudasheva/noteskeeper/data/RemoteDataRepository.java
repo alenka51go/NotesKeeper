@@ -24,16 +24,17 @@ import java.util.Map;
 
 import ru.kudasheva.noteskeeper.data.models.Friends;
 import ru.kudasheva.noteskeeper.data.models.Note;
-import ru.kudasheva.noteskeeper.data.models.Users;
+import ru.kudasheva.noteskeeper.data.models.User;
+import ru.kudasheva.noteskeeper.data.models.UsersBase;
 
 public class RemoteDataRepository implements DataRepository {
     private final static String TAG = RemoteDataRepository.class.getSimpleName();
 
     @Override
-    public void initDatabase(Context context, String username) {
+    public void initDatabase(Context context, User user) {
         DatabaseManager dbManager = DatabaseManager.getSharedInstance();
         dbManager.initCouchbaseLite(context);
-        dbManager.openOrCreateDatabaseForUser(context, username);
+        dbManager.openOrCreateDatabaseForUser(context, user);
     }
 
     @Override
@@ -134,7 +135,7 @@ public class RemoteDataRepository implements DataRepository {
     public List<Note> getAllNotes() {
         Database database = DatabaseManager.getDatabase();
         List<Note> noteList = new ArrayList<>();
-        
+
         // создаем запрос, чтобы собрать все заметки, которые лежат в базе пользователя
         Query query = QueryBuilder
                 .select(SelectResult.expression(Meta.id),
@@ -174,7 +175,7 @@ public class RemoteDataRepository implements DataRepository {
             return false;
         }
 
-        Users users = Util.convertUsers(doc.toJSON());
+        UsersBase users = Util.convertUsers(doc.toJSON());
         return users.contains(name);
     }
 
@@ -200,7 +201,7 @@ public class RemoteDataRepository implements DataRepository {
 
     @Override
     public String getUsername() {
-        return DatabaseManager.getSharedInstance().getCurrentUser();
+        return DatabaseManager.getSharedInstance().getCurrentUsername();
     }
 
     @Override

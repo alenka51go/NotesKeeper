@@ -10,6 +10,8 @@ import com.couchbase.lite.DatabaseConfiguration;
 import com.couchbase.lite.Document;
 import com.couchbase.lite.ListenerToken;
 
+import ru.kudasheva.noteskeeper.data.models.User;
+
 public class DatabaseManager {
     private final static String TAG = DatabaseManager.class.getSimpleName();
     private final static String dbName = "noteskeeper";
@@ -18,7 +20,7 @@ public class DatabaseManager {
     private static DatabaseManager instance;
 
     private ListenerToken listenerToken;
-    private String currentUser;
+    private User currentUser;
 
     public static DatabaseManager getSharedInstance() {
         if (instance == null) {
@@ -33,24 +35,25 @@ public class DatabaseManager {
         return database;
     }
 
-    public String getCurrentUser() {
-        return currentUser;
+    public String getCurrentUsername() {
+        return currentUser.getUsername();
     }
 
     public void initCouchbaseLite(Context context) {
         CouchbaseLite.init(context);
     }
 
-    public void openOrCreateDatabaseForUser(Context context, String username) {
+    public void openOrCreateDatabaseForUser(Context context, User user) {
         DatabaseConfiguration config = new DatabaseConfiguration();
         config.setDirectory(String.format("%s/%s", context.getFilesDir(), "user"));
 
         try {
             database = new Database(dbName, config);
             registerForDataBaseChanges();
-            currentUser = username;
+            // TODO тут видемо будет проиходить загузка документа пользователя из базы
+            currentUser = user;
 
-            Log.d(TAG, "Database for user " + username + " was created or opened");
+            Log.d(TAG, "Database for user " + user.getUsername() + " was created or opened");
         } catch (CouchbaseLiteException e) {
             e.printStackTrace();
         }
