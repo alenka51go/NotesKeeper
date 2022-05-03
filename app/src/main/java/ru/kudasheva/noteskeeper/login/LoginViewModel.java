@@ -20,6 +20,11 @@ public class LoginViewModel extends ViewModel {
     public void onLogInClicked() {
         String username = userNameLiveData.getValue();
 
+        if (username == null || username.isEmpty()) {
+            snackBarMessage.setValue("Enter username");
+            return;
+        }
+
         // TODO сделать проверку на существование пользователя в базе
         /*if (dataRepo.checkIfUserExist(username)) {
             dataRepo.initDatabase(MyApplication.getAppContext(), username);

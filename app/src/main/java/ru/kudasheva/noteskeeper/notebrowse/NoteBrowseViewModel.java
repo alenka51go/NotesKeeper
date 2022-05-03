@@ -27,11 +27,10 @@ public class NoteBrowseViewModel  extends ViewModel {
     private final DataRepository dataRepo = MyApplication.getDataRepo();
     private final String username = dataRepo.getUsername();
     private String noteId;
-
     public String title;
 
     public SingleLiveEvent<String> snackBarMessage = new SingleLiveEvent<>();
-    public MutableLiveData<List<InfoCard>> noteAndComments = new MutableLiveData<>();
+    public MutableLiveData<List<InfoCard>> dataContainer = new MutableLiveData<>();
     public MutableLiveData<String> userCommentLiveData = new MutableLiveData<>();
     public MutableLiveData<NoteBrowseViewModel.Commands> activityCommand = new MutableLiveData<>();
 
@@ -54,16 +53,14 @@ public class NoteBrowseViewModel  extends ViewModel {
         if (!dataRepo.addComment(noteId, commentInfo)) {
             Log.d(TAG, "Can't add comment");
         }
-        noteAndComments.setValue(updateNoteAndCommentsList());
+        dataContainer.setValue(updateData());
 
         // TODO разобраться почему не отображается очищение, хотя под капотом есть очищение
         userCommentLiveData.setValue("");
     }
 
-    private List<InfoCard> updateNoteAndCommentsList() {
-
+    private List<InfoCard> updateData() {
         Note note = dataRepo.getNoteById(noteId);
-        title = note.getTitle();
 
         NoteFullCard noteFullCard = new NoteFullCard(noteId, note.getText(), note.getUsername(), note.getDate());
         List<InfoCard> noteList = new ArrayList<>(Collections.singletonList(noteFullCard));
@@ -97,13 +94,22 @@ public class NoteBrowseViewModel  extends ViewModel {
         activityCommand.setValue(Commands.CLOSE_ACTIVITY);
     }
 
-    public void loadNoteInfo(String noteId) {
-        this.noteId = noteId;
-        noteAndComments.setValue(updateNoteAndCommentsList());
+    public void preloadData(String id) {
+        noteId = id;
+
+        dataContainer.setValue(updateData());
+
+        Note note = dataRepo.getNoteById(noteId);
+        title = note.getTitle();
+
+        if (!note.getUsername().equals(username)) {
+            activityCommand.setValue(Commands.REMOVE_ACTION_BUTTON);
+        }
     }
 
     enum Commands {
         SHOW_MENU,
-        CLOSE_ACTIVITY
+        CLOSE_ACTIVITY,
+        REMOVE_ACTION_BUTTON
     }
 }

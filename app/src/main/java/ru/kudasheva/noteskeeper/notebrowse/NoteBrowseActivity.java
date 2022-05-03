@@ -2,6 +2,7 @@ package ru.kudasheva.noteskeeper.notebrowse;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
@@ -26,7 +27,7 @@ public class NoteBrowseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         noteBrowseViewModel = ViewModelProviders.of(this).get(NoteBrowseViewModel.class);
-        noteBrowseViewModel.loadNoteInfo(getIntent().getExtras().getString("Id"));
+        noteBrowseViewModel.preloadData(getIntent().getExtras().getString("Id"));
         binding = DataBindingUtil.setContentView(this, R.layout.activity_note_browse);
         binding.setViewModel(noteBrowseViewModel);
         setRecyclerView();
@@ -35,7 +36,7 @@ public class NoteBrowseActivity extends AppCompatActivity {
     }
 
     private void observeLiveData() {
-        noteBrowseViewModel.noteAndComments.observe(this, listOfNoteAndComments -> {
+        noteBrowseViewModel.dataContainer.observe(this, listOfNoteAndComments -> {
             adapter.setItems(listOfNoteAndComments);
         });
 
@@ -44,6 +45,8 @@ public class NoteBrowseActivity extends AppCompatActivity {
                 showMenu();
             } else if (activityCommand == NoteBrowseViewModel.Commands.CLOSE_ACTIVITY) {
                 finish();
+            } else if (activityCommand == NoteBrowseViewModel.Commands.REMOVE_ACTION_BUTTON) {
+                binding.buttonAction.setVisibility(View.GONE);
             }
         });
 
