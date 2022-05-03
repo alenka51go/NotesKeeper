@@ -12,7 +12,7 @@ import com.couchbase.lite.ListenerToken;
 
 public class DatabaseManager {
     private final static String TAG = DatabaseManager.class.getSimpleName();
-    private final static String dbName = "userprofile";
+    private final static String dbName = "noteskeeper";
 
     private static Database database;
     private static DatabaseManager instance;
@@ -43,7 +43,7 @@ public class DatabaseManager {
 
     public void openOrCreateDatabaseForUser(Context context, String username) {
         DatabaseConfiguration config = new DatabaseConfiguration();
-        config.setDirectory(String.format("%s/%s", context.getFilesDir(), username));
+        config.setDirectory(String.format("%s/%s", context.getFilesDir(), "user"));
 
         try {
             database = new Database(dbName, config);
@@ -61,7 +61,6 @@ public class DatabaseManager {
             for (String docId : change.getDocumentIDs()) {
                 Document doc = database.getDocument(docId);
                 if (doc != null) {
-                    Log.d(TAG, "To JSON: " + doc.toJSON());
                     Log.d(TAG, "Document was added/updated");
                 }
                 else {
@@ -75,13 +74,16 @@ public class DatabaseManager {
         try {
             if (database != null) {
                 deregisterForDatabaseChanges();
+                database.delete();
                 database.close();
                 database = null;
 
-                Log.d(TAG, "Database for user " + currentUser + " was created and opened");
+                Log.d(TAG, "delete all documents: success");
+                Log.d(TAG, "Database for user " + currentUser + " was closed");
             }
         } catch (CouchbaseLiteException e) {
             e.printStackTrace();
+            Log.d(TAG, "delete all documents: Failed to close and delete database.");
         }
     }
 

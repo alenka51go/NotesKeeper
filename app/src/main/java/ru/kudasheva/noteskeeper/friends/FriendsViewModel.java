@@ -1,5 +1,7 @@
 package ru.kudasheva.noteskeeper.friends;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -11,6 +13,7 @@ import ru.kudasheva.noteskeeper.data.DataRepository;
 import ru.kudasheva.noteskeeper.data.SingleLiveEvent;
 
 public class FriendsViewModel extends ViewModel {
+    private static final String TAG = FriendsViewModel.class.getSimpleName();
     private final DataRepository dataRepo = MyApplication.getDataRepo();
 
     public SingleLiveEvent<String> snackBarMessage = new SingleLiveEvent<>();
@@ -23,7 +26,9 @@ public class FriendsViewModel extends ViewModel {
 
     public boolean checkIfUserExist(String username) {
         if (dataRepo.checkIfUserExist(username)) {
-            dataRepo.addNewFriend(username);
+            if (!dataRepo.addNewFriend(username)) {
+                Log.d(TAG, "Can't add friend");
+            }
             friends.setValue(loadFriends());
             return true;
         } else {

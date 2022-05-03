@@ -17,6 +17,7 @@ import java.util.Map;
 
 import ru.kudasheva.noteskeeper.MyApplication;
 import ru.kudasheva.noteskeeper.data.DataRepository;
+import ru.kudasheva.noteskeeper.data.SingleLiveEvent;
 import ru.kudasheva.noteskeeper.data.models.Comment;
 import ru.kudasheva.noteskeeper.data.models.Note;
 
@@ -29,6 +30,7 @@ public class NoteBrowseViewModel  extends ViewModel {
 
     public String title;
 
+    public SingleLiveEvent<String> snackBarMessage = new SingleLiveEvent<>();
     public MutableLiveData<List<InfoCard>> noteAndComments = new MutableLiveData<>();
     public MutableLiveData<String> userCommentLiveData = new MutableLiveData<>();
     public MutableLiveData<NoteBrowseViewModel.Commands> activityCommand = new MutableLiveData<>();
@@ -38,12 +40,20 @@ public class NoteBrowseViewModel  extends ViewModel {
         Log.d(TAG, userCommentLiveData.getValue());
         Log.d(TAG, getCurrentDate());
 
+        String commentText = userCommentLiveData.getValue();
+        if (commentText == null || commentText.isEmpty()) {
+            snackBarMessage.setValue("You can't send empty comment");
+            return;
+        }
+
         Map<String, Object> commentInfo = new HashMap<>();
         commentInfo.put("username", username);
-        commentInfo.put("text", userCommentLiveData.getValue());
+        commentInfo.put("text", commentText);
         commentInfo.put("date", getCurrentDate());
 
-        dataRepo.addComment(noteId, commentInfo);
+        if (!dataRepo.addComment(noteId, commentInfo)) {
+            Log.d(TAG, "Can't add comment");
+        }
         noteAndComments.setValue(updateNoteAndCommentsList());
 
         // TODO разобраться почему не отображается очищение, хотя под капотом есть очищение
@@ -81,7 +91,9 @@ public class NoteBrowseViewModel  extends ViewModel {
     }
 
     public void deleteNote() {
-        // TODO
+        if (dataRepo.deleteNote(noteId)) {
+            Log.d(TAG, "Can't delete note");
+        }
         activityCommand.setValue(Commands.CLOSE_ACTIVITY);
     }
 

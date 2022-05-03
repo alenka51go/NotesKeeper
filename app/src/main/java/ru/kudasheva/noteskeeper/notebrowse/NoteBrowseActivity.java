@@ -3,6 +3,7 @@ package ru.kudasheva.noteskeeper.notebrowse;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -45,6 +46,8 @@ public class NoteBrowseActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        noteBrowseViewModel.snackBarMessage.observe(this, this::showErrorMessage);
     }
 
     private void showMenu() {
@@ -67,6 +70,11 @@ public class NoteBrowseActivity extends AppCompatActivity {
 
         adapter = new MultipleTypesAdapter();
         binding.recyclerViewNoteAndComments.setAdapter(adapter);
+    }
+
+    private void showErrorMessage(String errorMessage) {
+        Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_LONG);
+        toast.show();
     }
 
 }

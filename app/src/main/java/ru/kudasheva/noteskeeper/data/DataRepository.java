@@ -18,6 +18,8 @@ public interface DataRepository{
 
     public boolean checkIfUserExist(String name);
 
+    public boolean deleteNote(String docId);
+
     public void addNote(Map<String, Object> info);
     public boolean addNewFriend(String friendName);
     public boolean addComment(String docId, Map<String, Object> info);

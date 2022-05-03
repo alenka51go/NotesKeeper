@@ -134,7 +134,7 @@ public class RemoteDataRepository implements DataRepository {
     public List<Note> getAllNotes() {
         Database database = DatabaseManager.getDatabase();
         List<Note> noteList = new ArrayList<>();
-
+        
         // создаем запрос, чтобы собрать все заметки, которые лежат в базе пользователя
         Query query = QueryBuilder
                 .select(SelectResult.expression(Meta.id),
@@ -176,6 +176,26 @@ public class RemoteDataRepository implements DataRepository {
 
         Users users = Util.convertUsers(doc.toJSON());
         return users.contains(name);
+    }
+
+    @Override
+    public boolean deleteNote(String docId) {
+        Database database = DatabaseManager.getDatabase();
+        Document doc = database.getDocument(docId);
+
+        if (doc == null) {
+            Log.d(TAG, "Document with id: " + docId + " doesn't contains in base");
+            return false;
+        }
+
+        try {
+            database.delete(doc);
+        } catch (CouchbaseLiteException e) {
+            Log.d(TAG, e.getMessage());
+            return false;
+        }
+
+        return true;
     }
 
     @Override
