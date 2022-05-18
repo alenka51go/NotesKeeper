@@ -9,19 +9,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
-
-import java.util.Arrays;
-import java.util.Collection;
 
 import ru.kudasheva.noteskeeper.R;
 import ru.kudasheva.noteskeeper.databinding.ActivityFriendsBinding;
 import ru.kudasheva.noteskeeper.databinding.DialogBoxBinding;
-import ru.kudasheva.noteskeeper.login.LoginActivity;
 
 public class FriendsActivity extends AppCompatActivity {
     private static final String TAG = FriendsActivity.class.getSimpleName();
@@ -69,7 +61,7 @@ public class FriendsActivity extends AppCompatActivity {
         dialog.setOnShowListener(dialogInterface -> {
             dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(view -> {
                 String text = dialogBoxBinding.textBox.getText().toString();
-                if (friendsViewModel.checkIfUserExist(text)) {
+                if (friendsViewModel.tryToAddFriend(text)) {
                     dialog.dismiss();
                 }
             });

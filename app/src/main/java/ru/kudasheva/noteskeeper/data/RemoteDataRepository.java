@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import ru.kudasheva.noteskeeper.data.models.Friends;
 import ru.kudasheva.noteskeeper.data.models.Note;
 import ru.kudasheva.noteskeeper.data.models.User;
 import ru.kudasheva.noteskeeper.data.models.UsersBase;
@@ -59,27 +58,26 @@ public class RemoteDataRepository implements DataRepository {
     @Override
     public boolean addNewFriend(String friendName) {
         Database database = DatabaseManager.getDatabase();
-        Document doc = database.getDocument(getUsername() + "friends");
+        Document doc = database.getDocument(getUsername());
 
         if (doc == null) {
-            Log.d(TAG, "File with friends hasn't been upload");
+            Log.d(TAG, "User doesn't exist");
             return false;
         }
 
-        Friends friends = Util.convertFriends(doc.toJSON());
-        List<String> friendsList = friends.getAllFriends();
+        List<String> friendsList = Util.convertFriends(doc.toJSON());
         if (friendsList != null && friendsList.contains(friendName)) {
             return true;
         }
 
         MutableDocument mutableDoc = doc.toMutable();
-        MutableArray friendsNames = mutableDoc.getArray("friends");
-        if (friendsNames == null) {
-            friendsNames = new MutableArray();
+        MutableArray friendsId = mutableDoc.getArray("friendsId");
+        if (friendsId == null) {
+            friendsId = new MutableArray();
         }
-        friendsNames.addString(friendName);
+        friendsId.addString(friendName);
 
-        mutableDoc.setArray("friends", friendsNames);
+        mutableDoc.setArray("friendsId", friendsId);
 
         try {
             database.save(mutableDoc);
@@ -207,15 +205,14 @@ public class RemoteDataRepository implements DataRepository {
     @Override
     public List<String> getFriends() {
         Database database = DatabaseManager.getDatabase();
-        Document doc = database.getDocument(getUsername() + "friends");
+        Document doc = database.getDocument(getUsername());
 
         if (doc == null) {
-            Log.d(TAG, "File with friends hasn't been upload");
+            Log.d(TAG, "User doesn't exist");
             return null;
         }
 
-        Friends friends = Util.convertFriends(doc.toJSON());
-        return friends.getAllFriends();
+        return Util.convertFriends(doc.toJSON());
     }
 
 }

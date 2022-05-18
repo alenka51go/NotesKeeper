@@ -28,11 +28,13 @@ public class LoginViewModel extends ViewModel {
             return;
         }
 
-        String username = firstnameValue;
-
+        User user;
         if (lastnameValue != null && !lastnameValue.isEmpty()) {
-            username += ' ' + lastnameValue;
+            user = new User(firstnameValue, lastnameValue);
+        } else {
+            user = new User(firstnameValue);
         }
+
 
         // FIXME сделать проверку на существование пользователя в базе, видимо?
         /*if (dataRepo.checkIfUserExist(username)) {
@@ -42,7 +44,6 @@ public class LoginViewModel extends ViewModel {
             snackBarMessage.setValue(username + " doesn't exist!");
         }*/
 
-        User user = new User(username);
 
         dataRepo.initDatabase(MyApplication.getAppContext(), user);
         activityCommand.postValue(Commands.OPEN_NOTE_SCROLL_ACTIVITY);

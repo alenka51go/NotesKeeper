@@ -48,9 +48,13 @@ public class DatabaseManager {
         config.setDirectory(String.format("%s/%s", context.getFilesDir(), "user"));
 
         try {
+            // TODO подумать как можно иначе очищать локальный кэш
+            database = new Database(dbName, config);
+            database.delete();
+            
             database = new Database(dbName, config);
             registerForDataBaseChanges();
-            // TODO тут видемо будет проиходить загузка документа пользователя из базы
+            // TODO тут видемо будет проиходить загузка документа пользователя из базы по id
             currentUser = user;
 
             Log.d(TAG, "Database for user " + user.getUsername() + " was created or opened");
@@ -78,7 +82,6 @@ public class DatabaseManager {
             if (database != null) {
                 deregisterForDatabaseChanges();
                 database.delete();
-                database.close();
                 database = null;
 
                 Log.d(TAG, "delete all documents: success");

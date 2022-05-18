@@ -24,7 +24,7 @@ public class FriendsViewModel extends ViewModel {
         command.setValue(Commands.OPEN_DIALOG);
     }
 
-    public boolean checkIfUserExist(String username) {
+    public boolean tryToAddFriend(String username) {
         if (dataRepo.checkIfUserExist(username)) {
             if (!dataRepo.addNewFriend(username)) {
                 Log.d(TAG, "Can't add friend");

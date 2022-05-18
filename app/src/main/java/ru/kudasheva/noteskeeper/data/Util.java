@@ -7,11 +7,12 @@ import com.couchbase.lite.MutableDictionary;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import ru.kudasheva.noteskeeper.data.models.Friends;
 import ru.kudasheva.noteskeeper.data.models.Note;
+import ru.kudasheva.noteskeeper.data.models.User;
 import ru.kudasheva.noteskeeper.data.models.UsersBase;
 
 public class Util {
@@ -54,14 +55,18 @@ public class Util {
         return users;
     }
 
-    public static Friends convertFriends(String json) {
+    public static List<String> convertFriends(String json) {
         ObjectMapper objectMapper = new ObjectMapper();
-        Friends friends = null;
+        User user = null;
         try {
-            friends = objectMapper.readValue(json, Friends.class);
+            user = objectMapper.readValue(json, User.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        return friends;
+        if (user == null) {
+            return null;
+        } else {
+            return user.getFriendsId();
+        }
     }
 }
