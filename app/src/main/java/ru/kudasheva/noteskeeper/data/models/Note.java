@@ -7,46 +7,43 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Note {
-    private String id;
-    private String revisionID;
+    private String _id;
+    private String _rev;
     private String userId;
     private String title;
     private String date;
     private String text;
     private List<String> sharedUsers;
-    private List<Comment> comments;
+    private final String type = "note";
 
-    public Note() {
-    }
+    public Note() {}
 
     public Note(String userId, String title, String text,
-                String date, List<String> sharedUsers, List<Comment> comments) {
-        this.userId = userId;
-        this.title = title;
-        this.text = text;
-        this.date = date;
-        this.sharedUsers = sharedUsers;
-        this.comments = comments;
-    }
-
-    public Note(String id, String revisionID, String userId, String title, String text,
                 String date, List<String> sharedUsers) {
-        this.id = id;
-        this.revisionID = revisionID;
         this.userId = userId;
         this.title = title;
         this.text = text;
         this.date = date;
         this.sharedUsers = sharedUsers;
-        this.comments = new ArrayList<>();
     }
 
-    public String getId() {
-        return id;
+    public Note(String _id, String _rev, String userId, String title, String text,
+                String date, List<String> sharedUsers) {
+        this._id = _id;
+        this._rev = _rev;
+        this.userId = userId;
+        this.title = title;
+        this.text = text;
+        this.date = date;
+        this.sharedUsers = sharedUsers;
+    }
+
+    public String get_id() {
+        return _id;
     }
 
     public String getRev() {
-        return revisionID;
+        return _rev;
     }
 
     public String getUserId() {
@@ -67,9 +64,5 @@ public class Note {
 
     public List<String> getSharedUsers() {
         return sharedUsers;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
     }
 }

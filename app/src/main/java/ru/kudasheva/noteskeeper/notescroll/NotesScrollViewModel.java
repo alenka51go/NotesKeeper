@@ -6,9 +6,7 @@ import androidx.lifecycle.ViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.kudasheva.noteskeeper.MyApplication;
 import ru.kudasheva.noteskeeper.data.DBManager;
-import ru.kudasheva.noteskeeper.data.DataRepository;
 import ru.kudasheva.noteskeeper.data.models.Note;
 
 public class NotesScrollViewModel extends ViewModel {
@@ -21,12 +19,12 @@ public class NotesScrollViewModel extends ViewModel {
     public NoteShortCard noteToShow;
 
     public List<NoteShortCard> loadShortNodes() {
-        List<Note> rawNotes = DBManager.getInstance().getAllUserNotes();
+        List<Note> rawNotes = DBManager.getInstance().getUserNotes();
         List<NoteShortCard> shortNotes = new ArrayList<>();
 
         if (rawNotes != null) {
             for (Note rawNote : rawNotes) {
-                NoteShortCard shortNote = new NoteShortCard(rawNote.getId(), rawNote.getTitle(), rawNote.getDate());
+                NoteShortCard shortNote = new NoteShortCard(rawNote.get_id(), rawNote.getTitle(), rawNote.getDate());
                 shortNotes.add(shortNote);
             }
         }

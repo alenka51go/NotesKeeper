@@ -8,8 +8,6 @@ import com.couchbase.lite.Document;
 import com.couchbase.lite.DocumentChange;
 import com.couchbase.lite.LiveQuery;
 import com.couchbase.lite.Manager;
-import com.couchbase.lite.Query;
-import com.couchbase.lite.QueryEnumerator;
 import com.couchbase.lite.QueryRow;
 import com.couchbase.lite.UnsavedRevision;
 import com.couchbase.lite.View;
@@ -23,8 +21,10 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import ru.kudasheva.noteskeeper.MyApplication;
+import ru.kudasheva.noteskeeper.data.models.Comment;
 import ru.kudasheva.noteskeeper.data.models.DatabaseReplicator;
 import ru.kudasheva.noteskeeper.data.models.Note;
 
@@ -33,11 +33,15 @@ public class DBManager {
 
     private static final String DATABASE_NAME = "notes_keeper_database";
     private static final String VIEW_USER_NOTES = "user_notes_view";
+    private static final String VIEW_USER_COMMENTS = "user_comments_view";
 
     private static final String REMOTE_DATABASE_IP = "188.242.233.52";
     private static final int REMOTE_DATABASE_PORT = 5984;
 
     private static final String REMOTE_DATABASE_NOTES_NAME = "notes";
+
+    private static final String NOTE_TYPE = "note";
+    private static final String COMMENT_TYPE = "comment";
 
     private static DBManager sInstance;
 
@@ -48,7 +52,9 @@ public class DBManager {
     private DatabaseReplicator databaseReplicator;
 
     private View notesView;
+    private View commentView;
     private LiveQuery notesQuery;
+    private LiveQuery commentQuery;
 
     private WeakReference<NotesChangeListener> notesChangeListenerWeakRef; // ?
 
@@ -105,16 +111,27 @@ public class DBManager {
 
         notesView = database.getView(VIEW_USER_NOTES);
         notesView.setMap((document, emitter) -> {
-            // FIXME: возможно потребуется позже
-            // FIXME: (фильтр документов, которые будут загружены через LiveQuery из локальной базы)
-            // кажется, может пригодится для фильтрации доков и комментов
-            emitter.emit(document.get("userId"), username);
+            if ((NOTE_TYPE).equals(document.get("type"))) {
+                emitter.emit(document.get("_id"), null);
+            }
 
-            Log.d(TAG, "emitter passing doc: " + document.toString());
+            Log.d(TAG, "emitter note passing doc: " + document);
         }, "1");
 
         notesQuery = notesView.createQuery().toLiveQuery();
         notesQuery.start();
+
+        commentView = database.getView(VIEW_USER_COMMENTS);
+        commentView.setMap((document, emitter) -> {
+            if ((COMMENT_TYPE).equals(document.get("type"))) {
+                emitter.emit(document.get("_id"), null);
+            }
+
+            Log.d(TAG, "emitter comment passing doc: " + document.get("type"));
+        }, "1");
+
+        commentQuery = commentView.createQuery().toLiveQuery();
+        commentQuery.start();
 
         try {
             databaseReplicator = new DatabaseReplicator(
@@ -185,16 +202,60 @@ public class DBManager {
         Log.d(TAG, "Note has been added");
     }
 
-    public boolean deleteNote(String noteId) {
-        try {
-            Document doc = database.getExistingDocument(noteId);
+    public void addComment(Comment comment) {
+        // FIXME: комментарий отображается только после того, как перезайти в заметку
+        final Document doc = database.createDocument();
+        UnsavedRevision unsavedRevision = doc.createRevision();
 
-            if (null != doc) {
-                Log.d(TAG, "Document with id " + noteId + " was found. Removing...");
+        try {
+            Map<String, Object> noteMap = Util.objectToMap(comment);
+            unsavedRevision.setProperties(noteMap);
+            unsavedRevision.save();
+
+            Log.d(TAG, "Comment in map: " + comment.toString());
+
+        } catch (CouchbaseLiteException e) {
+            Log.d(TAG, "ERROR - " + e);
+            e.printStackTrace();
+        } catch (JSONException e) {
+            Log.d(TAG, "Could not convert Comment to Map: " + comment.toString());
+            e.printStackTrace();
+        }
+
+        Log.d(TAG, "Comment has been added");
+    }
+
+    public boolean deleteNote(String noteId) {
+        Document doc = database.getExistingDocument(noteId);
+        if (doc != null) {
+            Log.d(TAG, "Start deleting note with id " + noteId + " ...");
+
+            if (Objects.equals(doc.getProperties().get("type"), NOTE_TYPE)) {
+                List<Comment> commentsList = getComments(noteId);
+                for (Comment comment : commentsList) {
+                    deleteDoc(comment.get_id());
+                }
+            }
+            Log.d(TAG, "All comments was successfully deleted.");
+
+            return deleteDoc(noteId);
+        } else {
+            Log.d(TAG, "There is no such note in Database " + noteId);
+        }
+        return false;
+    }
+
+    private boolean deleteDoc(String docId) {
+        try {
+            Document doc = database.getExistingDocument(docId);
+
+            if (doc != null) {
+                Log.d(TAG, "Document with id " + docId + " was found. Removing...");
+
                 boolean res = doc.delete();
 
                 if (!res) {
-                    Log.e(TAG, "Failed to remove document " + noteId);
+                    Log.e(TAG, "Failed to remove document " + docId);
 
                     doc.update(newRevision -> {
                         Log.w(TAG, "Removing through update");
@@ -204,10 +265,10 @@ public class DBManager {
                 }
                 return true;
             } else {
-                Log.d(TAG, "There is no such Note in Database + " + noteId);
+                Log.d(TAG, "There is no such doc in Database " + docId);
             }
         } catch (CouchbaseLiteException e) {
-            Log.d(TAG, "Failed to delete note with id:" + noteId + ". Reason: " + e.getMessage());
+            Log.d(TAG, "Failed to delete doc with id:" + docId + ". Reason: " + e.getMessage());
             e.printStackTrace();
         }
         return false;
@@ -225,16 +286,36 @@ public class DBManager {
         return null;
     }
 
-    public List<Note> getAllUserNotes() {
+    public List<Note> getUserNotes() {
         // FIXME: пока при первой загрузке данные не успевают подгрузиться на основнуб страницу
         List<Note> notes = new ArrayList<>();
 
+        Log.d(TAG, "Load User notes: --------------");
+
         for (QueryRow row : notesQuery.getRows()) {
             Map<String, Object> noteProperties = row.getDocument().getProperties();
+            Log.d(TAG, "type is: " + noteProperties.get("type"));
             notes.add(Util.convertToNote(noteProperties));
         }
 
         Log.d(TAG, "notes: " + notes.size());
         return notes;
+    }
+
+    public List<Comment> getComments(String noteId) {
+        List<Comment> comments = new ArrayList<>();
+
+        Log.d(TAG, "Load User comments: --------------");
+
+        for (QueryRow row : commentQuery.getRows()) {
+            Map<String, Object> commentProperties = row.getDocument().getProperties();
+            Log.d(TAG, "type is: " + commentProperties.get("type"));
+            if (noteId.equals(commentProperties.get("noteId"))) {
+                comments.add(Util.convertToComment(commentProperties));
+            }
+        }
+
+        Log.d(TAG, "comments: " + comments.size());
+        return comments;
     }
 }

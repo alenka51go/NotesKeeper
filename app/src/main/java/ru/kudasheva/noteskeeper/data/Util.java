@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import ru.kudasheva.noteskeeper.data.models.Comment;
 import ru.kudasheva.noteskeeper.data.models.Note;
 
 public class Util {
@@ -65,10 +66,17 @@ public class Util {
         return objects;
     }
 
-    public static Note convertToNote(Map<String, Object> properties) {
-        return new Note((String) properties.get("_id"),  (String) properties.get("_rev"),
-                (String) properties.get("userId"), (String) properties.get("title"),
-                (String) properties.get("text"), (String) properties.get("date"),
-                (List<String>) properties.get("friends"));
+    public static Note convertToNote(Map<String, Object> noteProperties) {
+        return new Note((String) noteProperties.get("_id"),  (String) noteProperties.get("_rev"),
+                (String) noteProperties.get("userId"), (String) noteProperties.get("title"),
+                (String) noteProperties.get("text"), (String) noteProperties.get("date"),
+                (List<String>) noteProperties.get("sharedUsers"));
+    }
+
+    public static Comment convertToComment(Map<String, Object> commentProperties) {
+        return new Comment((String) commentProperties.get("_id"),  (String) commentProperties.get("_rev"),
+                (String) commentProperties.get("userId"), (String) commentProperties.get("noteId"),
+                (String) commentProperties.get("text"), (String) commentProperties.get("date"),
+                (List<String>) commentProperties.get("sharedUsers"));
     }
 }

@@ -36,16 +36,9 @@ public class CreateNoteViewModel extends ViewModel {
     }
 
     public void onSaveNoteButtonClicked() {
-        Map<String, Object> noteInfo = new HashMap<>();
-        noteInfo.put("username", username);
-        noteInfo.put("title", title);
-        noteInfo.put("text", noteBody);
-        noteInfo.put("date", getCurrentDate());
-        noteInfo.put("friends", selectedFriends);
-        noteInfo.put("comments", new ArrayList<>());
-
+        selectedFriends.add(username); // чтобы мы тоже отображалдись в пошаренных юзерах
         Note note = new Note(username, title, noteBody,
-                getCurrentDate(), selectedFriends, new ArrayList<>());
+                getCurrentDate(), selectedFriends);
         DBManager.getInstance().addNote(note);
 
         activityCommand.setValue(Commands.CLOSE_ACTIVITY);

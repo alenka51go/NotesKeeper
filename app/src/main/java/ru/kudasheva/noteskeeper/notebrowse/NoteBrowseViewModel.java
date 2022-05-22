@@ -33,9 +33,9 @@ public class NoteBrowseViewModel  extends ViewModel {
     public MutableLiveData<NoteBrowseViewModel.Commands> activityCommand = new MutableLiveData<>();
 
     public void onSendButtonClicked() {
-        Log.d(TAG, username);
-        Log.d(TAG, userCommentLiveData.getValue());
-        Log.d(TAG, getCurrentDate());
+        Log.d(TAG, "Current user: " + username);
+        Log.d(TAG, "Comment: " + userCommentLiveData.getValue());
+        Log.d(TAG, "Date: " + getCurrentDate());
 
         String commentText = userCommentLiveData.getValue();
         if (commentText == null || commentText.isEmpty()) {
@@ -43,15 +43,10 @@ public class NoteBrowseViewModel  extends ViewModel {
             return;
         }
 
-        Map<String, Object> commentInfo = new HashMap<>();
-        commentInfo.put("username", username);
-        commentInfo.put("text", commentText);
-        commentInfo.put("date", getCurrentDate());
+        Note note = DBManager.getInstance().getNote(noteId);
+        Comment comment = new Comment(username, note.get_id(), commentText, getCurrentDate(), note.getSharedUsers());
+        DBManager.getInstance().addComment(comment);
 
-        // TODO добавить блоки с комментриями
-        /*if (!dataRepo.addComment(noteId, commentInfo)) {
-            Log.d(TAG, "Can't add comment");
-        }*/
         dataContainer.setValue(updateData());
 
         // TODO разобраться почему не отображается очищение, хотя под капотом есть очищение
@@ -65,10 +60,11 @@ public class NoteBrowseViewModel  extends ViewModel {
         List<InfoCard> noteList = new ArrayList<>(Collections.singletonList(noteFullCard));
 
         List<InfoCard> commentsList = new ArrayList<>();
-        List<Comment> rawComments = note.getComments();
+
+        List<Comment> rawComments = DBManager.getInstance().getComments(note.get_id());
         for (Comment comment : rawComments) {
             CommentInfoCard commentInfoCard = new CommentInfoCard(comment.getText(),
-                    comment.getUsername(), comment.getDate());
+                    comment.getUserId(), comment.getDate());
             commentsList.add(commentInfoCard);
         }
 
