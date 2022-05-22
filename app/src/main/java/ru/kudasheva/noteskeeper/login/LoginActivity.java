@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
 import ru.kudasheva.noteskeeper.R;
+import ru.kudasheva.noteskeeper.data.DBManager;
 import ru.kudasheva.noteskeeper.databinding.ActivityLoginBinding;
 import ru.kudasheva.noteskeeper.notescroll.NotesScrollActivity;
 
@@ -23,7 +24,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
-        loginViewModel.setApplicationContext(getApplicationContext());
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
         binding.setViewModel(loginViewModel);
 

@@ -14,7 +14,6 @@ import ru.kudasheva.noteskeeper.data.SingleLiveEvent;
 
 public class FriendsViewModel extends ViewModel {
     private static final String TAG = FriendsViewModel.class.getSimpleName();
-    private final DataRepository dataRepo = MyApplication.getDataRepo();
 
     public SingleLiveEvent<String> snackBarMessage = new SingleLiveEvent<>();
     public MutableLiveData<Commands> command = new MutableLiveData<>();
@@ -25,7 +24,8 @@ public class FriendsViewModel extends ViewModel {
     }
 
     public boolean tryToAddFriend(String username) {
-        if (dataRepo.checkIfUserExist(username)) {
+        // TODO дргуая база
+        /*if (dataRepo.checkIfUserExist(username)) {
             if (!dataRepo.addNewFriend(username)) {
                 Log.d(TAG, "Can't add friend");
             }
@@ -34,12 +34,15 @@ public class FriendsViewModel extends ViewModel {
         } else {
             snackBarMessage.setValue("Can't find user with name " + username);
             return false;
-        }
+        }*/
+        return false;
     }
 
     private List<FriendInfoCard> loadFriends() {
         List<FriendInfoCard> friendInfoCards = new ArrayList<>();
-        List<String> rawFriends = dataRepo.getFriends();
+        // TODO другая база
+        /*List<String> rawFriends = dataRepo.getFriends();*/
+        List<String> rawFriends = null;
 
         if (rawFriends != null) {
             for (String friendInfo : rawFriends) {

@@ -6,13 +6,13 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import ru.kudasheva.noteskeeper.MyApplication;
+import ru.kudasheva.noteskeeper.data.DBManager;
 import ru.kudasheva.noteskeeper.data.DataRepository;
 import ru.kudasheva.noteskeeper.data.SingleLiveEvent;
 import ru.kudasheva.noteskeeper.data.models.User;
 
 public class LoginViewModel extends ViewModel {
     private static final String TAG = LoginViewModel.class.getSimpleName();
-    private final DataRepository dataRepo = MyApplication.getDataRepo();
 
     public SingleLiveEvent<String> snackBarMessage = new SingleLiveEvent<>();
     public MutableLiveData<Commands> activityCommand = new MutableLiveData<>();
@@ -45,13 +45,10 @@ public class LoginViewModel extends ViewModel {
         }*/
 
 
-        dataRepo.initDatabase(MyApplication.getAppContext(), user);
+        DBManager.getInstance().startDatabase(user.getUsername());
         activityCommand.postValue(Commands.OPEN_NOTE_SCROLL_ACTIVITY);
     }
 
-    public void setApplicationContext(Context applicationContext) {
-        MyApplication.setAppContext(applicationContext);
-    }
 
     public enum Commands {
         OPEN_NOTE_SCROLL_ACTIVITY

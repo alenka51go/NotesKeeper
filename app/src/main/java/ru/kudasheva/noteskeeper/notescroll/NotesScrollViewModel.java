@@ -7,21 +7,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.kudasheva.noteskeeper.MyApplication;
+import ru.kudasheva.noteskeeper.data.DBManager;
 import ru.kudasheva.noteskeeper.data.DataRepository;
 import ru.kudasheva.noteskeeper.data.models.Note;
 
 public class NotesScrollViewModel extends ViewModel {
-    private final DataRepository dataRepo = MyApplication.getDataRepo();
     private boolean isMenuOpen = false;
 
-    public String username = dataRepo.getUsername();
+    public String username = DBManager.getInstance().getUsername();
 
     public MutableLiveData<List<NoteShortCard>> notes = new MutableLiveData<>(loadShortNodes());
     public MutableLiveData<NotesScrollViewModel.Commands> activityCommand = new MutableLiveData<>();
     public NoteShortCard noteToShow;
 
     public List<NoteShortCard> loadShortNodes() {
-        List<Note> rawNotes = dataRepo.getAllNotes();
+        List<Note> rawNotes = DBManager.getInstance().getAllUserNotes();
         List<NoteShortCard> shortNotes = new ArrayList<>();
 
         if (rawNotes != null) {
@@ -43,7 +43,7 @@ public class NotesScrollViewModel extends ViewModel {
     }
 
     public void onChangeUserButtonClicked() {
-        dataRepo.closeDatabase();
+        DBManager.getInstance().resetDatabase();
         activityCommand.setValue(Commands.OPEN_LOGIN_ACTIVITY);
     }
 

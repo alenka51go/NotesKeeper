@@ -14,13 +14,14 @@ import java.util.Locale;
 import java.util.Map;
 
 import ru.kudasheva.noteskeeper.MyApplication;
+import ru.kudasheva.noteskeeper.data.DBManager;
 import ru.kudasheva.noteskeeper.data.DataRepository;
+import ru.kudasheva.noteskeeper.data.models.Note;
 import ru.kudasheva.noteskeeper.friends.FriendInfoCard;
 
 public class CreateNoteViewModel extends ViewModel {
-    private final DataRepository dataRepo = MyApplication.getDataRepo();
     private final List<String> selectedFriends = new ArrayList<>();
-    private final String username = dataRepo.getUsername();
+    private final String username = DBManager.getInstance().getUsername();
 
     public String title;
     public String noteBody;
@@ -43,13 +44,18 @@ public class CreateNoteViewModel extends ViewModel {
         noteInfo.put("friends", selectedFriends);
         noteInfo.put("comments", new ArrayList<>());
 
-        dataRepo.addNote(noteInfo);
+        Note note = new Note(username, title, noteBody,
+                getCurrentDate(), selectedFriends, new ArrayList<>());
+        DBManager.getInstance().addNote(note);
+
         activityCommand.setValue(Commands.CLOSE_ACTIVITY);
     }
 
     private String[] getContacts() {
         List<FriendInfoCard> friendsInfo = new ArrayList<>();
-        List<String> rawFriends = dataRepo.getFriends();
+        // TODO другая база
+        /*List<String> rawFriends = dataRepo.getFriends();*/
+        List<String> rawFriends = null;
 
         if (rawFriends != null) {
             for (String friendInfo : rawFriends) {

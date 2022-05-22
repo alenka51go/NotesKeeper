@@ -15,8 +15,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import ru.kudasheva.noteskeeper.MyApplication;
-import ru.kudasheva.noteskeeper.data.DataRepository;
+import ru.kudasheva.noteskeeper.data.DBManager;
 import ru.kudasheva.noteskeeper.data.SingleLiveEvent;
 import ru.kudasheva.noteskeeper.data.models.Comment;
 import ru.kudasheva.noteskeeper.data.models.Note;
@@ -24,8 +23,7 @@ import ru.kudasheva.noteskeeper.data.models.Note;
 public class NoteBrowseViewModel  extends ViewModel {
     private static final String TAG = NoteBrowseViewModel.class.getSimpleName();
 
-    private final DataRepository dataRepo = MyApplication.getDataRepo();
-    private final String username = dataRepo.getUsername();
+    private final String username = DBManager.getInstance().getUsername();
     private String noteId;
     public String title;
 
@@ -50,9 +48,10 @@ public class NoteBrowseViewModel  extends ViewModel {
         commentInfo.put("text", commentText);
         commentInfo.put("date", getCurrentDate());
 
-        if (!dataRepo.addComment(noteId, commentInfo)) {
+        // TODO добавить блоки с комментриями
+        /*if (!dataRepo.addComment(noteId, commentInfo)) {
             Log.d(TAG, "Can't add comment");
-        }
+        }*/
         dataContainer.setValue(updateData());
 
         // TODO разобраться почему не отображается очищение, хотя под капотом есть очищение
@@ -60,9 +59,9 @@ public class NoteBrowseViewModel  extends ViewModel {
     }
 
     private List<InfoCard> updateData() {
-        Note note = dataRepo.getNoteById(noteId);
+        Note note = DBManager.getInstance().getNote(noteId);
 
-        NoteFullCard noteFullCard = new NoteFullCard(noteId, note.getText(), note.getUsername(), note.getDate());
+        NoteFullCard noteFullCard = new NoteFullCard(noteId, note.getText(), note.getUserId(), note.getDate());
         List<InfoCard> noteList = new ArrayList<>(Collections.singletonList(noteFullCard));
 
         List<InfoCard> commentsList = new ArrayList<>();
@@ -88,7 +87,7 @@ public class NoteBrowseViewModel  extends ViewModel {
     }
 
     public void deleteNote() {
-        if (dataRepo.deleteNote(noteId)) {
+        if (DBManager.getInstance().deleteNote(noteId)) {
             Log.d(TAG, "Can't delete note");
         }
         activityCommand.setValue(Commands.CLOSE_ACTIVITY);
@@ -99,10 +98,10 @@ public class NoteBrowseViewModel  extends ViewModel {
 
         dataContainer.setValue(updateData());
 
-        Note note = dataRepo.getNoteById(noteId);
+        Note note = DBManager.getInstance().getNote(noteId);
         title = note.getTitle();
 
-        if (!note.getUsername().equals(username)) {
+        if (!note.getUserId().equals(username)) {
             activityCommand.setValue(Commands.REMOVE_ACTION_BUTTON);
         }
     }

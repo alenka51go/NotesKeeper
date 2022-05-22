@@ -1,72 +1,74 @@
 package ru.kudasheva.noteskeeper.data;
 
-import android.util.Log;
+import android.os.Build;
 
-import com.couchbase.lite.Dictionary;
-import com.couchbase.lite.MutableDictionary;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import ru.kudasheva.noteskeeper.data.models.Note;
-import ru.kudasheva.noteskeeper.data.models.User;
-import ru.kudasheva.noteskeeper.data.models.UsersBase;
 
 public class Util {
-    public static String TAG = RemoteDataRepository.class.getSimpleName();
 
-    public static Dictionary createDictionary(Map<String, Object> info) {
+    public static <T> Map<String, Object> objectToMap(T obj) throws JSONException {
+        String jsonString = new Gson().toJson(obj);
+        Map<String, Object> docProperties = jsonObjectToMap(new JSONObject(jsonString));
 
-        MutableDictionary dict = new MutableDictionary();
-
-        Set<Map.Entry<String, Object>> infoSet = info.entrySet();
-
-        for (Map.Entry<String, Object> pair : infoSet) {
-            dict.setValue(pair.getKey(), pair.getValue());
-        }
-
-        return dict;
+        // Exclude DB properties
+        docProperties.remove("_id");
+        docProperties.remove("_rev");
+        return docProperties;
     }
 
-    // convert from database to UI
+    private static Map<String, Object> jsonObjectToMap(JSONObject jObj) throws JSONException {
+        Map<String, Object> properties = new HashMap<>();
 
-    public static Note convertNote(String json) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        Note note = null;
-        try {
-            note = objectMapper.readValue(json, Note.class);
-        } catch (JsonProcessingException e) {
-            Log.d(TAG, e.getMessage());
+        Iterator<String> iterator = jObj.keys();
+        while (iterator.hasNext()) {
+            String key = iterator.next();
+            Object value = jObj.get(key);
+
+            if (value instanceof JSONObject) {
+                properties.put(key, jsonObjectToMap((JSONObject) value));
+                continue;
+            } else if (value instanceof JSONArray) {
+                properties.put(key, jsonObjectToArray((JSONArray) value));
+                continue;
+            }
+
+            properties.put(key, value);
         }
-        return note;
+
+        return properties;
     }
 
-    public static UsersBase convertUsers(String json) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        UsersBase users = null;
-        try {
-            users = objectMapper.readValue(json, UsersBase.class);
-        } catch (JsonProcessingException e) {
-            Log.d(TAG, e.getMessage());
+    private static List<Object> jsonObjectToArray(JSONArray jArray) throws JSONException {
+        List<Object> objects = new ArrayList<>(jArray.length());
+
+        for (int i = 0; i < jArray.length(); i++) {
+            objects.add(jArray.get(i));
         }
-        return users;
+
+        return objects;
     }
 
-    public static List<String> convertFriends(String json) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        User user = null;
-        try {
-            user = objectMapper.readValue(json, User.class);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        if (user == null) {
-            return null;
-        } else {
-            return user.getFriendsId();
-        }
+    public static Note convertToNote(Map<String, Object> properties) {
+        return new Note((String) properties.get("_id"),  (String) properties.get("_rev"),
+                (String) properties.get("userId"), (String) properties.get("title"),
+                (String) properties.get("text"), (String) properties.get("date"),
+                (List<String>) properties.get("friends"));
     }
 }
