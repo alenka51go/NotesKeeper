@@ -8,20 +8,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
-import ru.kudasheva.noteskeeper.MyApplication;
 import ru.kudasheva.noteskeeper.data.DBManager;
-import ru.kudasheva.noteskeeper.data.DataRepository;
 import ru.kudasheva.noteskeeper.data.models.Note;
+import ru.kudasheva.noteskeeper.data.models.User;
 import ru.kudasheva.noteskeeper.friends.FriendInfoCard;
 
 public class CreateNoteViewModel extends ViewModel {
     private final List<String> selectedFriends = new ArrayList<>();
-    private final String username = DBManager.getInstance().getUsername();
+    private final String username = DBManager.getInstance().getFullUsername();
 
     public String title;
     public String noteBody;
@@ -45,9 +42,19 @@ public class CreateNoteViewModel extends ViewModel {
     }
 
     private String[] getContacts() {
+        // TODO поменять, пока там загдушка на пользователей
+
+        /*List<User> friends = DBManager.getInstance().getFriends();
+
+        String[] friendsFullName = new String[friends.size()];
+
+        for (int i = 0; i < friends.size(); i++) {
+            User user = friends.get(i);
+            friendsFullName[i] = user.getFullUsername();
+        }
+        return friendsFullName;*/
+
         List<FriendInfoCard> friendsInfo = new ArrayList<>();
-        // TODO другая база
-        /*List<String> rawFriends = dataRepo.getFriends();*/
         List<String> rawFriends = null;
 
         if (rawFriends != null) {
@@ -56,7 +63,6 @@ public class CreateNoteViewModel extends ViewModel {
                 friendsInfo.add(friendInfoCard);
             }
         }
-
 
         String[] friendsNames = new String[friendsInfo.size()];
 

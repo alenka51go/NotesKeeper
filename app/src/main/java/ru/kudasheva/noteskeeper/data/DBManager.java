@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -27,11 +28,13 @@ import ru.kudasheva.noteskeeper.MyApplication;
 import ru.kudasheva.noteskeeper.data.models.Comment;
 import ru.kudasheva.noteskeeper.data.models.DatabaseReplicator;
 import ru.kudasheva.noteskeeper.data.models.Note;
+import ru.kudasheva.noteskeeper.data.models.User;
 
 public class DBManager {
     private static final String TAG = DBManager.class.getSimpleName();
 
     private static final String DATABASE_NAME = "notes_keeper_database";
+
     private static final String VIEW_USER_NOTES = "user_notes_view";
     private static final String VIEW_USER_COMMENTS = "user_comments_view";
 
@@ -39,13 +42,14 @@ public class DBManager {
     private static final int REMOTE_DATABASE_PORT = 5984;
 
     private static final String REMOTE_DATABASE_NOTES_NAME = "notes";
+    private static final String REMOTE_DATABASE_USERS_NAME = "noteskeeperusers";
 
     private static final String NOTE_TYPE = "note";
     private static final String COMMENT_TYPE = "comment";
 
     private static DBManager sInstance;
 
-    private String username;
+    private User currentUser;
 
     private Manager manager;
     private Database database;
@@ -66,7 +70,7 @@ public class DBManager {
         return sInstance;
     }
 
-    public void startDatabase(String inputUsername) {
+    public void startNotesDatabase(String inputUsername) {
         try {
             manager = new Manager(
                     new AndroidContext(MyApplication.getInstance()),
@@ -148,9 +152,10 @@ public class DBManager {
             return;
         }
 
-        username = inputUsername;
+        // FIXME: загрузить юзера из базы
+        currentUser = new User("testUserId", "1",  "Alena", "Kudasheva", Arrays.asList("testUserId2"));
 
-        databaseReplicator.setPullUserIdFilter(username);
+        databaseReplicator.setPullUserIdFilter(currentUser.getUsername());
         databaseReplicator.startReplication();
         Log.d(TAG, "Database replication started");
     }
@@ -177,7 +182,10 @@ public class DBManager {
     }
 
     public String getUsername() {
-        return username;
+        return currentUser.getUsername();
+    }
+    public String getFullUsername() {
+        return currentUser.getFullUsername();
     }
 
     public void addNote(Note note) {
@@ -203,7 +211,6 @@ public class DBManager {
     }
 
     public void addComment(Comment comment) {
-        // FIXME: комментарий отображается только после того, как перезайти в заметку
         final Document doc = database.createDocument();
         UnsavedRevision unsavedRevision = doc.createRevision();
 
@@ -317,5 +324,30 @@ public class DBManager {
 
         Log.d(TAG, "comments: " + comments.size());
         return comments;
+    }
+
+    public List<User> getFriends() {
+        List<String> friendsId = currentUser.getFriends();
+        List<User> friends = new ArrayList<>();
+
+        for (int i = 0; i < friendsId.size(); i++) {
+            String userId = friendsId.get(i);
+            friends.add(getUser(userId));
+        }
+        return friends;
+    }
+
+    public User getUser(String username) {
+        // TODO загрузить пользователя из базы
+        return null;
+    }
+
+    public boolean checkIfUserExist(String username) {
+        // TODO если полчилось достать док, то классно
+        return true;
+    }
+
+    public void addFriend(String username) {
+        // TODO
     }
 }

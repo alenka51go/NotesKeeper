@@ -1,18 +1,11 @@
 package ru.kudasheva.noteskeeper.data;
 
-import android.os.Build;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -21,6 +14,7 @@ import java.util.Map;
 
 import ru.kudasheva.noteskeeper.data.models.Comment;
 import ru.kudasheva.noteskeeper.data.models.Note;
+import ru.kudasheva.noteskeeper.data.models.User;
 
 public class Util {
 
@@ -78,5 +72,11 @@ public class Util {
                 (String) commentProperties.get("userId"), (String) commentProperties.get("noteId"),
                 (String) commentProperties.get("text"), (String) commentProperties.get("date"),
                 (List<String>) commentProperties.get("sharedUsers"));
+    }
+
+    public static User convertToUser(Map<String, Object> userProperties) {
+        return new User((String) userProperties.get("_id"),  (String) userProperties.get("_rev"),
+                (String) userProperties.get("firstname"), (String) userProperties.get("lastname"),
+                (List<String>) userProperties.get("friends"));
     }
 }

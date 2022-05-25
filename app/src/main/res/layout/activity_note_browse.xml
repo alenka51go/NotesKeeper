@@ -70,7 +70,6 @@
                 android:maxLines="4"
                 android:text="@={viewModel.userCommentLiveData}" />
 
-
             <Button
                 android:id="@+id/send_button"
                 android:layout_width="wrap_content"

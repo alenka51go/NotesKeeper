@@ -2,13 +2,17 @@ package ru.kudasheva.noteskeeper.notebrowse;
 
 import android.util.Log;
 
+import androidx.databinding.ObservableField;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -23,21 +27,21 @@ import ru.kudasheva.noteskeeper.data.models.Note;
 public class NoteBrowseViewModel  extends ViewModel {
     private static final String TAG = NoteBrowseViewModel.class.getSimpleName();
 
-    private final String username = DBManager.getInstance().getUsername();
+    private final String username = DBManager.getInstance().getFullUsername();
     private String noteId;
     public String title;
 
     public SingleLiveEvent<String> snackBarMessage = new SingleLiveEvent<>();
     public MutableLiveData<List<InfoCard>> dataContainer = new MutableLiveData<>();
-    public MutableLiveData<String> userCommentLiveData = new MutableLiveData<>();
+    public ObservableField<String> userCommentLiveData = new ObservableField<>();
     public MutableLiveData<NoteBrowseViewModel.Commands> activityCommand = new MutableLiveData<>();
 
     public void onSendButtonClicked() {
         Log.d(TAG, "Current user: " + username);
-        Log.d(TAG, "Comment: " + userCommentLiveData.getValue());
+        Log.d(TAG, "Comment: " + userCommentLiveData.get());
         Log.d(TAG, "Date: " + getCurrentDate());
 
-        String commentText = userCommentLiveData.getValue();
+        String commentText = userCommentLiveData.get();
         if (commentText == null || commentText.isEmpty()) {
             snackBarMessage.setValue("You can't send empty comment");
             return;
@@ -47,10 +51,14 @@ public class NoteBrowseViewModel  extends ViewModel {
         Comment comment = new Comment(username, note.get_id(), commentText, getCurrentDate(), note.getSharedUsers());
         DBManager.getInstance().addComment(comment);
 
+        // FIXME: не успевает обновиться локальная база
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         dataContainer.setValue(updateData());
-
-        // TODO разобраться почему не отображается очищение, хотя под капотом есть очищение
-        userCommentLiveData.setValue("");
+        userCommentLiveData.set("");
     }
 
     private List<InfoCard> updateData() {
@@ -68,13 +76,26 @@ public class NoteBrowseViewModel  extends ViewModel {
             commentsList.add(commentInfoCard);
         }
 
-        noteList.addAll(commentsList);
+        noteList.addAll(sortedCommentsByDate(commentsList));
         return noteList;
+    }
+
+    private List<InfoCard> sortedCommentsByDate(List<InfoCard> commentsList) {
+        Collections.sort(commentsList, (i, j) -> {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy 'at' h:mm a", Locale.getDefault());
+            try {
+                return sdf.parse(j.getDate()).compareTo(sdf.parse(i.getDate()));
+            } catch (ParseException e) {
+                Log.d(TAG, "Incorrect date format");
+            }
+            return 0;
+        });
+        return commentsList;
     }
 
     private String getCurrentDate() {
         Date currentDate = Calendar.getInstance().getTime();
-        SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+        SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy 'at' h:mm a", Locale.getDefault());
         return df.format(currentDate);
     }
 

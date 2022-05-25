@@ -12,7 +12,7 @@ import ru.kudasheva.noteskeeper.data.models.Note;
 public class NotesScrollViewModel extends ViewModel {
     private boolean isMenuOpen = false;
 
-    public String username = DBManager.getInstance().getUsername();
+    public String username = DBManager.getInstance().getFullUsername();
 
     public MutableLiveData<List<NoteShortCard>> notes = new MutableLiveData<>(loadShortNodes());
     public MutableLiveData<NotesScrollViewModel.Commands> activityCommand = new MutableLiveData<>();

@@ -3,33 +3,46 @@ package ru.kudasheva.noteskeeper.data.models;
 import java.util.List;
 
 public class User {
-    private String id;
-    private String firstName;
-    private String lastName;
-    private List<String> friendsId;
+    private String _id;
+    private String _rev;
+    private String firstname;
+    private String lastname;
+    private List<String> friends;
 
     public User() {}
 
-    public User(String firstName) {
-        id = firstName;
-        this.firstName = firstName;
+    public User(String firstname) {
+        _id = firstname;
+        this.firstname = firstname;
     }
 
-    public User(String firstName, String lastName) {
-        id = firstName + ' ' + lastName;
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public User(String firstname, String lastname) {
+        _id = firstname + ' ' + lastname;
+        this.firstname = firstname;
+        this.lastname = lastname;
+    }
+
+    public User(String _id, String _rev, String firstname, String lastname, List<String> friends) {
+        this._id = _id;
+        this._rev = _rev;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.friends = friends;
     }
 
     public String getUsername() {
-        String username = firstName;
-        if (lastName != null && !lastName.isEmpty()) {
-            username += ' ' + lastName;
+        return _id;
+    }
+
+    public String getFullUsername() {
+        String username = firstname;
+        if (lastname != null && !lastname.isEmpty()) {
+            username += ' ' + lastname;
         }
         return username;
     }
 
-    public List<String> getFriendsId() {
-        return friendsId;
+    public List<String> getFriends() {
+        return friends;
     }
 }

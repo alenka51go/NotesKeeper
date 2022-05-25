@@ -9,8 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.kudasheva.noteskeeper.MyApplication;
+import ru.kudasheva.noteskeeper.data.DBManager;
 import ru.kudasheva.noteskeeper.data.DataRepository;
 import ru.kudasheva.noteskeeper.data.SingleLiveEvent;
+import ru.kudasheva.noteskeeper.data.models.User;
 
 public class FriendsViewModel extends ViewModel {
     private static final String TAG = FriendsViewModel.class.getSimpleName();
@@ -39,20 +41,18 @@ public class FriendsViewModel extends ViewModel {
     }
 
     private List<FriendInfoCard> loadFriends() {
-        List<FriendInfoCard> friendInfoCards = new ArrayList<>();
-        // TODO другая база
-        /*List<String> rawFriends = dataRepo.getFriends();*/
-        List<String> rawFriends = null;
+        // TODO поменять после добавления другой базы
 
-        if (rawFriends != null) {
-            for (String friendInfo : rawFriends) {
-                FriendInfoCard friendInfoCard = new FriendInfoCard(friendInfo);
-                friendInfoCards.add(friendInfoCard);
-            }
+        /*List<User> friends = DBManager.getInstance().getFriends();
+        List<FriendInfoCard> friendInfoCards = new ArrayList<>();
+
+        for (User user : friends) {
+            FriendInfoCard friendInfoCard = new FriendInfoCard(user.getFullUsername());
+            friendInfoCards.add(friendInfoCard);
         }
 
-
-        return friendInfoCards;
+        return friendInfoCards;*/
+        return new ArrayList<>();
     }
 
     enum Commands {

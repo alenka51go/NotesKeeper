@@ -32,42 +32,26 @@
                 android:padding="30dp"
                 android:text="@string/app_name_with_carry"
                 android:textSize="50sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="25">
+            android:layout_weight="20">
 
             <EditText
                 android:id="@+id/login_firstname_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/login_lastname_box"
                 android:layout_centerInParent="true"
                 android:layout_marginHorizontal="35dp"
                 android:layout_marginBottom="67dp"
-                android:autofillHints="@string/firstname"
+                android:autofillHints="@string/nickname"
                 android:background="@drawable/background_corner_input_box"
-                android:hint="@string/firstname"
+                android:hint="@string/nickname"
                 android:inputType="textPersonName"
-                android:text="@={viewModel.firstname}"
-                android:textSize="20sp" />
-
-            <EditText
-                android:id="@+id/login_lastname_box"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-
-                android:layout_centerInParent="true"
-                android:layout_marginHorizontal="35dp"
-                android:autofillHints="@string/lastname"
-                android:background="@drawable/background_corner_input_box"
-                android:hint="@string/lastname"
-                android:inputType="textPersonName"
-                android:text="@={viewModel.lastname}"
+                android:text="@={viewModel.username}"
                 android:textSize="20sp" />
         </RelativeLayout>
 
@@ -75,7 +59,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center"
-            android:layout_weight="25">
+            android:layout_weight="30">
 
             <Button
                 android:id="@+id/log_in_button"
