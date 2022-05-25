@@ -155,7 +155,7 @@ public class DBManager {
         // FIXME: загрузить юзера из базы
         currentUser = new User("testUserId", "1",  "Alena", "Kudasheva", Arrays.asList("testUserId2"));
 
-        databaseReplicator.setPullUserIdFilter(currentUser.getUsername());
+        databaseReplicator.setPullUserIdFilter(inputUsername);
         databaseReplicator.startReplication();
         Log.d(TAG, "Database replication started");
     }

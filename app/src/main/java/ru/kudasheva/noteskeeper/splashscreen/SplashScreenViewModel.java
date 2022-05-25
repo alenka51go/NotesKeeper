@@ -20,7 +20,7 @@ public class SplashScreenViewModel extends ViewModel {
     public MutableLiveData<SplashScreenViewModel.Commands> activityCommand = new MutableLiveData<>();
 
     public void init() {
-        // FIXME: где сохранить файл с именем?
+        // FIXME: где сохранить файл с именем и только ли с именем?
         /*FileInputStream inputStream = null;
         try {
             inputStream = new FileInputStream("../temp/username");
