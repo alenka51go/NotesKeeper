@@ -1,5 +1,6 @@
 package ru.kudasheva.noteskeeper.data;
 
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.couchbase.lite.CouchbaseLiteException;
@@ -65,7 +66,8 @@ public class DBManager {
     private LiveQuery notesQuery;
     private LiveQuery commentQuery;
 
-    private WeakReference<NotesChangeListener> notesChangeListenerWeakRef; // ?
+    private WeakReference<NotesChangeListener> notesChangeListenerWeakRef;
+
 
     public static DBManager getInstance() {
         if (sInstance == null) {
