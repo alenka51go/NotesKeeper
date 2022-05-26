@@ -34,6 +34,7 @@ public class DBManager {
     private static final String TAG = DBManager.class.getSimpleName();
 
     private static final String DATABASE_NAME = "notes_keeper_database";
+    private static final String USER_DATABASE_NAME = "user_database";
 
     private static final String VIEW_USER_NOTES = "user_notes_view";
     private static final String VIEW_USER_COMMENTS = "user_comments_view";
@@ -55,6 +56,10 @@ public class DBManager {
     private Database database;
     private DatabaseReplicator databaseReplicator;
 
+    private Manager userManager;
+    private Database userDatabase;
+    private DatabaseReplicator userDatabaseReplicator;
+
     private View notesView;
     private View commentView;
     private LiveQuery notesQuery;
@@ -70,6 +75,44 @@ public class DBManager {
         return sInstance;
     }
 
+    public void startUserDatabase() {
+        try {
+            userManager = new Manager(
+                    new AndroidContext(MyApplication.getInstance()),
+                    Manager.DEFAULT_OPTIONS
+            );
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to create Manager: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        try {
+            userDatabase = userManager.getDatabase(USER_DATABASE_NAME);
+        } catch (CouchbaseLiteException e) {
+            Log.e(TAG, "Failed to open database: " + e.getMessage());
+            e.printStackTrace();
+            userManager.close();
+        }
+
+        try {
+            userDatabaseReplicator = new DatabaseReplicator(
+                    REMOTE_DATABASE_IP,
+                    REMOTE_DATABASE_PORT,
+                    REMOTE_DATABASE_USERS_NAME,
+                    userDatabase
+            );
+            Log.d(TAG, "User database replicator was initialized");
+        } catch (MalformedURLException e) {
+            Log.d(TAG, "Failed to create replication for User database: " + e.getMessage());
+            e.printStackTrace();
+            userManager.close();
+            return;
+        }
+
+        userDatabaseReplicator.startReplication();
+        Log.d(TAG, "User database replication started");
+    }
+
     public void startNotesDatabase(String inputUsername) {
         try {
             manager = new Manager(
@@ -81,7 +124,13 @@ public class DBManager {
             e.printStackTrace();
         }
 
-        openDatabase();
+        try {
+            database = manager.getDatabase(DATABASE_NAME);
+        } catch (CouchbaseLiteException e) {
+            Log.e(TAG, "Failed to open database: " + e.getMessage());
+            e.printStackTrace();
+            manager.close();
+        }
 
         database.addChangeListener(event -> {
             Log.d(TAG, "Got change event on user notes database");
@@ -152,23 +201,13 @@ public class DBManager {
             return;
         }
 
-        // FIXME: загрузить юзера из базы
-        currentUser = new User("testUserId", "1",  "Alena", "Kudasheva", Arrays.asList("testUserId2"));
+        currentUser = getUser(inputUsername);
 
         databaseReplicator.setPullUserIdFilter(inputUsername);
         databaseReplicator.startReplication();
         Log.d(TAG, "Database replication started");
     }
 
-    private void openDatabase() {
-        try {
-            database = manager.getDatabase(DATABASE_NAME);
-        } catch (CouchbaseLiteException e) {
-            Log.e(TAG, "Failed to open database: " + e.getMessage());
-            e.printStackTrace();
-            manager.close();
-        }
-    }
 
     public void resetDatabase() {
         try {
@@ -177,13 +216,12 @@ public class DBManager {
             Log.e(TAG, "Failed to delete CouchBase lite bases");
             e.printStackTrace();
         }
-
-        openDatabase();
     }
 
     public String getUsername() {
         return currentUser.getUsername();
     }
+
     public String getFullUsername() {
         return currentUser.getFullUsername();
     }
@@ -338,16 +376,63 @@ public class DBManager {
     }
 
     public User getUser(String username) {
-        // TODO загрузить пользователя из базы
+        Document doc = userDatabase.getExistingDocument(username);
+
+        if (null != doc) {
+            Log.d(TAG, "Document with id " + username + " was found.");
+            return Util.convertToUser(doc.getProperties());
+        }
+
+        Log.d(TAG, "There is no such Note in Database + " + username);
         return null;
     }
 
     public boolean checkIfUserExist(String username) {
-        // TODO если полчилось достать док, то классно
-        return true;
+        Document doc = userDatabase.getExistingDocument(username);
+        return doc != null;
     }
 
-    public void addFriend(String username) {
-        // TODO
+    public boolean addFriend(String username) {
+        Document doc = userDatabase.getExistingDocument(currentUser.getUsername());
+
+        if (doc != null) {
+            Log.d(TAG, "Document with id " + username + " was found.");
+            if (currentUser.checkIfFriendAdded(username)) {
+                Log.d(TAG, "User with username " + username + " already added to list of friends");
+                return true;
+            }
+            if (!checkIfUserExist(username)) {
+                Log.d(TAG, "Can't add friend with username " + username + ". Doc wasn't found.");
+                return false;
+            }
+            currentUser.addFriend(username);
+
+            final Map<String, Object> docUserProperties;
+            try {
+                docUserProperties = Util.objectToMap(currentUser);
+                Log.d(TAG, "Convert User to Map: " + docUserProperties);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Could not convert User to Map: " + currentUser.toString());
+                return false;
+            }
+
+            try {
+                doc.update(newRevision -> {
+                    Log.d(TAG, "update");
+
+                    newRevision.setUserProperties(docUserProperties);
+                    return true;
+                });
+            } catch (CouchbaseLiteException e) {
+                Log.d(TAG, "Error!");
+                Log.d(TAG, e.getMessage());
+                e.printStackTrace();
+                return false;
+            }
+        } else {
+            Log.d(TAG, "There is no such user in database + " + username);
+        }
+        return false;
     }
 }

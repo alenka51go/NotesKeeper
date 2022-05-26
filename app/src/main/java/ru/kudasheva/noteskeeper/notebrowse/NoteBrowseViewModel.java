@@ -27,7 +27,7 @@ import ru.kudasheva.noteskeeper.data.models.Note;
 public class NoteBrowseViewModel  extends ViewModel {
     private static final String TAG = NoteBrowseViewModel.class.getSimpleName();
 
-    private final String username = DBManager.getInstance().getFullUsername();
+    private final String username = DBManager.getInstance().getUsername();
     private String noteId;
     public String title;
 

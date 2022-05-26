@@ -18,7 +18,8 @@ import ru.kudasheva.noteskeeper.friends.FriendInfoCard;
 
 public class CreateNoteViewModel extends ViewModel {
     private final List<String> selectedFriends = new ArrayList<>();
-    private final String username = DBManager.getInstance().getFullUsername();
+    private final String username = DBManager.getInstance().getUsername();
+    private final String userFullName = DBManager.getInstance().getFullUsername();
 
     public String title;
     public String noteBody;
@@ -33,7 +34,9 @@ public class CreateNoteViewModel extends ViewModel {
     }
 
     public void onSaveNoteButtonClicked() {
-        selectedFriends.add(username); // чтобы мы тоже отображалдись в пошаренных юзерах
+        selectedFriends.add(username);
+        // TODO подумать как конвертировать друзей обратно в юзернеймы
+        // скорее всего лучше отображать вежде ники, а в активити с друзьми еще и имена с фамилиями
         Note note = new Note(username, title, noteBody,
                 getCurrentDate(), selectedFriends);
         DBManager.getInstance().addNote(note);
@@ -42,34 +45,15 @@ public class CreateNoteViewModel extends ViewModel {
     }
 
     private String[] getContacts() {
-        // TODO поменять, пока там загдушка на пользователей
+        List<User> friends = DBManager.getInstance().getFriends();
 
-        /*List<User> friends = DBManager.getInstance().getFriends();
-
-        String[] friendsFullName = new String[friends.size()];
+        String[] friendsUsername = new String[friends.size()];
 
         for (int i = 0; i < friends.size(); i++) {
             User user = friends.get(i);
-            friendsFullName[i] = user.getFullUsername();
+            friendsUsername[i] = user.getUsername();
         }
-        return friendsFullName;*/
-
-        List<FriendInfoCard> friendsInfo = new ArrayList<>();
-        List<String> rawFriends = null;
-
-        if (rawFriends != null) {
-            for (String friendInfo : rawFriends) {
-                FriendInfoCard friendInfoCard = new FriendInfoCard(friendInfo);
-                friendsInfo.add(friendInfoCard);
-            }
-        }
-
-        String[] friendsNames = new String[friendsInfo.size()];
-
-        for (int i = 0; i < friendsInfo.size(); i++) {
-            friendsNames[i] = friendsInfo.get(i).getName();
-        }
-        return friendsNames;
+        return friendsUsername;
     }
 
     public void okClicked() {
@@ -90,7 +74,7 @@ public class CreateNoteViewModel extends ViewModel {
 
     private String getCurrentDate() {
         Date currentDate = Calendar.getInstance().getTime();
-        SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+        SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy 'at' h:mm a", Locale.getDefault());
         return df.format(currentDate);
     }
 

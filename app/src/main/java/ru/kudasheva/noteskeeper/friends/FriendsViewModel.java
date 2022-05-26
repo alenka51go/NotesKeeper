@@ -26,9 +26,8 @@ public class FriendsViewModel extends ViewModel {
     }
 
     public boolean tryToAddFriend(String username) {
-        // TODO дргуая база
-        /*if (dataRepo.checkIfUserExist(username)) {
-            if (!dataRepo.addNewFriend(username)) {
+        if (DBManager.getInstance().checkIfUserExist(username)) {
+            if (!DBManager.getInstance().addFriend(username)) {
                 Log.d(TAG, "Can't add friend");
             }
             friends.setValue(loadFriends());
@@ -36,14 +35,11 @@ public class FriendsViewModel extends ViewModel {
         } else {
             snackBarMessage.setValue("Can't find user with name " + username);
             return false;
-        }*/
-        return false;
+        }
     }
 
     private List<FriendInfoCard> loadFriends() {
-        // TODO поменять после добавления другой базы
-
-        /*List<User> friends = DBManager.getInstance().getFriends();
+        List<User> friends = DBManager.getInstance().getFriends();
         List<FriendInfoCard> friendInfoCards = new ArrayList<>();
 
         for (User user : friends) {
@@ -51,8 +47,7 @@ public class FriendsViewModel extends ViewModel {
             friendInfoCards.add(friendInfoCard);
         }
 
-        return friendInfoCards;*/
-        return new ArrayList<>();
+        return friendInfoCards;
     }
 
     enum Commands {

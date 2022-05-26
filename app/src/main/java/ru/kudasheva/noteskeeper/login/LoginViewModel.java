@@ -17,20 +17,13 @@ public class LoginViewModel extends ViewModel {
     public void onLogInClicked() {
         String inputUsername = username.getValue();
 
-        // FIXME сделать проверку на существование пользователя в базе, видимо?
-        // TODO тут произвести загрузку пользователя из базы
-        User user = null;
-        /*if (dataRepo.checkIfUserExist(username)) {
-            dataRepo.initDatabase(MyApplication.getAppContext(), username);
+        if (DBManager.getInstance().checkIfUserExist(inputUsername)) {
+            DBManager.getInstance().startNotesDatabase(inputUsername);
             activityCommand.postValue(Commands.OPEN_NOTE_SCROLL_ACTIVITY);
         } else {
-            snackBarMessage.setValue(username + " doesn't exist!");
-        }*/
-
-        DBManager.getInstance().startNotesDatabase(inputUsername);
-        activityCommand.postValue(Commands.OPEN_NOTE_SCROLL_ACTIVITY);
+            snackBarMessage.setValue(inputUsername + " doesn't exist!");
+        }
     }
-
 
     public enum Commands {
         OPEN_NOTE_SCROLL_ACTIVITY

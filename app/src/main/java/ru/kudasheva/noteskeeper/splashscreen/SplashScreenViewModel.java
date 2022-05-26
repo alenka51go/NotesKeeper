@@ -45,6 +45,7 @@ public class SplashScreenViewModel extends ViewModel {
         String username = usernameBuilder.toString();*/
 
         String username = "testUserId";
+        DBManager.getInstance().startUserDatabase();
         DBManager.getInstance().startNotesDatabase(username);
         activityCommand.setValue(Commands.OPEN_NOTESCROLL_ACTIVITY);
     }

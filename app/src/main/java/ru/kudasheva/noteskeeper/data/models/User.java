@@ -45,4 +45,12 @@ public class User {
     public List<String> getFriends() {
         return friends;
     }
+
+    public boolean checkIfFriendAdded(String username) {
+        return friends.contains(username);
+    }
+
+    public void addFriend(String username) {
+        friends.add(username);
+    }
 }
