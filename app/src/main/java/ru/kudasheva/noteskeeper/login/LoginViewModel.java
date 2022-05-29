@@ -1,8 +1,12 @@
 package ru.kudasheva.noteskeeper.login;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import ru.kudasheva.noteskeeper.MyApplication;
 import ru.kudasheva.noteskeeper.data.DBManager;
 import ru.kudasheva.noteskeeper.data.SingleLiveEvent;
 import ru.kudasheva.noteskeeper.data.models.User;
@@ -14,11 +18,19 @@ public class LoginViewModel extends ViewModel {
     public MutableLiveData<Commands> activityCommand = new MutableLiveData<>();
     public MutableLiveData<String> username = new MutableLiveData<>();
 
+    private static final String APP_PREFERENCES = "appsettings";
+    private static final String APP_PREFERENCES_NAME = "appsettings";
+
     public void onLogInClicked() {
         String inputUsername = username.getValue();
 
         if (DBManager.getInstance().checkIfUserExist(inputUsername)) {
-            DBManager.getInstance().startNotesDatabase(inputUsername);
+            SharedPreferences mSettings = MyApplication.getInstance().getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = mSettings.edit();
+            editor.putString(APP_PREFERENCES_NAME, inputUsername);
+            editor.apply();
+
+            DBManager.getInstance().startReplication(inputUsername);
             activityCommand.postValue(Commands.OPEN_NOTE_SCROLL_ACTIVITY);
         } else {
             snackBarMessage.setValue(inputUsername + " doesn't exist!");

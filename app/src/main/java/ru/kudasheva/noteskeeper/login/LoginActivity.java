@@ -35,11 +35,9 @@ public class LoginActivity extends AppCompatActivity {
             if (activityCode == LoginViewModel.Commands.OPEN_NOTE_SCROLL_ACTIVITY) {
                 Intent intent = new Intent(LoginActivity.this, NotesScrollActivity.class);
                 startActivity(intent);
-
                 finish();
             }
         });
-
         loginViewModel.snackBarMessage.observe(this, this::showErrorMessage);
     }
 

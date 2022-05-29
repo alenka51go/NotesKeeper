@@ -1,5 +1,7 @@
 package ru.kudasheva.noteskeeper.splashscreen;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -12,42 +14,29 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import ru.kudasheva.noteskeeper.MyApplication;
 import ru.kudasheva.noteskeeper.data.DBManager;
 
 public class SplashScreenViewModel extends ViewModel {
     private static final String TAG = SplashScreenViewModel.class.getSimpleName();
+    private static final String APP_PREFERENCES = "appsettings";
+    private static final String APP_PREFERENCES_NAME = "appsettings";
 
     public MutableLiveData<SplashScreenViewModel.Commands> activityCommand = new MutableLiveData<>();
 
     public void init() {
-        // FIXME: где сохранить файл с именем и только ли с именем?
-        /*FileInputStream inputStream = null;
-        try {
-            inputStream = new FileInputStream("../temp/username");
-        } catch (FileNotFoundException e) {
-            Log.d(TAG, "User doesn't log in");
+        DBManager.getInstance().startUserDatabase();
+        DBManager.getInstance().startNotesDatabase();
+
+        SharedPreferences mSettings = MyApplication.getInstance().getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        String username = mSettings.getString(APP_PREFERENCES_NAME, null);
+
+        if (username != null) {
+            DBManager.getInstance().startReplication(username);
+            activityCommand.setValue(Commands.OPEN_NOTESCROLL_ACTIVITY);
+        } else {
             activityCommand.setValue(Commands.OPEN_LOGIN_ACTIVITY);
         }
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        StringBuilder usernameBuilder = new StringBuilder();
-        while (true) {
-            String line;
-            try {
-                if ((line = reader.readLine()) == null) break;
-            } catch (IOException e) {
-                Log.d(TAG, "Can't load username from file");
-                break;
-            }
-            usernameBuilder.append(line);
-        }
-
-        String username = usernameBuilder.toString();*/
-
-        String username = "testUserId";
-        DBManager.getInstance().startUserDatabase();
-        DBManager.getInstance().startNotesDatabase(username);
-        activityCommand.setValue(Commands.OPEN_NOTESCROLL_ACTIVITY);
     }
 
     enum Commands {

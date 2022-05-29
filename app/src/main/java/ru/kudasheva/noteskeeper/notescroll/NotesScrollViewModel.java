@@ -1,11 +1,15 @@
 package ru.kudasheva.noteskeeper.notescroll;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.kudasheva.noteskeeper.MyApplication;
 import ru.kudasheva.noteskeeper.data.DBManager;
 import ru.kudasheva.noteskeeper.data.models.Note;
 
@@ -20,6 +24,9 @@ public class NotesScrollViewModel extends ViewModel {
     public MutableLiveData<NotesScrollViewModel.Commands> activityCommand = new MutableLiveData<>();
     public NoteShortCard noteToShow;
 
+    private static final String APP_PREFERENCES = "appsettings";
+    private static final String APP_PREFERENCES_NAME = "appsettings";
+
     public List<NoteShortCard> loadShortNodes() {
         List<Note> rawNotes = DBManager.getInstance().getUserNotes();
         List<NoteShortCard> shortNotes = new ArrayList<>();
@@ -30,7 +37,6 @@ public class NotesScrollViewModel extends ViewModel {
                 shortNotes.add(shortNote);
             }
         }
-
         return shortNotes;
     }
 
@@ -47,6 +53,11 @@ public class NotesScrollViewModel extends ViewModel {
     }
 
     public void onChangeUserButtonClicked() {
+        SharedPreferences mSettings = MyApplication.getInstance().getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = mSettings.edit();
+        editor.putString(APP_PREFERENCES_NAME, null);
+        editor.apply();
+
         DBManager.getInstance().resetDatabase();
         activityCommand.setValue(Commands.OPEN_LOGIN_ACTIVITY);
     }

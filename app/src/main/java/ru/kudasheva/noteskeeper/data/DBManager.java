@@ -117,7 +117,7 @@ public class DBManager {
         Log.d(TAG, "User database replication started");
     }
 
-    public void startNotesDatabase(String inputUsername) {
+    public void startNotesDatabase() {
         try {
             manager = new Manager(
                     new AndroidContext(MyApplication.getInstance()),
@@ -212,17 +212,22 @@ public class DBManager {
             return;
         }
 
+        Log.d(TAG, "Database replication started");
+    }
+
+    public void startReplication(String inputUsername) {
         currentUser = getUser(inputUsername);
 
         databaseReplicator.setPullUserIdFilter(inputUsername);
         databaseReplicator.startReplication();
-        Log.d(TAG, "Database replication started");
     }
 
 
     public void resetDatabase() {
         try {
+            databaseReplicator.stopReplication();
             database.delete();
+            startNotesDatabase();
         } catch (CouchbaseLiteException e) {
             Log.e(TAG, "Failed to delete CouchBase lite bases");
             e.printStackTrace();

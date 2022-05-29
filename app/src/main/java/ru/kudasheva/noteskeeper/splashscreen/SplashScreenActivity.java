@@ -11,7 +11,7 @@ import ru.kudasheva.noteskeeper.notescroll.NotesScrollActivity;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
-    SplashScreenViewModel splashScreenViewModel;
+    private SplashScreenViewModel splashScreenViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
