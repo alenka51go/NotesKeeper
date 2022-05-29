@@ -61,15 +61,14 @@ public class NoteBrowseViewModel  extends ViewModel {
     private List<InfoCard> updateData() {
         Note note = DBManager.getInstance().getNote(noteId);
 
-        NoteFullCard noteFullCard = new NoteFullCard(noteId, note.getText(), note.getUserId(), note.getDate());
+        NoteFullCard noteFullCard = NoteFullCard.from(note);
         List<InfoCard> resultList = new ArrayList<>(Collections.singletonList(noteFullCard));
 
         List<InfoCard> commentsList = new ArrayList<>();
 
         List<Comment> rawComments = DBManager.getInstance().getComments(note.get_id());
         for (Comment comment : rawComments) {
-            CommentInfoCard commentInfoCard = new CommentInfoCard(comment.get_id(),
-                    comment.getText(), comment.getUserId(), comment.getDate());
+            CommentInfoCard commentInfoCard = CommentInfoCard.from(comment);
             commentsList.add(commentInfoCard);
         }
 

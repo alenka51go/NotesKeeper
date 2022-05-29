@@ -53,8 +53,8 @@ public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdap
                         case UPDATED:
                             dataSet.add(new CommentInfoCard(documentId,
                                     (String) properties.get("text"),
-                                    (String) properties.get("text"),
-                                    (String) properties.get("userId")));
+                                    (String) properties.get("userId"),
+                                    (String) properties.get("date")));
                             notifyItemChanged(dataSet.size() - 1);
                             Log.d(TAG, "Item " + documentId + " inserted to position " + (dataSet.size() - 1));
                             break;
@@ -69,8 +69,8 @@ public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdap
                         case UPDATED:
                             dataSet.set(pos, new CommentInfoCard(documentId,
                                     (String) properties.get("text"),
-                                    (String) properties.get("text"),
-                                    (String) properties.get("userId")));
+                                    (String) properties.get("userId"),
+                                    (String) properties.get("date")));
                             notifyItemChanged(pos);
                             Log.d(TAG, "Item at position " + pos + " changed");
                             break;
