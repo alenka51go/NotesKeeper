@@ -10,6 +10,8 @@ import ru.kudasheva.noteskeeper.data.DBManager;
 import ru.kudasheva.noteskeeper.data.models.Note;
 
 public class NotesScrollViewModel extends ViewModel {
+    private static final String TAG = NotesScrollViewModel.class.getSimpleName();
+
     private boolean isMenuOpen = false;
 
     public String username = DBManager.getInstance().getFullUsername();
@@ -30,6 +32,10 @@ public class NotesScrollViewModel extends ViewModel {
         }
 
         return shortNotes;
+    }
+
+    public void update() {
+        notes.setValue(loadShortNodes());
     }
 
     public void onCreateNoteButtonClicked() {
@@ -65,11 +71,6 @@ public class NotesScrollViewModel extends ViewModel {
         noteToShow = note;
         activityCommand.setValue(Commands.OPEN_BROWSE_NOTE_ACTIVITY);
     }
-
-    public void onResume() {
-        notes.setValue(loadShortNodes());
-    }
-
 
     public enum Commands {
         OPEN_CREATE_NOTE_ACTIVITY,

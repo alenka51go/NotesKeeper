@@ -51,33 +51,30 @@ public class NoteBrowseViewModel  extends ViewModel {
         Comment comment = new Comment(username, note.get_id(), commentText, getCurrentDate(), note.getSharedUsers());
         DBManager.getInstance().addComment(comment);
 
-        // FIXME: не успевает обновиться локальная база
-        try {
-            Thread.sleep(50);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        dataContainer.setValue(updateData());
         userCommentLiveData.set("");
+    }
+
+    public void update() {
+        dataContainer.setValue(updateData());
     }
 
     private List<InfoCard> updateData() {
         Note note = DBManager.getInstance().getNote(noteId);
 
         NoteFullCard noteFullCard = new NoteFullCard(noteId, note.getText(), note.getUserId(), note.getDate());
-        List<InfoCard> noteList = new ArrayList<>(Collections.singletonList(noteFullCard));
+        List<InfoCard> resultList = new ArrayList<>(Collections.singletonList(noteFullCard));
 
         List<InfoCard> commentsList = new ArrayList<>();
 
         List<Comment> rawComments = DBManager.getInstance().getComments(note.get_id());
         for (Comment comment : rawComments) {
-            CommentInfoCard commentInfoCard = new CommentInfoCard(comment.getText(),
-                    comment.getUserId(), comment.getDate());
+            CommentInfoCard commentInfoCard = new CommentInfoCard(comment.get_id(),
+                    comment.getText(), comment.getUserId(), comment.getDate());
             commentsList.add(commentInfoCard);
         }
 
-        noteList.addAll(sortedCommentsByDate(commentsList));
-        return noteList;
+        resultList.addAll(sortedCommentsByDate(commentsList));
+        return resultList;
     }
 
     private List<InfoCard> sortedCommentsByDate(List<InfoCard> commentsList) {

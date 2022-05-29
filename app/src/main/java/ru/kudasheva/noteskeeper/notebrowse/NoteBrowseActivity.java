@@ -1,6 +1,8 @@
 package ru.kudasheva.noteskeeper.notebrowse;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
@@ -11,16 +13,18 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import ru.kudasheva.noteskeeper.R;
 import ru.kudasheva.noteskeeper.databinding.ActivityNoteBrowseBinding;
 
-public class NoteBrowseActivity extends AppCompatActivity {
+public class NoteBrowseActivity extends AppCompatActivity  implements SwipeRefreshLayout.OnRefreshListener  {
     private static final String TAG = NoteBrowseActivity.class.getSimpleName();
 
     private NoteBrowseViewModel noteBrowseViewModel;
     private ActivityNoteBrowseBinding binding;
     private MultipleTypesAdapter adapter;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +35,9 @@ public class NoteBrowseActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_note_browse);
         binding.setViewModel(noteBrowseViewModel);
         setRecyclerView();
+
+        mSwipeRefreshLayout = binding.swipeContainer;
+        mSwipeRefreshLayout.setOnRefreshListener(this);
 
         observeLiveData();
     }
@@ -71,7 +78,7 @@ public class NoteBrowseActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         binding.recyclerViewNoteAndComments.setLayoutManager(layoutManager);
 
-        adapter = new MultipleTypesAdapter();
+        adapter = new MultipleTypesAdapter(this);
         binding.recyclerViewNoteAndComments.setAdapter(adapter);
     }
 
@@ -80,4 +87,12 @@ public class NoteBrowseActivity extends AppCompatActivity {
         toast.show();
     }
 
+    @Override
+    public void onRefresh() {
+        Log.d(TAG, "Refresh recycled container");
+        new Handler().postDelayed(() -> {
+            noteBrowseViewModel.update();
+            mSwipeRefreshLayout.setRefreshing(false);
+        }, 1500);
+    }
 }

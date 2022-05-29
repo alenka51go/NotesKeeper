@@ -4,6 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -12,6 +14,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import ru.kudasheva.noteskeeper.R;
 import ru.kudasheva.noteskeeper.databinding.ActivityNotesScrollBinding;
@@ -20,13 +23,14 @@ import ru.kudasheva.noteskeeper.createnote.CreateNoteActivity;
 import ru.kudasheva.noteskeeper.friends.FriendsActivity;
 import ru.kudasheva.noteskeeper.notebrowse.NoteBrowseActivity;
 
-public class NotesScrollActivity extends AppCompatActivity {
+public class NotesScrollActivity extends AppCompatActivity  implements SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = NotesScrollActivity.class.getSimpleName();
 
     private NotesScrollViewModel notesScrollViewModel;
     private ActivityNotesScrollBinding binding;
 
     private CustomRecyclerAdapter noteAdapter;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,13 +41,10 @@ public class NotesScrollActivity extends AppCompatActivity {
         binding.setViewModel(notesScrollViewModel);
         setRecyclerView();
 
-        observeLiveData();
-    }
+        mSwipeRefreshLayout = binding.swipeContainer;
+        mSwipeRefreshLayout.setOnRefreshListener(this);
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        notesScrollViewModel.onResume();
+        observeLiveData();
     }
 
     private void observeLiveData() {
@@ -103,7 +104,16 @@ public class NotesScrollActivity extends AppCompatActivity {
         CustomRecyclerAdapter.OnNoteClickListener onUserClickListener = note ->
                 notesScrollViewModel.clickedOnNote(note);
 
-        noteAdapter = new CustomRecyclerAdapter(onUserClickListener);
+        noteAdapter = new CustomRecyclerAdapter(onUserClickListener, this);
         binding.recyclerViewNotesShortCard.setAdapter(noteAdapter);
+    }
+
+    @Override
+    public void onRefresh() {
+        Log.d(TAG, "Refresh recycled container");
+        new Handler().postDelayed(() -> {
+            notesScrollViewModel.update();
+            mSwipeRefreshLayout.setRefreshing(false);
+        }, 1500);
     }
 }

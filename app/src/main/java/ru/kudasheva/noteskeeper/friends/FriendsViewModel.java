@@ -50,6 +50,10 @@ public class FriendsViewModel extends ViewModel {
         return friendInfoCards;
     }
 
+    public void update() {
+        friends.setValue(loadFriends());
+    }
+
     enum Commands {
         OPEN_DIALOG
     }

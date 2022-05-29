@@ -1,6 +1,5 @@
 package ru.kudasheva.noteskeeper.data;
 
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.couchbase.lite.CouchbaseLiteException;
@@ -20,10 +19,10 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 import ru.kudasheva.noteskeeper.MyApplication;
 import ru.kudasheva.noteskeeper.data.models.Comment;
@@ -66,8 +65,7 @@ public class DBManager {
     private LiveQuery notesQuery;
     private LiveQuery commentQuery;
 
-    private WeakReference<NotesChangeListener> notesChangeListenerWeakRef;
-
+    private final Map<Integer, WeakReference<ChangeListener>> changeListenerWeakRef = new ConcurrentHashMap<>();
 
     public static DBManager getInstance() {
         if (sInstance == null) {
@@ -75,6 +73,10 @@ public class DBManager {
             Log.d(TAG, "DBManager created");
         }
         return sInstance;
+    }
+
+    public void setNotesChangeListener(int hash, ChangeListener listener) {
+        changeListenerWeakRef.put(hash, new WeakReference<>(listener));
     }
 
     public void startUserDatabase() {
@@ -144,22 +146,29 @@ public class DBManager {
                 Log.d(TAG, "Doc from db: " + doc);
 
                 Map<String, Object> properties = null;
+                ChangeListener.Event docEvent;
 
                 if (doc == null) { // Doc is deleted
+                    docEvent = ChangeListener.Event.DELETED;
                     Log.d(TAG, "Doc " + change.getDocumentId() + " is deleted");
                 } else {
+                    docEvent = ChangeListener.Event.UPDATED;
                     Log.d(TAG, "Doc prop: " + doc.getProperties());
                     properties = doc.getProperties();
                 }
 
                 Log.d(TAG, "Changed doc (JSON): " + properties);
 
-                if (notesChangeListenerWeakRef != null) {
-                    NotesChangeListener listener = notesChangeListenerWeakRef.get();
-                    if (listener != null) {
-                        // TODO: pass document parameters
-                        listener.onChange(change.getDocumentId());
+                for (Integer key : changeListenerWeakRef.keySet()) {
+                    WeakReference<ChangeListener> reference = changeListenerWeakRef.get(key);
+
+                    ChangeListener listener = reference.get();
+                    if (listener == null) {
+                        changeListenerWeakRef.remove(key);
+                        continue;
                     }
+
+                    listener.onChange(change.getDocumentId(), docEvent, properties);
                 }
             }
         });

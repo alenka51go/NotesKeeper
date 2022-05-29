@@ -5,23 +5,27 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.widget.Toast;
 
 import ru.kudasheva.noteskeeper.R;
 import ru.kudasheva.noteskeeper.databinding.ActivityFriendsBinding;
 import ru.kudasheva.noteskeeper.databinding.DialogBoxBinding;
 
-public class FriendsActivity extends AppCompatActivity {
+public class FriendsActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = FriendsActivity.class.getSimpleName();
 
     private FriendsViewModel friendsViewModel;
     private ActivityFriendsBinding binding;
 
     private FriendsRecyclerAdapter friendsAdapter;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +35,9 @@ public class FriendsActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_friends);
         binding.setViewModel(friendsViewModel);
         setRecyclerView();
+
+        mSwipeRefreshLayout = binding.swipeContainer;
+        mSwipeRefreshLayout.setOnRefreshListener(this);
 
         observeLiveData();
     }
@@ -81,5 +88,14 @@ public class FriendsActivity extends AppCompatActivity {
     private void showErrorMessage(String errorMessage) {
         Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_LONG);
         toast.show();
+    }
+
+    @Override
+    public void onRefresh() {
+        Log.d(TAG, "Refresh recycled container");
+        new Handler().postDelayed(() -> {
+            friendsViewModel.update();
+            mSwipeRefreshLayout.setRefreshing(false);
+        }, 1500);
     }
 }

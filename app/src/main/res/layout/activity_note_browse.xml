@@ -3,82 +3,87 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="viewModel"
             type="ru.kudasheva.noteskeeper.notebrowse.NoteBrowseViewModel" />
     </data>
 
-    <LinearLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:weightSum="100">
+        android:layout_height="match_parent">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginHorizontal="10dp"
-            android:paddingHorizontal="5dp"
-            android:layout_weight="8">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:weightSum="100">
 
-            <TextView
-                android:id="@+id/title_box"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:layout_toStartOf="@+id/button_action"
-                android:text="@{viewModel.title}"
-                android:textSize="40sp" />
-
-            <Button
-                android:id="@+id/button_action"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerInParent="true"
-                android:onClick="@{v -> viewModel.onActionMenuClicked()}"
-                android:text="@string/actions" />
-        </RelativeLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view_note_and_comments"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginHorizontal="10dp"
-            android:layout_weight="82"
-            tools:listitem="@layout/note" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginHorizontal="15dp"
-            android:layout_weight="10">
-
-            <EditText
-                android:id="@+id/comment_box"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_centerInParent="true"
-                android:layout_marginEnd="5dp"
-                android:layout_toStartOf="@id/send_button"
-                android:autofillHints="@string/leave_a_comment"
-                android:hint="@string/leave_a_comment"
-                android:inputType="textMultiLine"
-                android:maxLines="4"
-                android:text="@={viewModel.userCommentLiveData}" />
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="10dp"
+                android:layout_weight="8"
+                android:paddingHorizontal="5dp">
 
-            <Button
-                android:id="@+id/send_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerInParent="true"
-                android:onClick="@{v -> viewModel.onSendButtonClicked()}"
-                android:text="@string/send" />
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/title_box"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_toStartOf="@+id/button_action"
+                    android:text="@{viewModel.title}"
+                    android:textSize="40sp" />
 
-    </LinearLayout>
+                <Button
+                    android:id="@+id/button_action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerInParent="true"
+                    android:onClick="@{v -> viewModel.onActionMenuClicked()}"
+                    android:text="@string/actions" />
+            </RelativeLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view_note_and_comments"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="10dp"
+                android:layout_weight="82"
+                tools:listitem="@layout/note" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="15dp"
+                android:layout_weight="10">
+
+                <EditText
+                    android:id="@+id/comment_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginEnd="5dp"
+                    android:layout_toStartOf="@id/send_button"
+                    android:autofillHints="@string/leave_a_comment"
+                    android:hint="@string/leave_a_comment"
+                    android:inputType="textMultiLine"
+                    android:maxLines="4"
+                    android:text="@={viewModel.userCommentLiveData}" />
+
+                <Button
+                    android:id="@+id/send_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerInParent="true"
+                    android:onClick="@{v -> viewModel.onSendButtonClicked()}"
+                    android:text="@string/send" />
+            </RelativeLayout>
+
+        </LinearLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </layout>
