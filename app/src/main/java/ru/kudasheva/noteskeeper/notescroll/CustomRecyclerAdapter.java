@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
 
     private int getIndexOfItemByDocumentId(String documentId) {
         for (int i = 0; i < noteList.size(); i++) {
-            if (noteList.get(i).id.equals(documentId)) {
+            if (noteList.get(i).getId().equals(documentId)) {
                 return i;
             }
         }
@@ -101,8 +102,12 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
     }
 
     public void setItems(Collection<NoteShortCard> notes) {
+        NoteDiffUtilCallback noteDiffUtilCallback =
+                new NoteDiffUtilCallback(noteList, (List<NoteShortCard>) notes);
+        DiffUtil.DiffResult noteDiffResult = DiffUtil.calculateDiff(noteDiffUtilCallback);
+
         noteList = (List<NoteShortCard>) notes;
-        notifyDataSetChanged();
+        noteDiffResult.dispatchUpdatesTo(this);
     }
 
     class CustomViewHolder extends RecyclerView.ViewHolder {
@@ -120,5 +125,40 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
 
     public interface OnNoteClickListener {
         void onNoteClick(NoteShortCard note);
+    }
+
+    public static class NoteDiffUtilCallback extends DiffUtil.Callback {
+        private final List<NoteShortCard> oldList;
+        private final List<NoteShortCard> newList;
+
+        public NoteDiffUtilCallback(List<NoteShortCard> oldList, List<NoteShortCard> newList) {
+            this.oldList = oldList;
+            this.newList = newList;
+        }
+
+        @Override
+        public int getOldListSize() {
+            return oldList.size();
+        }
+
+        @Override
+        public int getNewListSize() {
+            return newList.size();
+        }
+
+        @Override
+        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+            NoteShortCard oldNote = oldList.get(oldItemPosition);
+            NoteShortCard newNote = newList.get(newItemPosition);
+            return oldNote.getId().equals(newNote.getId());
+        }
+
+        @Override
+        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            NoteShortCard oldProduct = oldList.get(oldItemPosition);
+            NoteShortCard newProduct = newList.get(newItemPosition);
+            return oldProduct.getHeader().equals(newProduct.getHeader())
+                    && oldProduct.getDate().equals(newProduct.getDate());
+        }
     }
 }

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -34,12 +35,10 @@ public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdap
 
             String currentNoteId = getCurrentNoteId();
             if (properties != null) {
-                if (Objects.equals(properties.get("type"), "note")) {
-                    // не подразумевается, что заметка может обновиться
+                if (Objects.equals(properties.get("type"), "note")) {  // не подразумевается, что заметка может обновиться
                     return;
                 }
-                if (!Objects.equals(properties.get("noteId"), currentNoteId)) {
-                    // не инетересуют комменты не по нашей заметке
+                if (!Objects.equals(properties.get("noteId"), currentNoteId)) {  // не инетересуют комменты не по нашей заметке
                     return;
                 }
             }
@@ -102,8 +101,12 @@ public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdap
     }
 
     void setItems(List<InfoCard> dates) {
+        MultipleTypesAdapter.MultiDiffUtilCallback cardDiffUtilCallback =
+                new MultipleTypesAdapter.MultiDiffUtilCallback(dataSet, dates);
+        DiffUtil.DiffResult cardDiffResult = DiffUtil.calculateDiff(cardDiffUtilCallback);
+
         dataSet = dates;
-        notifyDataSetChanged();
+        cardDiffResult.dispatchUpdatesTo(this);
     }
 
     @Override
@@ -166,6 +169,44 @@ public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdap
         @Override
         void bindContent(InfoCard item) {
             binding.setComment((CommentInfoCard) item);
+        }
+    }
+
+    public static class MultiDiffUtilCallback extends DiffUtil.Callback {
+        private final List<InfoCard> oldList;
+        private final List<InfoCard> newList;
+
+        public MultiDiffUtilCallback(List<InfoCard> oldList, List<InfoCard> newList) {
+            this.oldList = oldList;
+            this.newList = newList;
+        }
+
+        @Override
+        public int getOldListSize() {
+            return oldList.size();
+        }
+
+        @Override
+        public int getNewListSize() {
+            return newList.size();
+        }
+
+        @Override
+        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+            InfoCard oldCard = oldList.get(oldItemPosition);
+            InfoCard newCard = newList.get(newItemPosition);
+            return oldCard.getId().equals(newCard.getId());
+        }
+
+        @Override
+        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            InfoCard oldCard = oldList.get(oldItemPosition);
+            InfoCard newCard = newList.get(newItemPosition);
+
+            return oldCard.getType() == newCard.getType()
+                    && oldCard.getDate().equals(newCard.getDate())
+                    && oldCard.getName().equals(newCard.getName())
+                    && oldCard.getText().equals(newCard.getText());
         }
     }
 }
