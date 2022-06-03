@@ -19,6 +19,7 @@ import java.util.Objects;
 
 import ru.kudasheva.noteskeeper.data.ChangeListener;
 import ru.kudasheva.noteskeeper.data.DBManager;
+import ru.kudasheva.noteskeeper.data.models.User;
 import ru.kudasheva.noteskeeper.databinding.CommentBinding;
 import ru.kudasheva.noteskeeper.databinding.NoteBinding;
 import ru.kudasheva.noteskeeper.notescroll.CustomRecyclerAdapter;
@@ -43,17 +44,18 @@ public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdap
                 }
             }
 
-            int pos = getIndexOfItemByDocumentId(documentId);
 
             activity.runOnUiThread(() -> {
+                int pos = getIndexOfItemByDocumentId(documentId);
                 if (pos == -1) {
                     switch (event) {
                         case DELETED:
                             break;
                         case UPDATED:
+                            User user = DBManager.getInstance().getUser((String) properties.get("userId"));
                             dataSet.add(new CommentInfoCard(documentId,
                                     (String) properties.get("text"),
-                                    (String) properties.get("userId"),
+                                    user.getFullUsername(),
                                     (String) properties.get("date")));
                             notifyItemChanged(dataSet.size() - 1);
                             Log.d(TAG, "Item " + documentId + " inserted to position " + (dataSet.size() - 1));
@@ -67,9 +69,10 @@ public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdap
                             Log.d(TAG, "Item at position " + pos + " removed");
                             break;
                         case UPDATED:
+                            User user = DBManager.getInstance().getUser((String) properties.get("userId"));
                             dataSet.set(pos, new CommentInfoCard(documentId,
                                     (String) properties.get("text"),
-                                    (String) properties.get("userId"),
+                                    user.getFullUsername(),
                                     (String) properties.get("date")));
                             notifyItemChanged(pos);
                             Log.d(TAG, "Item at position " + pos + " changed");

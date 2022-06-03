@@ -7,9 +7,9 @@ public class CommentInfoCard extends InfoCard {
         super(id, note, name, date);
     }
 
-    public static CommentInfoCard from(Comment comment) {
+    public static CommentInfoCard from(Comment comment, String username) {
         return new CommentInfoCard(comment.get_id(), comment.getText(),
-                comment.getUserId(), comment.getDate());
+                username, comment.getDate());
     }
 
 

@@ -23,11 +23,13 @@ import ru.kudasheva.noteskeeper.data.DBManager;
 import ru.kudasheva.noteskeeper.data.SingleLiveEvent;
 import ru.kudasheva.noteskeeper.data.models.Comment;
 import ru.kudasheva.noteskeeper.data.models.Note;
+import ru.kudasheva.noteskeeper.data.models.User;
 
 public class NoteBrowseViewModel  extends ViewModel {
     private static final String TAG = NoteBrowseViewModel.class.getSimpleName();
 
     private final String username = DBManager.getInstance().getUsername();
+    private final String fullUsername = DBManager.getInstance().getFullUsername();
     private String noteId;
     public String title;
 
@@ -61,14 +63,15 @@ public class NoteBrowseViewModel  extends ViewModel {
     private List<InfoCard> updateData() {
         Note note = DBManager.getInstance().getNote(noteId);
 
-        NoteFullCard noteFullCard = NoteFullCard.from(note);
+        NoteFullCard noteFullCard = NoteFullCard.from(note, fullUsername);
         List<InfoCard> resultList = new ArrayList<>(Collections.singletonList(noteFullCard));
 
         List<InfoCard> commentsList = new ArrayList<>();
 
         List<Comment> rawComments = DBManager.getInstance().getComments(note.get_id());
         for (Comment comment : rawComments) {
-            CommentInfoCard commentInfoCard = CommentInfoCard.from(comment);
+            User user = DBManager.getInstance().getUser(comment.getUserId());
+            CommentInfoCard commentInfoCard = CommentInfoCard.from(comment, user.getFullUsername());
             commentsList.add(commentInfoCard);
         }
 

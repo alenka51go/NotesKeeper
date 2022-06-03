@@ -46,9 +46,9 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
             if (properties != null && Objects.equals(properties.get("type"), "comment")) {
                 return;
             }
-            int pos = getIndexOfItemByDocumentId(documentId);
 
             parentActivity.runOnUiThread(() -> {
+                int pos = getIndexOfItemByDocumentId(documentId);
                 if (pos == -1) {
                     switch (event) {
                         case DELETED:

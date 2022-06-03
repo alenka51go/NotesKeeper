@@ -8,8 +8,8 @@ public class NoteFullCard extends InfoCard {
         super(id, note, name, date);
     }
 
-    public static NoteFullCard from(Note note) {
-        return new NoteFullCard(note.get_id(), note.getText(), note.getUserId(), note.getDate());
+    public static NoteFullCard from(Note note, String username) {
+        return new NoteFullCard(note.get_id(), note.getText(), username, note.getDate());
     }
 
     @Override
