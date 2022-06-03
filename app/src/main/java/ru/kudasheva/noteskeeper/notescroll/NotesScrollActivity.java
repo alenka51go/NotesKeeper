@@ -52,20 +52,16 @@ public class NotesScrollActivity extends AppCompatActivity  implements SwipeRefr
             if (activityCode == NotesScrollViewModel.Commands.OPEN_CREATE_NOTE_ACTIVITY) {
                 Intent intent = new Intent(NotesScrollActivity.this, CreateNoteActivity.class);
                 startActivity(intent);
-
             } else if (activityCode == NotesScrollViewModel.Commands.OPEN_FRIENDS_LIST_ACTIVITY) {
                 Intent intent = new Intent(NotesScrollActivity.this, FriendsActivity.class);
                 startActivity(intent);
-
             } else if (activityCode == NotesScrollViewModel.Commands.OPEN_LOGIN_ACTIVITY) {
                 Intent intent = new Intent(NotesScrollActivity.this, LoginActivity.class);
                 startActivity(intent);
-
             } else if (activityCode == NotesScrollViewModel.Commands.OPEN_BROWSE_NOTE_ACTIVITY) {
                 Intent intent = new Intent(NotesScrollActivity.this, NoteBrowseActivity.class);
                 intent.putExtra("Id", notesScrollViewModel.noteToShow.getId());
                 startActivity(intent);
-
             } else if (activityCode == NotesScrollViewModel.Commands.OPEN_MENU) {
                 binding.fabAddNoteAction.setVisibility(View.VISIBLE);
                 binding.fabAddContactAction.setVisibility(View.VISIBLE);

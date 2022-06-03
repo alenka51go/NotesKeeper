@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import ru.kudasheva.noteskeeper.data.DBManager;
 import ru.kudasheva.noteskeeper.data.models.Note;
@@ -25,6 +26,7 @@ public class CreateNoteViewModel extends ViewModel {
     public String noteBody;
 
     public final String[]  contactList  = getContacts();
+    public List<String> usernameContactList;
     public final boolean[] checkedItems = new boolean[contactList.length];
 
     public MutableLiveData<CreateNoteViewModel.Commands> activityCommand = new MutableLiveData<>();
@@ -35,8 +37,6 @@ public class CreateNoteViewModel extends ViewModel {
 
     public void onSaveNoteButtonClicked() {
         selectedFriends.add(username);
-        // TODO подумать как конвертировать друзей обратно в юзернеймы
-        // скорее всего лучше отображать вежде ники, а в активити с друзьми еще и имена с фамилиями
         Note note = new Note(username, title, noteBody,
                 getCurrentDate(), selectedFriends);
         DBManager.getInstance().addNote(note);
@@ -48,18 +48,21 @@ public class CreateNoteViewModel extends ViewModel {
         List<User> friends = DBManager.getInstance().getFriends();
 
         String[] friendsUsername = new String[friends.size()];
+        usernameContactList = new ArrayList<>();
 
         for (int i = 0; i < friends.size(); i++) {
             User user = friends.get(i);
-            friendsUsername[i] = user.getUsername();
+            usernameContactList.add(user.getUsername());
+            friendsUsername[i] = user.getFullUsername();
         }
         return friendsUsername;
     }
 
     public void okClicked() {
+        selectedFriends.clear();
         for (int i = 0; i < checkedItems.length; i++) {
-            if (checkedItems[i] && !selectedFriends.contains(contactList[i])) {
-                selectedFriends.add(contactList[i]);
+            if (checkedItems[i]) {
+                selectedFriends.add(usernameContactList.get(i));
             }
         }
     }

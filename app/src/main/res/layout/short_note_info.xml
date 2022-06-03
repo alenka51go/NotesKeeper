@@ -2,35 +2,53 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
+
         <variable
             name="shortNote"
             type="ru.kudasheva.noteskeeper.notescroll.NoteShortCard" />
     </data>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="6dp"
-        android:background="@color/note"
-        android:orientation="vertical">
+        android:background="@color/note">
 
-        <TextView
-            android:id="@+id/notes_header"
+        <LinearLayout
+            android:id="@+id/text_block"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/notes_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="6dp"
+                android:text="@{shortNote.header}"
+                android:textSize="@dimen/short_note_header" />
+
+            <TextView
+                android:id="@+id/notes_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"
+                android:text="@{shortNote.date}"
+                android:textSize="@dimen/short_note_date" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="6dp"
-            android:text="@{shortNote.header}"
-            android:textSize="@dimen/short_note_header" />
+            android:contentDescription="@string/note_img"
+            android:layout_alignEnd="@id/text_block"
+            android:layout_alignTop="@id/text_block"
+            android:layout_marginEnd="5dp"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/ic_baseline_assignment_ind_24" />
 
-        <TextView
-            android:id="@+id/notes_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="10dp"
-            android:text="@{shortNote.date}"
-            android:textSize="@dimen/short_note_date" />
-
-    </LinearLayout>
+    </RelativeLayout>
 </layout>

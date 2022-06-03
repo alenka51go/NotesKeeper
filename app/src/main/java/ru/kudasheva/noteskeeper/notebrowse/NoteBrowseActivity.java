@@ -34,6 +34,7 @@ public class NoteBrowseActivity extends AppCompatActivity  implements SwipeRefre
         noteBrowseViewModel.preloadData(getIntent().getExtras().getString("Id"));
         binding = DataBindingUtil.setContentView(this, R.layout.activity_note_browse);
         binding.setViewModel(noteBrowseViewModel);
+        binding.setLifecycleOwner(this);
         setRecyclerView();
 
         mSwipeRefreshLayout = binding.swipeContainer;

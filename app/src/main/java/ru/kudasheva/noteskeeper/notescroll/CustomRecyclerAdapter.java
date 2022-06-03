@@ -26,6 +26,7 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
     private List<NoteShortCard> noteList = new ArrayList<>();
     private final OnNoteClickListener onNoteClickListener;
     private final Activity parentActivity;
+    private final ChangeListener changeListener;
 
     private int getIndexOfItemByDocumentId(String documentId) {
         for (int i = 0; i < noteList.size(); i++) {
@@ -40,7 +41,7 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
         this.onNoteClickListener = onUserClickListener;
         parentActivity = activity;
 
-        ChangeListener changeListener = (documentId, event, properties) -> {
+        changeListener = (documentId, event, properties) -> {
             Log.d(TAG, "Document with id " + documentId + " was " + event);
             if (properties != null && Objects.equals(properties.get("type"), "comment")) {
                 return;
@@ -53,9 +54,11 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
                         case DELETED:
                             break;
                         case UPDATED:
+                            boolean isSharedNote = ((List<String>) properties.get("sharedUsers")).size() > 1;
                             noteList.add(new NoteShortCard(documentId,
                                     (String) properties.get("title"),
-                                    (String) properties.get("date")));
+                                    (String) properties.get("date"),
+                                    isSharedNote));
                             notifyItemChanged(noteList.size() - 1);
                             Log.d(TAG, "Item " + documentId + " inserted to position " + (noteList.size() - 1));
                             break;
@@ -68,9 +71,11 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
                             Log.d(TAG, "Item at position " + pos + " removed");
                             break;
                         case UPDATED:
+                            boolean isSharedNote = ((List<String>) properties.get("sharedUsers")).size() > 1;
                             noteList.set(pos, new NoteShortCard(documentId,
                                     (String) properties.get("title"),
-                                    (String) properties.get("date")));
+                                    (String) properties.get("date"),
+                                    isSharedNote));
                             notifyItemChanged(pos);
                             Log.d(TAG, "Item at position " + pos + " changed");
                             break;
@@ -79,7 +84,9 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
             });
         };
 
-        DBManager.getInstance().setNotesChangeListener(hashCode(), changeListener);
+        int hashCode = hashCode();
+        Log.d(TAG, "DBM Note scroll hashCode " + hashCode);
+        DBManager.getInstance().setNotesChangeListener(hashCode, changeListener);
     }
 
     @NonNull
@@ -94,6 +101,12 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
     public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
         NoteShortCard note = noteList.get(position);
         holder.binding.setShortNote(note);
+        Log.d(TAG, "Note shared: " + note.isShared());
+        if (note.isShared()) {
+            holder.binding.icon.setVisibility(View.VISIBLE);
+        } else {
+            holder.binding.icon.setVisibility(View.GONE);
+        }
     }
 
     @Override

@@ -33,15 +33,15 @@ public class NoteBrowseViewModel  extends ViewModel {
 
     public SingleLiveEvent<String> snackBarMessage = new SingleLiveEvent<>();
     public MutableLiveData<List<InfoCard>> dataContainer = new MutableLiveData<>();
-    public ObservableField<String> userCommentLiveData = new ObservableField<>();
+    public MutableLiveData<String> userCommentLiveData = new MutableLiveData<>();
     public MutableLiveData<NoteBrowseViewModel.Commands> activityCommand = new MutableLiveData<>();
 
     public void onSendButtonClicked() {
         Log.d(TAG, "Current user: " + username);
-        Log.d(TAG, "Comment: " + userCommentLiveData.get());
+        Log.d(TAG, "Comment: " + userCommentLiveData.getValue());
         Log.d(TAG, "Date: " + getCurrentDate());
 
-        String commentText = userCommentLiveData.get();
+        String commentText = userCommentLiveData.getValue();
         if (commentText == null || commentText.isEmpty()) {
             snackBarMessage.setValue("You can't send empty comment");
             return;
@@ -51,7 +51,7 @@ public class NoteBrowseViewModel  extends ViewModel {
         Comment comment = new Comment(username, note.get_id(), commentText, getCurrentDate(), note.getSharedUsers());
         DBManager.getInstance().addComment(comment);
 
-        userCommentLiveData.set("");
+        userCommentLiveData.setValue("");
     }
 
     public void update() {
@@ -78,9 +78,9 @@ public class NoteBrowseViewModel  extends ViewModel {
 
     private List<InfoCard> sortedCommentsByDate(List<InfoCard> commentsList) {
         Collections.sort(commentsList, (i, j) -> {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy 'at' h:mm a", Locale.getDefault());
+            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy 'at' h:mm a", Locale.getDefault());
             try {
-                return sdf.parse(j.getDate()).compareTo(sdf.parse(i.getDate()));
+                return sdf.parse(i.getDate()).compareTo(sdf.parse(j.getDate()));
             } catch (ParseException e) {
                 Log.d(TAG, "Incorrect date format");
             }

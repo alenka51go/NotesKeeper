@@ -20,20 +20,20 @@ public class NotesScrollViewModel extends ViewModel {
 
     public String username = DBManager.getInstance().getFullUsername();
 
-    public MutableLiveData<List<NoteShortCard>> notes = new MutableLiveData<>(loadShortNodes());
+    public MutableLiveData<List<NoteShortCard>> notes = new MutableLiveData<>(loadShortNotes());
     public MutableLiveData<NotesScrollViewModel.Commands> activityCommand = new MutableLiveData<>();
     public NoteShortCard noteToShow;
 
     private static final String APP_PREFERENCES = "appsettings";
     private static final String APP_PREFERENCES_NAME = "appsettings";
 
-    public List<NoteShortCard> loadShortNodes() {
+    public List<NoteShortCard> loadShortNotes() {
         List<Note> rawNotes = DBManager.getInstance().getUserNotes();
         List<NoteShortCard> shortNotes = new ArrayList<>();
 
         if (rawNotes != null) {
             for (Note rawNote : rawNotes) {
-                NoteShortCard shortNote = new NoteShortCard(rawNote.get_id(), rawNote.getTitle(), rawNote.getDate());
+                NoteShortCard shortNote = new NoteShortCard(rawNote.get_id(), rawNote.getTitle(), rawNote.getDate(), rawNote.getSharedUsers().size() > 1);
                 shortNotes.add(shortNote);
             }
         }
@@ -41,7 +41,7 @@ public class NotesScrollViewModel extends ViewModel {
     }
 
     public void update() {
-        notes.setValue(loadShortNodes());
+        notes.setValue(loadShortNotes());
     }
 
     public void onCreateNoteButtonClicked() {
