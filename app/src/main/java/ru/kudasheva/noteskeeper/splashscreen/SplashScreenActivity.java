@@ -25,12 +25,17 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     private void observeLiveData() {
         splashScreenViewModel.activityCommand.observe(this, activityCommand -> {
-            if (activityCommand == SplashScreenViewModel.Commands.OPEN_LOGIN_ACTIVITY) {
-                startActivity(new Intent(SplashScreenActivity.this, LoginActivity.class));
-                finish();
-            } else if (activityCommand == SplashScreenViewModel.Commands.OPEN_NOTESCROLL_ACTIVITY) {
-                startActivity(new Intent(SplashScreenActivity.this, NotesScrollActivity.class));
-                finish();
+            switch (activityCommand) {
+                case OPEN_LOGIN_ACTIVITY: {
+                    startActivity(new Intent(SplashScreenActivity.this, LoginActivity.class));
+                    finish();
+                    break;
+                }
+                case OPEN_NOTESCROLL_ACTIVITY: {
+                    startActivity(new Intent(SplashScreenActivity.this, NotesScrollActivity.class));
+                    finish();
+                    break;
+                }
             }
         });
     }

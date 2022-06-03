@@ -30,10 +30,15 @@ public class CreateNoteActivity extends AppCompatActivity {
 
     private void observeLiveData() {
         createNoteViewModel.activityCommand.observe(this, activityCommand -> {
-            if (activityCommand == CreateNoteViewModel.Commands.CLOSE_ACTIVITY) {
-                finish();
-            } else if (activityCommand == CreateNoteViewModel.Commands.OPEN_SELECTED_FRIEND_DIALOG) {
-                setDialogActivity();
+            switch (activityCommand) {
+                case CLOSE_ACTIVITY: {
+                    finish();
+                    break;
+                }
+                case OPEN_SELECTED_FRIEND_DIALOG: {
+                    setDialogActivity();
+                    break;
+                }
             }
         });
     }

@@ -35,11 +35,8 @@ public class NoteBrowseActivity extends AppCompatActivity  implements SwipeRefre
         binding = DataBindingUtil.setContentView(this, R.layout.activity_note_browse);
         binding.setViewModel(noteBrowseViewModel);
         binding.setLifecycleOwner(this);
-        setRecyclerView();
 
-        mSwipeRefreshLayout = binding.swipeContainer;
-        mSwipeRefreshLayout.setOnRefreshListener(this);
-
+        setProperties();
         observeLiveData();
     }
 
@@ -49,12 +46,19 @@ public class NoteBrowseActivity extends AppCompatActivity  implements SwipeRefre
         });
 
         noteBrowseViewModel.activityCommand.observe(this, activityCommand -> {
-            if (activityCommand == NoteBrowseViewModel.Commands.SHOW_MENU) {
-                showMenu();
-            } else if (activityCommand == NoteBrowseViewModel.Commands.CLOSE_ACTIVITY) {
-                finish();
-            } else if (activityCommand == NoteBrowseViewModel.Commands.REMOVE_ACTION_BUTTON) {
-                binding.buttonAction.setVisibility(View.GONE);
+            switch (activityCommand) {
+                case SHOW_MENU: {
+                    showMenu();
+                    break;
+                }
+                case CLOSE_ACTIVITY: {
+                    finish();
+                    break;
+                }
+                case REMOVE_ACTION_BUTTON: {
+                    binding.buttonAction.setVisibility(View.GONE);
+                    break;
+                }
             }
         });
 
@@ -75,12 +79,17 @@ public class NoteBrowseActivity extends AppCompatActivity  implements SwipeRefre
         menu.show();
     }
 
-    private void setRecyclerView() {
+    private void setProperties() {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         binding.recyclerViewNoteAndComments.setLayoutManager(layoutManager);
 
         adapter = new MultipleTypesAdapter(this);
         binding.recyclerViewNoteAndComments.setAdapter(adapter);
+
+        binding.titleBox.setSelected(true);
+
+        mSwipeRefreshLayout = binding.swipeContainer;
+        mSwipeRefreshLayout.setOnRefreshListener(this);
     }
 
     private void showErrorMessage(String errorMessage) {

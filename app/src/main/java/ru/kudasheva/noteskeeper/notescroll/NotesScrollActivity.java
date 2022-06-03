@@ -39,61 +39,71 @@ public class NotesScrollActivity extends AppCompatActivity  implements SwipeRefr
         notesScrollViewModel = ViewModelProviders.of(this).get(NotesScrollViewModel.class);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_notes_scroll);
         binding.setViewModel(notesScrollViewModel);
-        setRecyclerView();
 
-        mSwipeRefreshLayout = binding.swipeContainer;
-        mSwipeRefreshLayout.setOnRefreshListener(this);
-
+        setProperties();
         observeLiveData();
     }
 
     private void observeLiveData() {
         notesScrollViewModel.activityCommand.observe(this, (activityCode) -> {
-            if (activityCode == NotesScrollViewModel.Commands.OPEN_CREATE_NOTE_ACTIVITY) {
-                Intent intent = new Intent(NotesScrollActivity.this, CreateNoteActivity.class);
-                startActivity(intent);
-            } else if (activityCode == NotesScrollViewModel.Commands.OPEN_FRIENDS_LIST_ACTIVITY) {
-                Intent intent = new Intent(NotesScrollActivity.this, FriendsActivity.class);
-                startActivity(intent);
-            } else if (activityCode == NotesScrollViewModel.Commands.OPEN_LOGIN_ACTIVITY) {
-                Intent intent = new Intent(NotesScrollActivity.this, LoginActivity.class);
-                startActivity(intent);
-            } else if (activityCode == NotesScrollViewModel.Commands.OPEN_BROWSE_NOTE_ACTIVITY) {
-                Intent intent = new Intent(NotesScrollActivity.this, NoteBrowseActivity.class);
-                intent.putExtra("Id", notesScrollViewModel.noteToShow.getId());
-                startActivity(intent);
-            } else if (activityCode == NotesScrollViewModel.Commands.OPEN_MENU) {
-                binding.fabAddNoteAction.setVisibility(View.VISIBLE);
-                binding.fabAddContactAction.setVisibility(View.VISIBLE);
-                binding.fabChangeUserAction.setVisibility(View.VISIBLE);
-                binding.fabMenuButton.animate().rotationBy(-45f);
-                binding.fabAddNoteAction.animate().translationY(-getResources().getDimension(R.dimen.standard_200));
-                binding.fabAddContactAction.animate().translationY(-getResources().getDimension(R.dimen.standard_135));
-                binding.fabChangeUserAction.animate().translationY(-getResources().getDimension(R.dimen.standard_70));
-
-            } else if (activityCode == NotesScrollViewModel.Commands.CLOSE_MENU) {
-                binding.fabMenuButton.animate().rotationBy(45f);
-                binding.fabAddNoteAction.animate().translationY(0);
-                binding.fabAddContactAction.animate().translationY(0);
-                binding.fabChangeUserAction.animate().translationY(0).setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-                        notesScrollViewModel.animationEnd();
-                    }
-                });
-
-            } else if (activityCode == NotesScrollViewModel.Commands.HIDE_EXTRA_MENU_INFO) {
-                binding.fabAddNoteAction.setVisibility(View.GONE);
-                binding.fabAddContactAction.setVisibility(View.GONE);
-                binding.fabChangeUserAction.setVisibility(View.GONE);
+            switch (activityCode) {
+                case OPEN_CREATE_NOTE_ACTIVITY: {
+                    Intent intent = new Intent(NotesScrollActivity.this, CreateNoteActivity.class);
+                    startActivity(intent);
+                    break;
+                }
+                case OPEN_FRIENDS_LIST_ACTIVITY: {
+                    Intent intent = new Intent(NotesScrollActivity.this, FriendsActivity.class);
+                    startActivity(intent);
+                    break;
+                }
+                case OPEN_LOGIN_ACTIVITY: {
+                    Intent intent = new Intent(NotesScrollActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    break;
+                }
+                case OPEN_BROWSE_NOTE_ACTIVITY: {
+                    Intent intent = new Intent(NotesScrollActivity.this, NoteBrowseActivity.class);
+                    intent.putExtra("Id", notesScrollViewModel.noteToShow.getId());
+                    startActivity(intent);
+                    break;
+                }
+                case OPEN_MENU: {
+                    binding.fabAddNoteAction.setVisibility(View.VISIBLE);
+                    binding.fabAddContactAction.setVisibility(View.VISIBLE);
+                    binding.fabChangeUserAction.setVisibility(View.VISIBLE);
+                    binding.fabMenuButton.animate().rotationBy(-45f);
+                    binding.fabAddNoteAction.animate().translationY(-getResources().getDimension(R.dimen.standard_200));
+                    binding.fabAddContactAction.animate().translationY(-getResources().getDimension(R.dimen.standard_135));
+                    binding.fabChangeUserAction.animate().translationY(-getResources().getDimension(R.dimen.standard_70));
+                    break;
+                }
+                case CLOSE_MENU: {
+                    binding.fabMenuButton.animate().rotationBy(45f);
+                    binding.fabAddNoteAction.animate().translationY(0);
+                    binding.fabAddContactAction.animate().translationY(0);
+                    binding.fabChangeUserAction.animate().translationY(0).setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            notesScrollViewModel.animationEnd();
+                        }
+                    });
+                    break;
+                }
+                case HIDE_EXTRA_MENU_INFO: {
+                    binding.fabAddNoteAction.setVisibility(View.GONE);
+                    binding.fabAddContactAction.setVisibility(View.GONE);
+                    binding.fabChangeUserAction.setVisibility(View.GONE);
+                    break;
+                }
             }
         });
 
         notesScrollViewModel.notes.observe(this, notes -> noteAdapter.setItems(notes));
     }
 
-    private void setRecyclerView() {
+    private void setProperties() {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         binding.recyclerViewNotesShortCard.setLayoutManager(layoutManager);
 
@@ -102,6 +112,9 @@ public class NotesScrollActivity extends AppCompatActivity  implements SwipeRefr
 
         noteAdapter = new CustomRecyclerAdapter(onUserClickListener, this);
         binding.recyclerViewNotesShortCard.setAdapter(noteAdapter);
+
+        mSwipeRefreshLayout = binding.swipeContainer;
+        mSwipeRefreshLayout.setOnRefreshListener(this);
     }
 
     @Override
