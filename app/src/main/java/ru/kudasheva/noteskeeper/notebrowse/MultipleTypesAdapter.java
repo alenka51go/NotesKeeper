@@ -44,7 +44,6 @@ public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdap
                 }
             }
 
-
             activity.runOnUiThread(() -> {
                 int pos = getIndexOfItemByDocumentId(documentId);
                 if (pos == -1) {
@@ -52,13 +51,16 @@ public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdap
                         case DELETED:
                             break;
                         case UPDATED:
-                            User user = DBManager.getInstance().getUser((String) properties.get("userId"));
-                            dataSet.add(new CommentInfoCard(documentId,
-                                    (String) properties.get("text"),
-                                    user.getFullUsername(),
-                                    (String) properties.get("date")));
-                            notifyItemChanged(dataSet.size() - 1);
-                            Log.d(TAG, "Item " + documentId + " inserted to position " + (dataSet.size() - 1));
+                            DBManager.getInstance().getUser((String) properties.get("userId"), (user) -> {
+                                activity.runOnUiThread(() -> {
+                                    dataSet.add(new CommentInfoCard(documentId,
+                                            (String) properties.get("text"),
+                                            user.getFullUsername(),
+                                            (String) properties.get("date")));
+                                    notifyItemChanged(dataSet.size() - 1);
+                                    Log.d(TAG, "Item " + documentId + " inserted to position " + (dataSet.size() - 1));
+                                });
+                            });
                             break;
                     }
                 } else {
@@ -69,13 +71,16 @@ public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdap
                             Log.d(TAG, "Item at position " + pos + " removed");
                             break;
                         case UPDATED:
-                            User user = DBManager.getInstance().getUser((String) properties.get("userId"));
-                            dataSet.set(pos, new CommentInfoCard(documentId,
-                                    (String) properties.get("text"),
-                                    user.getFullUsername(),
-                                    (String) properties.get("date")));
-                            notifyItemChanged(pos);
-                            Log.d(TAG, "Item at position " + pos + " changed");
+                            DBManager.getInstance().getUser((String) properties.get("userId"), (user) -> {
+                                activity.runOnUiThread(() -> {
+                                    dataSet.set(pos, new CommentInfoCard(documentId,
+                                            (String) properties.get("text"),
+                                            user.getFullUsername(),
+                                            (String) properties.get("date")));
+                                    notifyItemChanged(pos);
+                                    Log.d(TAG, "Item at position " + pos + " changed");
+                                });
+                            });
                             break;
                     }
                 }

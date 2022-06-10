@@ -1,58 +1,69 @@
 package ru.kudasheva.noteskeeper.friends;
 
-import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import ru.kudasheva.noteskeeper.data.DBManager;
 import ru.kudasheva.noteskeeper.data.SingleLiveEvent;
-import ru.kudasheva.noteskeeper.data.models.User;
 
 public class FriendsViewModel extends ViewModel {
     private static final String TAG = FriendsViewModel.class.getSimpleName();
 
     public SingleLiveEvent<String> snackBarMessage = new SingleLiveEvent<>();
     public MutableLiveData<Commands> command = new MutableLiveData<>();
-    public MutableLiveData<List<FriendInfoCard>> friends = new MutableLiveData<>(loadFriends());
+    public MutableLiveData<List<FriendInfoCard>> friends = new MutableLiveData<>();
+    public MutableLiveData<Boolean> progressIsVisible = new MutableLiveData<>();
 
     public void onFindFriendsButtonClicked() {
         command.setValue(Commands.OPEN_DIALOG);
     }
 
-    public boolean tryToAddFriend(String username) {
-        if (DBManager.getInstance().checkIfUserExist(username)) {
-            if (!DBManager.getInstance().addFriend(username)) {
-                Log.d(TAG, "Can't add friend");
+    public void tryToAddFriend(String username, Consumer<Boolean> consumer) {
+        progressIsVisible.setValue(true);
+        DBManager.getInstance().tryToAddFriend(username, (result) -> {
+            boolean isFriendAdded = false;
+            switch (result) {
+                case SUCCESS: {
+                    isFriendAdded = true;
+                    break;
+                }
+                case DOESNT_EXIT: {
+                    snackBarMessage.postValue("Can't find user with name " + username);
+                    break;
+                }
+                case ALREADY_ADDED: {
+                    snackBarMessage.postValue(username + " already added to friend list");
+                    break;
+                }
+                case ERROR: {
+                    snackBarMessage.postValue("Can't add user to friend list");
+                    break;
+                }
             }
-            friends.setValue(loadFriends());
-            return true;
-        } else {
-            snackBarMessage.setValue("Can't find user with name " + username);
-            return false;
-        }
+            consumer.accept(isFriendAdded);
+        });
+        updateData();
     }
 
-    private List<FriendInfoCard> loadFriends() {
-        List<User> friends = DBManager.getInstance().getFriends();
-        List<FriendInfoCard> friendInfoCards = new ArrayList<>();
-
-        for (User user : friends) {
-            FriendInfoCard friendInfoCard = new FriendInfoCard(user.getFullUsername());
-            friendInfoCards.add(friendInfoCard);
-        }
-
-        return friendInfoCards;
-    }
-
-    public void update() {
-        friends.setValue(loadFriends());
+    public void updateData() {
+        progressIsVisible.setValue(true);
+        DBManager.getInstance().getFriendsInfoCard((friendsInfo) ->{
+            friends.postValue(friendsInfo);
+            progressIsVisible.postValue(false);
+        });
     }
 
     enum Commands {
         OPEN_DIALOG
+    }
+
+    public enum ResultFriendAddition {
+        SUCCESS,
+        ALREADY_ADDED,
+        DOESNT_EXIT,
+        ERROR
     }
 }

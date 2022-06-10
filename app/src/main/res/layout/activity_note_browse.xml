@@ -32,11 +32,11 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:singleLine="true"
+                    android:layout_toStartOf="@+id/button_action"
                     android:ellipsize="marquee"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
-                    android:layout_toStartOf="@+id/button_action"
+                    android:singleLine="true"
                     android:text="@{viewModel.title}"
                     android:textSize="40sp" />
 

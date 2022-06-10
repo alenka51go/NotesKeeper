@@ -3,6 +3,7 @@ package ru.kudasheva.noteskeeper.notebrowse;
 import android.util.Log;
 
 import androidx.databinding.ObservableField;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -30,13 +31,30 @@ public class NoteBrowseViewModel  extends ViewModel {
 
     private final String username = DBManager.getInstance().getUsername();
     private final String fullUsername = DBManager.getInstance().getFullUsername();
-    private String noteId;
-    public String title;
+    private Note openedNote;
 
     public SingleLiveEvent<String> snackBarMessage = new SingleLiveEvent<>();
+
+    public MutableLiveData<NoteBrowseViewModel.Commands> activityCommand = new MutableLiveData<>();
     public MutableLiveData<List<InfoCard>> dataContainer = new MutableLiveData<>();
     public MutableLiveData<String> userCommentLiveData = new MutableLiveData<>();
-    public MutableLiveData<NoteBrowseViewModel.Commands> activityCommand = new MutableLiveData<>();
+    public MutableLiveData<String> title = new MutableLiveData<>();
+    public MutableLiveData<Boolean> progressIsVisible = new MutableLiveData<>();
+
+    public void initData(String noteId) {
+        progressIsVisible.setValue(true); // TODO установить крутилку
+
+        DBManager.getInstance().getFullNoteData(noteId, (fullNoteData) -> {
+            progressIsVisible.postValue(false);
+
+            openedNote = fullNoteData.note;
+            title.postValue(fullNoteData.note.getTitle());
+            dataContainer.postValue(fullNoteData.createInfoCards());
+            if (!fullNoteData.note.getUserId().equals(username)) {
+                activityCommand.setValue(Commands.REMOVE_ACTION_BUTTON);
+            }
+        });
+    }
 
     public void onSendButtonClicked() {
         Log.d(TAG, "Current user: " + username);
@@ -49,47 +67,18 @@ public class NoteBrowseViewModel  extends ViewModel {
             return;
         }
 
-        Note note = DBManager.getInstance().getNote(noteId);
-        Comment comment = new Comment(username, note.get_id(), commentText, getCurrentDate(), note.getSharedUsers());
+        Comment comment = new Comment(username, openedNote.get_id(), commentText, getCurrentDate(), openedNote.getSharedUsers());
         DBManager.getInstance().addComment(comment);
 
         userCommentLiveData.setValue("");
     }
 
     public void update() {
-        dataContainer.setValue(updateData());
-    }
-
-    private List<InfoCard> updateData() {
-        Note note = DBManager.getInstance().getNote(noteId);
-
-        NoteFullCard noteFullCard = NoteFullCard.from(note, fullUsername);
-        List<InfoCard> resultList = new ArrayList<>(Collections.singletonList(noteFullCard));
-
-        List<InfoCard> commentsList = new ArrayList<>();
-
-        List<Comment> rawComments = DBManager.getInstance().getComments(note.get_id());
-        for (Comment comment : rawComments) {
-            User user = DBManager.getInstance().getUser(comment.getUserId());
-            CommentInfoCard commentInfoCard = CommentInfoCard.from(comment, user.getFullUsername());
-            commentsList.add(commentInfoCard);
-        }
-
-        resultList.addAll(sortedCommentsByDate(commentsList));
-        return resultList;
-    }
-
-    private List<InfoCard> sortedCommentsByDate(List<InfoCard> commentsList) {
-        Collections.sort(commentsList, (i, j) -> {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy 'at' h:mm a", Locale.getDefault());
-            try {
-                return sdf.parse(i.getDate()).compareTo(sdf.parse(j.getDate()));
-            } catch (ParseException e) {
-                Log.d(TAG, "Incorrect date format");
-            }
-            return 0;
+        progressIsVisible.postValue(true);
+        DBManager.getInstance().getFullNoteData(openedNote.get_id(), (fullNoteData) -> {
+            progressIsVisible.postValue(false);
+            dataContainer.postValue(fullNoteData.createInfoCards());
         });
-        return commentsList;
     }
 
     private String getCurrentDate() {
@@ -103,23 +92,14 @@ public class NoteBrowseViewModel  extends ViewModel {
     }
 
     public void deleteNote() {
-        if (DBManager.getInstance().deleteNote(noteId)) {
-            Log.d(TAG, "Can't delete note");
-        }
-        activityCommand.setValue(Commands.CLOSE_ACTIVITY);
-    }
-
-    public void preloadData(String id) {
-        noteId = id;
-
-        dataContainer.setValue(updateData());
-
-        Note note = DBManager.getInstance().getNote(noteId);
-        title = note.getTitle();
-
-        if (!note.getUserId().equals(username)) {
-            activityCommand.setValue(Commands.REMOVE_ACTION_BUTTON);
-        }
+        progressIsVisible.postValue(true);
+        DBManager.getInstance().deleteNote(openedNote.get_id(), (result) -> {
+            progressIsVisible.postValue(false);
+            if (!result) {
+                Log.d(TAG, "Can't delete note");
+            }
+            activityCommand.postValue(Commands.CLOSE_ACTIVITY);
+        });
     }
 
     enum Commands {

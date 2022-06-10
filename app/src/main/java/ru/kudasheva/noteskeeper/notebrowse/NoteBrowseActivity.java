@@ -31,7 +31,8 @@ public class NoteBrowseActivity extends AppCompatActivity  implements SwipeRefre
         super.onCreate(savedInstanceState);
 
         noteBrowseViewModel = ViewModelProviders.of(this).get(NoteBrowseViewModel.class);
-        noteBrowseViewModel.preloadData(getIntent().getExtras().getString("Id"));
+        noteBrowseViewModel.initData(getIntent().getExtras().getString("Id"));
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_note_browse);
         binding.setViewModel(noteBrowseViewModel);
         binding.setLifecycleOwner(this);

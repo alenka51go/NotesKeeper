@@ -19,23 +19,26 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.ThreadFactory;
+import java.util.function.Consumer;
 
 import ru.kudasheva.noteskeeper.MyApplication;
 import ru.kudasheva.noteskeeper.data.models.Comment;
 import ru.kudasheva.noteskeeper.data.models.DatabaseReplicator;
+import ru.kudasheva.noteskeeper.data.models.FullNoteData;
 import ru.kudasheva.noteskeeper.data.models.Note;
 import ru.kudasheva.noteskeeper.data.models.User;
+import ru.kudasheva.noteskeeper.friends.FriendInfoCard;
+import ru.kudasheva.noteskeeper.friends.FriendsViewModel;
+import ru.kudasheva.noteskeeper.notescroll.NoteShortCard;
 
 public class DBManager {
     private static final String TAG = DBManager.class.getSimpleName();
@@ -72,9 +75,9 @@ public class DBManager {
     private LiveQuery notesQuery;
     private LiveQuery commentQuery;
 
-    private final Map<Integer, WeakReference<ChangeListener>> changeListenerWeakRef = new ConcurrentHashMap<>();
+    private final Map<Integer, WeakReference<ChangeListener>> changeNoteListenerWeakRef = new ConcurrentHashMap<>();
 
-    private final ExecutorService executor = Executors.newSingleThreadExecutor((ThreadFactory) runnable ->
+    private final ExecutorService executor = Executors.newSingleThreadExecutor(runnable ->
             new Thread(runnable, "DatabaseExecutor"));
 
     public static DBManager getInstance() {
@@ -86,7 +89,7 @@ public class DBManager {
     }
 
     public void setNotesChangeListener(int hash, ChangeListener listener) {
-        changeListenerWeakRef.put(hash, new WeakReference<>(listener));
+        changeNoteListenerWeakRef.put(hash, new WeakReference<>(listener));
     }
 
     public void startNotesDatabase() {
@@ -177,14 +180,14 @@ public class DBManager {
 
                 Log.d(TAG, "Changed doc (JSON): " + properties);
 
-                Log.d(TAG, "Amount of listeners: " + changeListenerWeakRef.size());
-                for (Integer key : changeListenerWeakRef.keySet()) {
-                    WeakReference<ChangeListener> reference = changeListenerWeakRef.get(key);
+                Log.d(TAG, "Amount of listeners: " + changeNoteListenerWeakRef.size());
+                for (Integer key : changeNoteListenerWeakRef.keySet()) {
+                    WeakReference<ChangeListener> reference = changeNoteListenerWeakRef.get(key);
 
                     ChangeListener listener = reference.get();
                     if (listener == null) {
                         Log.d(TAG, "Listener with hash: " + key + " is dead");
-                        changeListenerWeakRef.remove(key);
+                        changeNoteListenerWeakRef.remove(key);
                         continue;
                     }
                     Log.d(TAG, "Listener with hash: " + key + " is alive");
@@ -258,6 +261,7 @@ public class DBManager {
         });
     }
 
+    // TODO исправить
     public String getUsername() {
         Future<String> result = executor.submit(() -> currentUser.getUsername());
 
@@ -273,6 +277,7 @@ public class DBManager {
         return null;
     }
 
+    // TODO исправить
     public String getFullUsername() {
         Future<String> result = executor.submit(() -> currentUser.getFullUsername());
 
@@ -336,37 +341,27 @@ public class DBManager {
         });
     }
 
-    public boolean deleteNote(String noteId) {
-        Future<Boolean> result = executor.submit(() -> {
+    public void deleteNote(String noteId, Consumer<Boolean> consumer) {
+        executor.submit(() -> {
+            boolean res = false;
             Document doc = database.getExistingDocument(noteId);
             if (doc != null) {
                 Log.d(TAG, "Start deleting note with id " + noteId + " ...");
 
                 if (Objects.equals(doc.getProperties().get("type"), NOTE_TYPE)) {
-                    List<Comment> commentsList = getCommentsWithoutLock(noteId);
+                    List<Comment> commentsList = getComments(noteId);
                     for (Comment comment : commentsList) {
                         deleteDoc(comment.get_id());
                     }
                 }
                 Log.d(TAG, "All comments was successfully deleted.");
 
-                return deleteDoc(noteId);
+                res = deleteDoc(noteId);
             } else {
                 Log.d(TAG, "There is no such note in Database " + noteId);
             }
-            return false;
+            consumer.accept(res);
         });
-
-        try {
-            return result.get();
-        } catch (ExecutionException e) {
-            Log.d(TAG, "Failed to delete note with exception: " + e.getMessage());
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            Log.d(TAG, "Failed to delete note. Function was interrupted with message: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return false;
     }
 
     private boolean deleteDoc(String docId) {
@@ -398,75 +393,37 @@ public class DBManager {
         return false;
     }
 
-    public Note getNote(String noteId) {
-        Future<Note> result = executor.submit(() -> {
-            Document doc = database.getExistingDocument(noteId);
+    private Note getNote(String noteId) {
+        Document doc = database.getExistingDocument(noteId);
 
-            if (null != doc) {
-                Log.d(TAG, "Document with id " + noteId + " was found.");
-                return Util.convertToNote(doc.getProperties());
-            }
-
-            Log.d(TAG, "There is no such Note in Database + " + noteId);
-            return null;
-        });
-
-        try {
-            return result.get();
-        } catch (ExecutionException e) {
-            Log.d(TAG, "Failed to get note with exception: " + e.getMessage());
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            Log.d(TAG, "Failed to get note. Function was interrupted with message: " + e.getMessage());
-            e.printStackTrace();
+        if (null != doc) {
+            Log.d(TAG, "Document with id " + noteId + " was found.");
+            return Util.convertToNote(doc.getProperties());
         }
+
+        Log.d(TAG, "There is no such Note in Database + " + noteId);
         return null;
     }
 
-    public List<Note> getUserNotes() {
-        Future<List<Note>> result = executor.submit(() -> {
-            List<Note> notes = new ArrayList<>();
-
-            Log.d(TAG, "Load User notes: --------------");
+    public void getNoteShortCards(Consumer<List<NoteShortCard>> consumer) {
+        executor.submit(() -> {
+            Log.d(TAG, "Load User notes:");
+            List<NoteShortCard> shortNotes = new ArrayList<>();
 
             for (QueryRow row : notesQuery.getRows()) {
                 Map<String, Object> noteProperties = row.getDocument().getProperties();
                 Log.d(TAG, "type is: " + noteProperties.get("type"));
-                notes.add(Util.convertToNote(noteProperties));
+
+                NoteShortCard shortNote = new NoteShortCard(Util.convertToNote(noteProperties));
+                shortNotes.add(shortNote);
             }
+            Log.d(TAG, "notes: " + shortNotes.size());
 
-            Log.d(TAG, "notes: " + notes.size());
-            return notes;
+            consumer.accept(shortNotes);
         });
-
-        try {
-            return result.get();
-        } catch (ExecutionException e) {
-            Log.d(TAG, "Failed to get user notes with exception: " + e.getMessage());
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            Log.d(TAG, "Failed to get user notes. Function was interrupted with message: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return null;
     }
 
-    public List<Comment> getComments(String noteId) {
-        Future<List<Comment>> result = executor.submit(() -> getCommentsWithoutLock(noteId));
-
-        try {
-            return result.get();
-        } catch (ExecutionException e) {
-            Log.d(TAG, "Failed to get comments with exception: " + e.getMessage());
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            Log.d(TAG, "Failed to get comments. Function was interrupted with message: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private List<Comment> getCommentsWithoutLock(String noteId) {
+    private List<Comment> getComments(String noteId) {
         List<Comment> comments = new ArrayList<>();
 
         Log.d(TAG, "Load User comments: --------------");
@@ -483,31 +440,46 @@ public class DBManager {
         return comments;
     }
 
-    public List<User> getFriends() {
-        Future<List<User>> result = executor.submit(() -> {
-            List<String> friendsId = currentUser.getFriends();
-            List<User> friends = new ArrayList<>();
+    public void getFriendsInfoCard(Consumer<List<FriendInfoCard>> consumer) {
+        executor.submit(() -> {
+            List<User> friends = getFriends();
+            List<FriendInfoCard> friendInfoCards = new ArrayList<>();
 
-            for (int i = 0; i < friendsId.size(); i++) {
-                String userId = friendsId.get(i);
-                friends.add(getUser(userId));
+            for (User user : friends) {
+                FriendInfoCard friendInfoCard = new FriendInfoCard(user.getFullUsername());
+                friendInfoCards.add(friendInfoCard);
             }
-            return friends;
-        });
 
-        try {
-            return result.get();
-        } catch (ExecutionException e) {
-            Log.d(TAG, "Failed to get friends with exception: " + e.getMessage());
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            Log.d(TAG, "Failed to get friends. Function was interrupted with message: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return null;
+            consumer.accept(friendInfoCards);
+        });
     }
 
-    public User getUser(String username) {
+    public void getFriends(Consumer<List<User>> consumer) {
+        executor.submit(() -> {
+            List<User> users = getFriends();
+            consumer.accept(users);
+        });
+    }
+
+    private List<User> getFriends() {
+        List<String> friendsId = currentUser.getFriends();
+        List<User> friends = new ArrayList<>();
+
+        for (int i = 0; i < friendsId.size(); i++) {
+            String userId = friendsId.get(i);
+            friends.add(getUser(userId));
+        }
+        return friends;
+    }
+
+    public void getUser(String username, Consumer<User> consumer) {
+        executor.submit(() -> {
+            User user = getUser(username);
+            consumer.accept(user);
+        });
+    }
+
+    private User getUser(String username) {
         Document doc = userDatabase.getExistingDocument(username);
 
         if (null != doc) {
@@ -519,79 +491,78 @@ public class DBManager {
         return null;
     }
 
-    public boolean checkIfUserExist(String username) {
-        Future<Boolean> result = executor.submit(() -> {
+    public void checkIfUserExist(String username, Consumer<Boolean> consumer) {
+        executor.submit(() -> {
             Document doc = userDatabase.getExistingDocument(username);
-            return doc != null;
+            consumer.accept(doc != null);
         });
-
-        try {
-            return result.get();
-        } catch (ExecutionException e) {
-            Log.d(TAG, "Failed to check if user exist with exception: " + e.getMessage());
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            Log.d(TAG, "Failed to check if user exist. Function was interrupted with message: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return false;
     }
 
-    public boolean addFriend(String username) {
-        Future<Boolean> result = executor.submit(() -> {
+
+    public void tryToAddFriend(String username, Consumer<FriendsViewModel.ResultFriendAddition> consumer) {
+        executor.submit(() -> {
+            if (currentUser.checkIfFriendAdded(username)) {
+                Log.d(TAG, "User with username " + username + " already added to list of friends");
+                consumer.accept(FriendsViewModel.ResultFriendAddition.ALREADY_ADDED);
+                return;
+            }
+
+            if (userDatabase.getExistingDocument(username) == null) {
+                Log.d(TAG, "Can't find user with username " + username + ". Doc wasn't found.");
+                consumer.accept(FriendsViewModel.ResultFriendAddition.DOESNT_EXIT);
+                return;
+            }
 
             Document doc = userDatabase.getExistingDocument(currentUser.getUsername());
-
             if (doc != null) {
-                Log.d(TAG, "Document with id " + username + " was found.");
-                if (currentUser.checkIfFriendAdded(username)) {
-                    Log.d(TAG, "User with username " + username + " already added to list of friends");
-                    return true;
-                }
-                if (userDatabase.getExistingDocument(username) == null) {
-                    Log.d(TAG, "Can't add friend with username " + username + ". Doc wasn't found.");
-                    return false;
-                }
-                currentUser.addFriend(username);
+                Log.d(TAG, "Document with id " + currentUser.getUsername() + " was found.");
 
+                currentUser.addFriend(username);
                 final Map<String, Object> docUserProperties;
                 try {
                     docUserProperties = Util.objectToMap(currentUser);
                     Log.d(TAG, "Convert User to Map: " + docUserProperties);
                 } catch (JSONException e) {
-                    e.printStackTrace();
                     Log.d(TAG, "Could not convert User to Map: " + currentUser.toString());
-                    return false;
+                    consumer.accept(FriendsViewModel.ResultFriendAddition.ERROR);
+                    return;
                 }
 
                 try {
                     doc.update(newRevision -> {
                         Log.d(TAG, "update");
-
                         newRevision.setUserProperties(docUserProperties);
                         return true;
                     });
+                    consumer.accept(FriendsViewModel.ResultFriendAddition.SUCCESS);
                 } catch (CouchbaseLiteException e) {
-                    Log.d(TAG, "Error!");
-                    Log.d(TAG, e.getMessage());
-                    e.printStackTrace();
-                    return false;
+                    Log.d(TAG, "CouchbaseLite Error!");
+                    consumer.accept(FriendsViewModel.ResultFriendAddition.ERROR);
                 }
             } else {
-                Log.d(TAG, "There is no such user in database + " + username);
+                Log.d(TAG, "There is no such user in database + " + currentUser.getUsername());
+                consumer.accept(FriendsViewModel.ResultFriendAddition.DOESNT_EXIT);
             }
-            return false;
         });
+    }
 
-        try {
-            return result.get();
-        } catch (ExecutionException e) {
-            Log.d(TAG, "Failed to add friend with exception: " + e.getMessage());
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            Log.d(TAG, "Failed to add friend. Function was interrupted with message: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return false;
+    public void getFullNoteData(String noteId, Consumer<FullNoteData> consumer) {
+        executor.submit(() -> {
+            Note note = getNote(noteId);
+            if (note == null) {
+                Log.d(TAG, "Note with id " + noteId + " wasn't found");
+                return;
+            }
+
+            Map<Comment, User> userComments = new HashMap<>();
+            List<Comment> comments = getComments(note.get_id());
+            for (Comment comment : comments) {
+                User user = getUser(comment.getUserId());
+                userComments.put(comment, user);
+            }
+
+            consumer.accept(new FullNoteData(currentUser, note, userComments));
+        });
+        Log.d(TAG, "Finish getting note with id: " + noteId);
     }
 }

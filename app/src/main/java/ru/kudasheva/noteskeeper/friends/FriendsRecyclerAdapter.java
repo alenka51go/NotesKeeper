@@ -1,5 +1,7 @@
 package ru.kudasheva.noteskeeper.friends;
 
+import android.app.Activity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,16 +9,25 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import ru.kudasheva.noteskeeper.R;
+import ru.kudasheva.noteskeeper.data.ChangeListener;
+import ru.kudasheva.noteskeeper.data.DBManager;
+import ru.kudasheva.noteskeeper.data.FriendChangeListener;
 import ru.kudasheva.noteskeeper.databinding.FriendInfoBinding;
+import ru.kudasheva.noteskeeper.notescroll.CustomRecyclerAdapter;
+import ru.kudasheva.noteskeeper.notescroll.NoteShortCard;
 
 public class FriendsRecyclerAdapter extends RecyclerView.Adapter<FriendsRecyclerAdapter.FriendViewHolder> {
+    private static final String TAG = FriendsRecyclerAdapter.class.getSimpleName();
+
     private List<FriendInfoCard> friends = new ArrayList<>();
 
     @NonNull
@@ -38,9 +49,13 @@ public class FriendsRecyclerAdapter extends RecyclerView.Adapter<FriendsRecycler
         return friends.size();
     }
 
-    public void setItems(Collection<FriendInfoCard> notes) {
-        friends = (List<FriendInfoCard>) notes;
-        notifyDataSetChanged();
+    public void setItems(Collection<FriendInfoCard> friends) {
+        FriendsRecyclerAdapter.FriendDiffUtilCallback noteDiffUtilCallback =
+                new FriendsRecyclerAdapter.FriendDiffUtilCallback(this.friends, (List<FriendInfoCard>) friends);
+        DiffUtil.DiffResult noteDiffResult = DiffUtil.calculateDiff(noteDiffUtilCallback);
+
+        this.friends = (List<FriendInfoCard>) friends;
+        noteDiffResult.dispatchUpdatesTo(this);
     }
 
     static class FriendViewHolder extends RecyclerView.ViewHolder {
@@ -49,6 +64,38 @@ public class FriendsRecyclerAdapter extends RecyclerView.Adapter<FriendsRecycler
         public FriendViewHolder(@NonNull View itemView) {
             super(itemView);
             binding = DataBindingUtil.bind(itemView);
+        }
+    }
+
+    public static class FriendDiffUtilCallback extends DiffUtil.Callback {
+        private final List<FriendInfoCard> oldList;
+        private final List<FriendInfoCard> newList;
+
+        public FriendDiffUtilCallback(List<FriendInfoCard> oldList, List<FriendInfoCard> newList) {
+            this.oldList = oldList;
+            this.newList = newList;
+        }
+
+        @Override
+        public int getOldListSize() {
+            return oldList.size();
+        }
+
+        @Override
+        public int getNewListSize() {
+            return newList.size();
+        }
+
+        @Override
+        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+            FriendInfoCard oldNote = oldList.get(oldItemPosition);
+            FriendInfoCard newNote = newList.get(newItemPosition);
+            return oldNote.getName().equals(newNote.getName());
+        }
+
+        @Override
+        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            return areItemsTheSame(oldItemPosition, newItemPosition);
         }
     }
 }

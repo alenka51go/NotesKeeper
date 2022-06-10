@@ -37,6 +37,8 @@ public class NotesScrollActivity extends AppCompatActivity  implements SwipeRefr
         super.onCreate(savedInstanceState);
 
         notesScrollViewModel = ViewModelProviders.of(this).get(NotesScrollViewModel.class);
+        notesScrollViewModel.updateData();
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_notes_scroll);
         binding.setViewModel(notesScrollViewModel);
 
@@ -64,7 +66,7 @@ public class NotesScrollActivity extends AppCompatActivity  implements SwipeRefr
                 }
                 case OPEN_BROWSE_NOTE_ACTIVITY: {
                     Intent intent = new Intent(NotesScrollActivity.this, NoteBrowseActivity.class);
-                    intent.putExtra("Id", notesScrollViewModel.noteToShow.getId());
+                    intent.putExtra("Id", notesScrollViewModel.openedNote.getId());
                     startActivity(intent);
                     break;
                 }
@@ -121,7 +123,7 @@ public class NotesScrollActivity extends AppCompatActivity  implements SwipeRefr
     public void onRefresh() {
         Log.d(TAG, "Refresh recycled container");
         new Handler().postDelayed(() -> {
-            notesScrollViewModel.update();
+            notesScrollViewModel.updateData();
             mSwipeRefreshLayout.setRefreshing(false);
         }, 1500);
     }

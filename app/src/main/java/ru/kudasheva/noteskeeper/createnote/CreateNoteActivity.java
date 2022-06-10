@@ -22,6 +22,8 @@ public class CreateNoteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         createNoteViewModel = ViewModelProviders.of(this).get(CreateNoteViewModel.class);
+        createNoteViewModel.initData();
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_note_create);
         binding.setViewModel(createNoteViewModel);
 

@@ -24,17 +24,19 @@ public class LoginViewModel extends ViewModel {
     public void onLogInClicked() {
         String inputUsername = username.getValue();
 
-        if (DBManager.getInstance().checkIfUserExist(inputUsername)) {
-            SharedPreferences mSettings = MyApplication.getInstance().getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = mSettings.edit();
-            editor.putString(APP_PREFERENCES_NAME, inputUsername);
-            editor.apply();
+        DBManager.getInstance().checkIfUserExist(inputUsername, (result) -> {
+            if (result) {
+                SharedPreferences mSettings = MyApplication.getInstance().getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = mSettings.edit();
+                editor.putString(APP_PREFERENCES_NAME, inputUsername);
+                editor.apply();
 
-            DBManager.getInstance().startReplication(inputUsername);
-            activityCommand.postValue(Commands.OPEN_NOTE_SCROLL_ACTIVITY);
-        } else {
-            snackBarMessage.setValue(inputUsername + " doesn't exist!");
-        }
+                DBManager.getInstance().startReplication(inputUsername);
+                activityCommand.postValue(Commands.OPEN_NOTE_SCROLL_ACTIVITY);
+            } else {
+                snackBarMessage.setValue(inputUsername + " doesn't exist!");
+            }
+        });
     }
 
     public enum Commands {

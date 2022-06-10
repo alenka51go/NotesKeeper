@@ -18,18 +18,32 @@ import ru.kudasheva.noteskeeper.data.models.User;
 import ru.kudasheva.noteskeeper.friends.FriendInfoCard;
 
 public class CreateNoteViewModel extends ViewModel {
-    private final List<String> selectedFriends = new ArrayList<>();
     private final String username = DBManager.getInstance().getUsername();
     private final String userFullName = DBManager.getInstance().getFullUsername();
 
-    public String title;
-    public String noteBody;
-
-    public final String[]  contactList  = getContacts();
+    private final List<String> selectedFriends = new ArrayList<>();
+    public String[]  contactList;
     public List<String> usernameContactList;
-    public final boolean[] checkedItems = new boolean[contactList.length];
+    public boolean[] checkedItems;
 
+    public MutableLiveData<String> noteBody = new MutableLiveData<>();
+    public MutableLiveData<String> title = new MutableLiveData<>();
     public MutableLiveData<CreateNoteViewModel.Commands> activityCommand = new MutableLiveData<>();
+
+    public void initData() {
+        DBManager.getInstance().getFriends((friends) -> {
+            contactList = new String[friends.size()];
+            usernameContactList = new ArrayList<>();
+
+            for (int i = 0; i < friends.size(); i++) {
+                User user = friends.get(i);
+                usernameContactList.add(user.getUsername());
+                contactList[i] = user.getFullUsername();
+            }
+
+            checkedItems = new boolean[contactList.length];
+        });
+    }
 
     public void onAddFriendButtonClicked() {
         activityCommand.setValue(Commands.OPEN_SELECTED_FRIEND_DIALOG);
@@ -37,25 +51,11 @@ public class CreateNoteViewModel extends ViewModel {
 
     public void onSaveNoteButtonClicked() {
         selectedFriends.add(username);
-        Note note = new Note(username, title, noteBody,
+        Note note = new Note(username, title.getValue(), noteBody.getValue(),
                 getCurrentDate(), selectedFriends);
         DBManager.getInstance().addNote(note);
 
         activityCommand.setValue(Commands.CLOSE_ACTIVITY);
-    }
-
-    private String[] getContacts() {
-        List<User> friends = DBManager.getInstance().getFriends();
-
-        String[] friendsUsername = new String[friends.size()];
-        usernameContactList = new ArrayList<>();
-
-        for (int i = 0; i < friends.size(); i++) {
-            User user = friends.get(i);
-            usernameContactList.add(user.getUsername());
-            friendsUsername[i] = user.getFullUsername();
-        }
-        return friendsUsername;
     }
 
     public void okClicked() {
