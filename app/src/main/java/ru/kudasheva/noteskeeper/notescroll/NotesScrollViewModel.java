@@ -2,6 +2,7 @@ package ru.kudasheva.noteskeeper.notescroll;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -33,6 +34,7 @@ public class NotesScrollViewModel extends ViewModel {
         DBManager.getInstance().getNoteShortCards((loadedNotes) -> {
             progressIsVisible.postValue(false);
             notes.postValue(loadedNotes);
+            Log.d(TAG, "Size " + loadedNotes.size());
         });
     }
 

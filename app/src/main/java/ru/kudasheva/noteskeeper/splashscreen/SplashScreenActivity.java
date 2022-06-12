@@ -18,7 +18,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         splashScreenViewModel = ViewModelProviders.of(this).get(SplashScreenViewModel.class);
-        splashScreenViewModel.init();
+        splashScreenViewModel.initData();
 
         observeLiveData();
     }

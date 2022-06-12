@@ -8,6 +8,7 @@ import com.couchbase.lite.Document;
 import com.couchbase.lite.DocumentChange;
 import com.couchbase.lite.LiveQuery;
 import com.couchbase.lite.Manager;
+import com.couchbase.lite.QueryEnumerator;
 import com.couchbase.lite.QueryRow;
 import com.couchbase.lite.UnsavedRevision;
 import com.couchbase.lite.View;
@@ -24,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -239,11 +239,10 @@ public class DBManager {
         Log.d(TAG, "Database replication started");
     }
 
-    public void startReplication(String inputUsername) {
+    public void startReplication(User user) {
+        currentUser = user;
         executor.submit(() -> {
-            currentUser = getUser(inputUsername);
-
-            databaseReplicator.setPullUserIdFilter(inputUsername);
+            databaseReplicator.setPullUserIdFilter(currentUser.getUsername());
             databaseReplicator.startReplication();
         });
     }
@@ -251,6 +250,7 @@ public class DBManager {
     public void resetDatabase() {
         executor.submit(() -> {
             try {
+                notesQuery.stop();
                 databaseReplicator.stopReplication();
                 database.delete();
                 startNotesDB();
@@ -261,36 +261,12 @@ public class DBManager {
         });
     }
 
-    // TODO исправить
     public String getUsername() {
-        Future<String> result = executor.submit(() -> currentUser.getUsername());
-
-        try {
-            return result.get();
-        } catch (ExecutionException e) {
-            Log.d(TAG, "Failed to get username: " + e.getMessage());
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            Log.d(TAG, "Failed to get username. Function was interrupted with message: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return null;
+        return currentUser.getUsername();
     }
 
-    // TODO исправить
     public String getFullUsername() {
-        Future<String> result = executor.submit(() -> currentUser.getFullUsername());
-
-        try {
-            return result.get();
-        } catch (ExecutionException e) {
-            Log.d(TAG, "Failed to get full username: " + e.getMessage());
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            Log.d(TAG, "Failed to get full username. Function was interrupted with message: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return null;
+        return currentUser.getFullUsername();
     }
 
     public void addNote(Note note) {
@@ -410,13 +386,18 @@ public class DBManager {
             Log.d(TAG, "Load User notes:");
             List<NoteShortCard> shortNotes = new ArrayList<>();
 
-            for (QueryRow row : notesQuery.getRows()) {
+            Log.d(TAG, "Before query request");
+            QueryEnumerator qr = notesQuery.getRows();
+            Log.d(TAG, "Get query enumerator");
+
+            for (QueryRow row : qr) {
                 Map<String, Object> noteProperties = row.getDocument().getProperties();
                 Log.d(TAG, "type is: " + noteProperties.get("type"));
 
                 NoteShortCard shortNote = new NoteShortCard(Util.convertToNote(noteProperties));
                 shortNotes.add(shortNote);
             }
+            Log.d(TAG, "After query request");
             Log.d(TAG, "notes: " + shortNotes.size());
 
             consumer.accept(shortNotes);
@@ -426,7 +407,7 @@ public class DBManager {
     private List<Comment> getComments(String noteId) {
         List<Comment> comments = new ArrayList<>();
 
-        Log.d(TAG, "Load User comments: --------------");
+        Log.d(TAG, "Load User comments: ");
 
         for (QueryRow row : commentQuery.getRows()) {
             Map<String, Object> commentProperties = row.getDocument().getProperties();
@@ -490,14 +471,6 @@ public class DBManager {
         Log.d(TAG, "There is no such Note in Database + " + username);
         return null;
     }
-
-    public void checkIfUserExist(String username, Consumer<Boolean> consumer) {
-        executor.submit(() -> {
-            Document doc = userDatabase.getExistingDocument(username);
-            consumer.accept(doc != null);
-        });
-    }
-
 
     public void tryToAddFriend(String username, Consumer<FriendsViewModel.ResultFriendAddition> consumer) {
         executor.submit(() -> {

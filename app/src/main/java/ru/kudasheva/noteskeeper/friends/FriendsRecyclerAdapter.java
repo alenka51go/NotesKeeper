@@ -1,11 +1,8 @@
 package ru.kudasheva.noteskeeper.friends;
 
-import android.app.Activity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
@@ -15,15 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 
-import ru.kudasheva.noteskeeper.R;
-import ru.kudasheva.noteskeeper.data.ChangeListener;
-import ru.kudasheva.noteskeeper.data.DBManager;
-import ru.kudasheva.noteskeeper.data.FriendChangeListener;
 import ru.kudasheva.noteskeeper.databinding.FriendInfoBinding;
-import ru.kudasheva.noteskeeper.notescroll.CustomRecyclerAdapter;
-import ru.kudasheva.noteskeeper.notescroll.NoteShortCard;
 
 public class FriendsRecyclerAdapter extends RecyclerView.Adapter<FriendsRecyclerAdapter.FriendViewHolder> {
     private static final String TAG = FriendsRecyclerAdapter.class.getSimpleName();
