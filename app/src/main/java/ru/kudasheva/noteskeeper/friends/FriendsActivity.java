@@ -48,7 +48,7 @@ public class FriendsActivity extends AppCompatActivity implements SwipeRefreshLa
             }
         });
 
-        friendsViewModel.friends.observe(this, friendList -> friendsAdapter.setItems(friendList));
+        friendsViewModel.friendList.observe(this, friendList -> friendsAdapter.setItems(friendList));
 
         friendsViewModel.snackBarMessage.observe(this, this::showErrorMessage);
     }

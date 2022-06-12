@@ -379,10 +379,10 @@ public class DBManager {
         return null;
     }
 
-    public void getNoteShortCards(Consumer<List<NoteShortCard>> consumer) {
+    public void getNotes(Consumer<List<Note>> consumer) {
         executor.submit(() -> {
             Log.d(TAG, "Load User notes:");
-            List<NoteShortCard> shortNotes = new ArrayList<>();
+            List<Note> notes = new ArrayList<>();
 
             Log.d(TAG, "Before query request");
             QueryEnumerator qr = notesQuery.getRows();
@@ -392,13 +392,13 @@ public class DBManager {
                 Map<String, Object> noteProperties = row.getDocument().getProperties();
                 Log.d(TAG, "type is: " + noteProperties.get("type"));
 
-                NoteShortCard shortNote = new NoteShortCard(Util.convertToNote(noteProperties));
-                shortNotes.add(shortNote);
+                Note note = Util.convertToNote(noteProperties);
+                notes.add(note);
             }
             Log.d(TAG, "After query request");
-            Log.d(TAG, "notes: " + shortNotes.size());
+            Log.d(TAG, "notes: " + notes.size());
 
-            consumer.accept(shortNotes);
+            consumer.accept(notes);
         });
     }
 
@@ -417,20 +417,6 @@ public class DBManager {
 
         Log.d(TAG, "comments: " + comments.size());
         return comments;
-    }
-
-    public void getFriendsInfoCard(Consumer<List<FriendInfoCard>> consumer) {
-        executor.submit(() -> {
-            List<User> friends = getFriends();
-            List<FriendInfoCard> friendInfoCards = new ArrayList<>();
-
-            for (User user : friends) {
-                FriendInfoCard friendInfoCard = new FriendInfoCard(user.getFullUsername());
-                friendInfoCards.add(friendInfoCard);
-            }
-
-            consumer.accept(friendInfoCards);
-        });
     }
 
     public void getFriends(Consumer<List<User>> consumer) {

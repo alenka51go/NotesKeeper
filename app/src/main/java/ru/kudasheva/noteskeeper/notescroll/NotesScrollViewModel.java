@@ -7,10 +7,12 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ru.kudasheva.noteskeeper.MyApplication;
 import ru.kudasheva.noteskeeper.data.DBManager;
+import ru.kudasheva.noteskeeper.data.models.Note;
 
 public class NotesScrollViewModel extends ViewModel {
     private static final String TAG = NotesScrollViewModel.class.getSimpleName();
@@ -31,10 +33,11 @@ public class NotesScrollViewModel extends ViewModel {
     public void updateData() {
         progressIsVisible.setValue(true);
 
-        DBManager.getInstance().getNoteShortCards((loadedNotes) -> {
+        DBManager.getInstance().getNotes((loadedNotes) -> {
             progressIsVisible.postValue(false);
-            notes.postValue(loadedNotes);
+
             Log.d(TAG, "Size " + loadedNotes.size());
+            notes.postValue(convertToShortNotes(loadedNotes));
         });
     }
 
@@ -85,5 +88,14 @@ public class NotesScrollViewModel extends ViewModel {
         OPEN_MENU,
         CLOSE_MENU,
         HIDE_EXTRA_MENU_INFO
+    }
+
+    private List<NoteShortCard> convertToShortNotes(List<Note> notes) {
+        List<NoteShortCard> shortCards = new ArrayList<>();
+        for (Note note : notes) {
+            NoteShortCard noteShortCard = new NoteShortCard(note);
+            shortCards.add(noteShortCard);
+        }
+        return shortCards;
     }
 }

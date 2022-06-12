@@ -3,18 +3,20 @@ package ru.kudasheva.noteskeeper.friends;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
 import ru.kudasheva.noteskeeper.data.DBManager;
 import ru.kudasheva.noteskeeper.data.SingleLiveEvent;
+import ru.kudasheva.noteskeeper.data.models.User;
 
 public class FriendsViewModel extends ViewModel {
     private static final String TAG = FriendsViewModel.class.getSimpleName();
 
     public SingleLiveEvent<String> snackBarMessage = new SingleLiveEvent<>();
     public MutableLiveData<Commands> command = new MutableLiveData<>();
-    public MutableLiveData<List<FriendInfoCard>> friends = new MutableLiveData<>();
+    public MutableLiveData<List<FriendInfoCard>> friendList = new MutableLiveData<>();
     public MutableLiveData<Boolean> progressIsVisible = new MutableLiveData<>();
 
     public void onFindFriendsButtonClicked() {
@@ -50,8 +52,8 @@ public class FriendsViewModel extends ViewModel {
 
     public void updateData() {
         progressIsVisible.setValue(true);
-        DBManager.getInstance().getFriendsInfoCard((friendsInfo) ->{
-            friends.postValue(friendsInfo);
+        DBManager.getInstance().getFriends((friends) ->{
+            friendList.postValue(convertToFriendsInfoCard(friends));
             progressIsVisible.postValue(false);
         });
     }
@@ -65,5 +67,13 @@ public class FriendsViewModel extends ViewModel {
         ALREADY_ADDED,
         DOESNT_EXIT,
         ERROR
+    }
+
+    private List<FriendInfoCard> convertToFriendsInfoCard(List<User> friends) {
+        List<FriendInfoCard> friendInfoCards = new ArrayList<>();
+        for (User friend : friends) {
+            friendInfoCards.add(new FriendInfoCard((friend.getFullUsername())));
+        }
+        return friendInfoCards;
     }
 }
