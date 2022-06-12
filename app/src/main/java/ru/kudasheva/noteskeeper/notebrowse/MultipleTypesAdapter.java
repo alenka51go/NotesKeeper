@@ -1,5 +1,6 @@
 package ru.kudasheva.noteskeeper.notebrowse;
 
+import static ru.kudasheva.noteskeeper.notebrowse.InfoCard.COMMENT_ROW_TYPE;
 import static ru.kudasheva.noteskeeper.notebrowse.InfoCard.NOTE_ROW_TYPE;
 
 import android.app.Activity;
@@ -53,10 +54,11 @@ public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdap
                         case UPDATED:
                             DBManager.getInstance().getUser((String) properties.get("userId"), (user) -> {
                                 activity.runOnUiThread(() -> {
-                                    dataSet.add(new CommentInfoCard(documentId,
+                                    dataSet.add(new InfoCard(documentId,
                                             (String) properties.get("text"),
                                             user.getFullUsername(),
-                                            (String) properties.get("date")));
+                                            (String) properties.get("date"),
+                                            COMMENT_ROW_TYPE));
                                     notifyItemChanged(dataSet.size() - 1);
                                     Log.d(TAG, "Item " + documentId + " inserted to position " + (dataSet.size() - 1));
                                 });
@@ -73,10 +75,11 @@ public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdap
                         case UPDATED:
                             DBManager.getInstance().getUser((String) properties.get("userId"), (user) -> {
                                 activity.runOnUiThread(() -> {
-                                    dataSet.set(pos, new CommentInfoCard(documentId,
+                                    dataSet.set(pos, new InfoCard(documentId,
                                             (String) properties.get("text"),
                                             user.getFullUsername(),
-                                            (String) properties.get("date")));
+                                            (String) properties.get("date"),
+                                            COMMENT_ROW_TYPE));
                                     notifyItemChanged(pos);
                                     Log.d(TAG, "Item at position " + pos + " changed");
                                 });
@@ -162,7 +165,7 @@ public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdap
 
         @Override
         void bindContent(InfoCard item) {
-            binding.setFullNote((NoteFullCard) item);
+            binding.setFullNote(item);
         }
     }
 
@@ -176,7 +179,7 @@ public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdap
 
         @Override
         void bindContent(InfoCard item) {
-            binding.setComment((CommentInfoCard) item);
+            binding.setComment(item);
         }
     }
 

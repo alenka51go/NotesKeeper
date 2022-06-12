@@ -1,4 +1,4 @@
-package ru.kudasheva.noteskeeper.data.models;
+package ru.kudasheva.noteskeeper.data;
 
 import android.util.Log;
 
@@ -9,12 +9,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import ru.kudasheva.noteskeeper.data.Util;
 
 public class DatabaseReplicator {
     private static final String TAG = DatabaseReplicator.class.getSimpleName();

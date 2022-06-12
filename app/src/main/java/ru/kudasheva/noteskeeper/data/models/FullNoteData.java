@@ -10,10 +10,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import ru.kudasheva.noteskeeper.data.DBManager;
-import ru.kudasheva.noteskeeper.notebrowse.CommentInfoCard;
 import ru.kudasheva.noteskeeper.notebrowse.InfoCard;
-import ru.kudasheva.noteskeeper.notebrowse.NoteFullCard;
 
 public class FullNoteData {
     private static final String TAG = FullNoteData.class.getSimpleName();
@@ -29,13 +26,13 @@ public class FullNoteData {
     }
 
     public List<InfoCard> createInfoCards() {
-        NoteFullCard noteFullCard = NoteFullCard.from(note, owner.getFullUsername());
+        InfoCard noteFullCard = InfoCard.from(note, owner.getFullUsername());
         List<InfoCard> resultList = new ArrayList<>(Collections.singletonList(noteFullCard));
 
         List<InfoCard> commentsList = new ArrayList<>();
 
         for (Map.Entry<Comment, User> entry : userCommentMap.entrySet()) {
-            CommentInfoCard commentInfoCard = CommentInfoCard.from(entry.getKey(), entry.getValue().getFullUsername());
+            InfoCard commentInfoCard = InfoCard.from(entry.getKey(), entry.getValue().getFullUsername());
             commentsList.add(commentInfoCard);
         }
 

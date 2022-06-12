@@ -27,12 +27,10 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 import ru.kudasheva.noteskeeper.MyApplication;
 import ru.kudasheva.noteskeeper.data.models.Comment;
-import ru.kudasheva.noteskeeper.data.models.DatabaseReplicator;
 import ru.kudasheva.noteskeeper.data.models.FullNoteData;
 import ru.kudasheva.noteskeeper.data.models.Note;
 import ru.kudasheva.noteskeeper.data.models.User;
