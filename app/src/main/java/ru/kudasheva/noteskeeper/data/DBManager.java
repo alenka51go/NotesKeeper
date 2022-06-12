@@ -27,6 +27,7 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 import ru.kudasheva.noteskeeper.MyApplication;
@@ -237,9 +238,9 @@ public class DBManager {
         Log.d(TAG, "Database replication started");
     }
 
-    public void startReplication(String userInfoGson) {
+    public Future<?> startReplication(String userInfoGson) {
         currentUserData = new Gson().fromJson(userInfoGson, UserData.class);
-        executor.submit(() -> {
+        return executor.submit(() -> {
             databaseReplicator.setPullUserIdFilter(currentUserData.getUsername());
             databaseReplicator.startReplication();
         });

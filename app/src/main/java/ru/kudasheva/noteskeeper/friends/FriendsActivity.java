@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,6 +27,7 @@ public class FriendsActivity extends AppCompatActivity implements SwipeRefreshLa
 
     private FriendsRecyclerAdapter friendsAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private ProgressDialog progressDialog = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,22 @@ public class FriendsActivity extends AppCompatActivity implements SwipeRefreshLa
     }
 
     private void observeLiveData() {
+        friendsViewModel.progressIsVisible.observe(this, (res) -> {
+            if (res) {
+                if (progressDialog == null) {
+                    progressDialog = new ProgressDialog(this, R.style.MyTheme);
+                    progressDialog.setCancelable(false);
+                    progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Small);
+                    progressDialog.show();
+                }
+            } else {
+                if (progressDialog != null) {
+                    progressDialog.dismiss();
+                    progressDialog = null;
+                }
+            }
+        });
+
         friendsViewModel.command.observe(this, activityCommand -> {
             if (activityCommand == FriendsViewModel.Commands.OPEN_DIALOG) {
                 openFindFriendsDialog();

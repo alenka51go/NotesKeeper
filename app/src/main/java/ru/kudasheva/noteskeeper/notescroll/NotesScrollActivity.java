@@ -2,6 +2,7 @@ package ru.kudasheva.noteskeeper.notescroll;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,6 +32,7 @@ public class NotesScrollActivity extends AppCompatActivity  implements SwipeRefr
 
     private CustomRecyclerAdapter noteAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private ProgressDialog progressDialog = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,6 +49,22 @@ public class NotesScrollActivity extends AppCompatActivity  implements SwipeRefr
     }
 
     private void observeLiveData() {
+        notesScrollViewModel.progressIsVisible.observe(this, (res) -> {
+            if (res) {
+                if (progressDialog == null) {
+                    progressDialog = new ProgressDialog(this, R.style.MyTheme);
+                    progressDialog.setCancelable(false);
+                    progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Small);
+                    progressDialog.show();
+                }
+            } else {
+                if (progressDialog != null) {
+                    progressDialog.dismiss();
+                    progressDialog = null;
+                }
+            }
+        });
+
         notesScrollViewModel.activityCommand.observe(this, (activityCode) -> {
             switch (activityCode) {
                 case OPEN_CREATE_NOTE_ACTIVITY: {

@@ -1,5 +1,6 @@
 package ru.kudasheva.noteskeeper.notebrowse;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -24,7 +25,9 @@ public class NoteBrowseActivity extends AppCompatActivity  implements SwipeRefre
     private NoteBrowseViewModel noteBrowseViewModel;
     private ActivityNoteBrowseBinding binding;
     private MultipleTypesAdapter adapter;
+
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private ProgressDialog progressDialog = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +45,22 @@ public class NoteBrowseActivity extends AppCompatActivity  implements SwipeRefre
     }
 
     private void observeLiveData() {
+        noteBrowseViewModel.progressIsVisible.observe(this, (res) -> {
+            if (res) {
+                if (progressDialog == null) {
+                    progressDialog = new ProgressDialog(this, R.style.MyTheme);
+                    progressDialog.setCancelable(false);
+                    progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Small);
+                    progressDialog.show();
+                }
+            } else {
+                if (progressDialog != null) {
+                    progressDialog.dismiss();
+                    progressDialog = null;
+                }
+            }
+        });
+
         noteBrowseViewModel.dataContainer.observe(this, listOfNoteAndComments -> {
             adapter.setItems(listOfNoteAndComments);
         });
