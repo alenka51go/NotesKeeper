@@ -1,27 +1,22 @@
-package ru.kudasheva.noteskeeper.vmmodels;
+package ru.kudasheva.noteskeeper.models.vmmodels;
 
-import android.util.Log;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import ru.kudasheva.noteskeeper.data.Util;
-import ru.kudasheva.noteskeeper.data.models.CommentData;
-import ru.kudasheva.noteskeeper.data.models.NoteData;
-import ru.kudasheva.noteskeeper.data.models.UserData;
-import ru.kudasheva.noteskeeper.notebrowse.InfoCard;
+import ru.kudasheva.noteskeeper.models.datamodels.CommentData;
+import ru.kudasheva.noteskeeper.models.datamodels.NoteData;
+import ru.kudasheva.noteskeeper.models.datamodels.UserData;
+import ru.kudasheva.noteskeeper.models.presentermodels.InfoCard;
 
 public class Document {
     private static final String TAG = Document.class.getSimpleName();
 
-    private Card note;
-    private List<Card> comments;
+    private final Card note;
+    private final List<Card> comments;
 
     public Document(UserData noteOwner, NoteData userNoteData, Map<CommentData, UserData> userComments) {
         note = new Card(userNoteData, noteOwner);

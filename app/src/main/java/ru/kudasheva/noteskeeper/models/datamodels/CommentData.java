@@ -1,6 +1,4 @@
-package ru.kudasheva.noteskeeper.data.models;
-
-import com.fasterxml.jackson.databind.ser.std.IterableSerializer;
+package ru.kudasheva.noteskeeper.models.datamodels;
 
 import java.util.List;
 

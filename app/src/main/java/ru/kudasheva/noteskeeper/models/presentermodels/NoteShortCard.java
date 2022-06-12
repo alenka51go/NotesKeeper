@@ -1,10 +1,10 @@
-package ru.kudasheva.noteskeeper.notescroll;
+package ru.kudasheva.noteskeeper.models.presentermodels;
 
 public class NoteShortCard {
-    private String id;
-    private String header;
-    private String date;
-    private boolean shared;
+    private final String id;
+    private final String header;
+    private final String date;
+    private final boolean shared;
 
     public NoteShortCard(String id, String header, String date, boolean shared) {
         this.id = id;

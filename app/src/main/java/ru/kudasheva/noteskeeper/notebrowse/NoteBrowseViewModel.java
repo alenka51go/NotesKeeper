@@ -13,10 +13,10 @@ import java.util.Locale;
 
 import ru.kudasheva.noteskeeper.data.DBManager;
 import ru.kudasheva.noteskeeper.data.SingleLiveEvent;
-import ru.kudasheva.noteskeeper.data.models.CommentData;
-import ru.kudasheva.noteskeeper.data.models.NoteData;
-import ru.kudasheva.noteskeeper.vmmodels.Card;
-import ru.kudasheva.noteskeeper.vmmodels.User;
+import ru.kudasheva.noteskeeper.models.datamodels.CommentData;
+import ru.kudasheva.noteskeeper.models.presentermodels.InfoCard;
+import ru.kudasheva.noteskeeper.models.vmmodels.Card;
+import ru.kudasheva.noteskeeper.models.vmmodels.User;
 
 public class NoteBrowseViewModel  extends ViewModel {
     private static final String TAG = NoteBrowseViewModel.class.getSimpleName();
@@ -33,7 +33,7 @@ public class NoteBrowseViewModel  extends ViewModel {
     public MutableLiveData<Boolean> progressIsVisible = new MutableLiveData<>();
 
     public void initData(String noteId) {
-        progressIsVisible.setValue(true); // TODO установить крутилку
+        progressIsVisible.setValue(true);
 
         DBManager.getInstance().getDocument(noteId, (document) -> {
             progressIsVisible.postValue(false);
@@ -42,7 +42,7 @@ public class NoteBrowseViewModel  extends ViewModel {
             title.postValue(openedNote.getTitle());
             dataContainer.postValue(document.createInfoCards());
             if (!openedNote.getOwnerUsername().equals(user.getUsername())) {
-                activityCommand.setValue(Commands.REMOVE_ACTION_BUTTON);
+                activityCommand.postValue(Commands.REMOVE_ACTION_BUTTON);
             }
         });
     }
@@ -66,9 +66,9 @@ public class NoteBrowseViewModel  extends ViewModel {
 
     public void update() {
         progressIsVisible.postValue(true);
-        DBManager.getInstance().getDocument(openedNote.getDocumentId(), (fullNoteData) -> {
+        DBManager.getInstance().getDocument(openedNote.getDocumentId(), (document) -> {
             progressIsVisible.postValue(false);
-            dataContainer.postValue(fullNoteData.createInfoCards());
+            dataContainer.postValue(document.createInfoCards());
         });
     }
 

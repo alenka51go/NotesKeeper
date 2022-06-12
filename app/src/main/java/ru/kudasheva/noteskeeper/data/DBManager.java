@@ -31,13 +31,13 @@ import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 import ru.kudasheva.noteskeeper.MyApplication;
-import ru.kudasheva.noteskeeper.data.models.CommentData;
-import ru.kudasheva.noteskeeper.data.models.UserData;
-import ru.kudasheva.noteskeeper.vmmodels.Document;
-import ru.kudasheva.noteskeeper.data.models.NoteData;
+import ru.kudasheva.noteskeeper.models.datamodels.CommentData;
+import ru.kudasheva.noteskeeper.models.datamodels.UserData;
+import ru.kudasheva.noteskeeper.models.vmmodels.Document;
+import ru.kudasheva.noteskeeper.models.datamodels.NoteData;
 import ru.kudasheva.noteskeeper.friends.FriendsViewModel;
-import ru.kudasheva.noteskeeper.vmmodels.Card;
-import ru.kudasheva.noteskeeper.vmmodels.User;
+import ru.kudasheva.noteskeeper.models.vmmodels.Card;
+import ru.kudasheva.noteskeeper.models.vmmodels.User;
 
 public class DBManager {
     private static final String TAG = DBManager.class.getSimpleName();
@@ -250,8 +250,10 @@ public class DBManager {
         executor.submit(() -> {
             try {
                 notesQuery.stop();
+                commentQuery.stop();
                 databaseReplicator.stopReplication();
                 database.delete();
+
                 startNotesDB();
             } catch (CouchbaseLiteException e) {
                 Log.e(TAG, "Failed to delete CouchBase lite bases");
@@ -299,7 +301,6 @@ public class DBManager {
                 unsavedRevision.save();
 
                 Log.d(TAG, "Comment in map: " + commentData.toString());
-
             } catch (CouchbaseLiteException e) {
                 Log.d(TAG, "ERROR - " + e);
                 e.printStackTrace();
@@ -383,8 +384,8 @@ public class DBManager {
 
             Log.d(TAG, "Before query request");
             QueryEnumerator qr = notesQuery.getRows();
-            Log.d(TAG, "Get query enumerator");
 
+            Log.d(TAG, "Get query enumerator");
             for (QueryRow row : qr) {
                 Map<String, Object> noteProperties = row.getDocument().getProperties();
                 Log.d(TAG, "type is: " + noteProperties.get("type"));
@@ -530,7 +531,9 @@ public class DBManager {
                 userComments.put(comment, userData);
             }
 
-            consumer.accept(new Document(currentUserData, noteData, userComments));
+            UserData userData = getUserData(noteData.getUserId());
+
+            consumer.accept(new Document(userData, noteData, userComments));
         });
         Log.d(TAG, "Finish getting note with id: " + noteId);
     }

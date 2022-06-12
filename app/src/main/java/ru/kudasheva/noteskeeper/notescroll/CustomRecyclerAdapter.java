@@ -19,27 +19,17 @@ import java.util.Objects;
 import ru.kudasheva.noteskeeper.data.ChangeListener;
 import ru.kudasheva.noteskeeper.data.DBManager;
 import ru.kudasheva.noteskeeper.databinding.ShortNoteInfoBinding;
+import ru.kudasheva.noteskeeper.models.presentermodels.NoteShortCard;
 
 public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAdapter.CustomViewHolder> {
     private static final String TAG = CustomRecyclerAdapter.class.getSimpleName();
 
     private List<NoteShortCard> noteList = new ArrayList<>();
     private final OnNoteClickListener onNoteClickListener;
-    private final Activity parentActivity;
     private final ChangeListener changeListener;
-
-    private int getIndexOfItemByDocumentId(String documentId) {
-        for (int i = 0; i < noteList.size(); i++) {
-            if (noteList.get(i).getId().equals(documentId)) {
-                return i;
-            }
-        }
-        return -1;
-    }
 
     public CustomRecyclerAdapter(OnNoteClickListener onUserClickListener, Activity activity) {
         this.onNoteClickListener = onUserClickListener;
-        parentActivity = activity;
 
         changeListener = (documentId, event, properties) -> {
             Log.d(TAG, "Document with id " + documentId + " was " + event);
@@ -47,13 +37,13 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
                 return;
             }
 
-            parentActivity.runOnUiThread(() -> {
-                int pos = getIndexOfItemByDocumentId(documentId);
-                if (pos == -1) {
-                    switch (event) {
-                        case DELETED:
-                            break;
-                        case UPDATED:
+            int pos = getIndexOfItemByDocumentId(documentId);
+            if (pos == -1) {
+                switch (event) {
+                    case DELETED:
+                        break;
+                    case UPDATED:
+                        activity.runOnUiThread(() -> {
                             boolean isSharedNote = ((List<String>) properties.get("sharedUsers")).size() > 1;
                             noteList.add(new NoteShortCard(documentId,
                                     (String) properties.get("title"),
@@ -61,16 +51,20 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
                                     isSharedNote));
                             notifyItemChanged(noteList.size() - 1);
                             Log.d(TAG, "Item " + documentId + " inserted to position " + (noteList.size() - 1));
-                            break;
-                    }
-                } else {
-                    switch (event) {
-                        case DELETED:
+                        });
+                        break;
+                }
+            } else {
+                switch (event) {
+                    case DELETED:
+                        activity.runOnUiThread(() -> {
                             noteList.remove(pos);
                             notifyItemRemoved(pos);
                             Log.d(TAG, "Item at position " + pos + " removed");
-                            break;
-                        case UPDATED:
+                        });
+                        break;
+                    case UPDATED:
+                        activity.runOnUiThread(() -> {
                             boolean isSharedNote = ((List<String>) properties.get("sharedUsers")).size() > 1;
                             noteList.set(pos, new NoteShortCard(documentId,
                                     (String) properties.get("title"),
@@ -78,10 +72,10 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
                                     isSharedNote));
                             notifyItemChanged(pos);
                             Log.d(TAG, "Item at position " + pos + " changed");
-                            break;
-                    }
+                        });
+                        break;
                 }
-            });
+            }
         };
 
         int hashCode = hashCode();
@@ -93,7 +87,8 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
     @Override
     public CustomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        ShortNoteInfoBinding binding = ShortNoteInfoBinding.inflate(inflater, parent, false);
+        ShortNoteInfoBinding binding = ShortNoteInfoBinding
+                .inflate(inflater, parent, false);
         return new CustomViewHolder(binding.getRoot());
     }
 
@@ -124,8 +119,8 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
     }
 
     class CustomViewHolder extends RecyclerView.ViewHolder {
-        ShortNoteInfoBinding binding;
 
+        ShortNoteInfoBinding binding;
         public CustomViewHolder(View itemView) {
             super(itemView);
             binding = DataBindingUtil.bind(itemView);
@@ -134,16 +129,16 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
                 onNoteClickListener.onNoteClick(note);
             });
         }
-    }
 
+    }
     public interface OnNoteClickListener {
+
         void onNoteClick(NoteShortCard note);
     }
-
     public static class NoteDiffUtilCallback extends DiffUtil.Callback {
+
         private final List<NoteShortCard> oldList;
         private final List<NoteShortCard> newList;
-
         public NoteDiffUtilCallback(List<NoteShortCard> oldList, List<NoteShortCard> newList) {
             this.oldList = oldList;
             this.newList = newList;
@@ -173,5 +168,15 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
             return oldProduct.getHeader().equals(newProduct.getHeader())
                     && oldProduct.getDate().equals(newProduct.getDate());
         }
+
+    }
+
+    private int getIndexOfItemByDocumentId(String documentId) {
+        for (int i = 0; i < noteList.size(); i++) {
+            if (noteList.get(i).getId().equals(documentId)) {
+                return i;
+            }
+        }
+        return -1;
     }
 }

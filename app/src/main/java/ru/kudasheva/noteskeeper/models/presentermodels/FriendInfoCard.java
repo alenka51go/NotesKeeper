@@ -1,4 +1,4 @@
-package ru.kudasheva.noteskeeper.friends;
+package ru.kudasheva.noteskeeper.models.presentermodels;
 
 import java.util.Objects;
 

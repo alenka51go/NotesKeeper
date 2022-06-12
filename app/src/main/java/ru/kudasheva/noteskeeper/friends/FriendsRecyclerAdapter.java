@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.List;
 
 import ru.kudasheva.noteskeeper.databinding.FriendInfoBinding;
+import ru.kudasheva.noteskeeper.models.presentermodels.FriendInfoCard;
 
 public class FriendsRecyclerAdapter extends RecyclerView.Adapter<FriendsRecyclerAdapter.FriendViewHolder> {
     private static final String TAG = FriendsRecyclerAdapter.class.getSimpleName();

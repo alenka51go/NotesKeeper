@@ -1,5 +1,6 @@
 package ru.kudasheva.noteskeeper.splashscreen;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -9,8 +10,8 @@ import androidx.lifecycle.ViewModelProviders;
 import ru.kudasheva.noteskeeper.login.LoginActivity;
 import ru.kudasheva.noteskeeper.notescroll.NotesScrollActivity;
 
+@SuppressLint("CustomSplashScreen")
 public class SplashScreenActivity extends AppCompatActivity {
-
     private SplashScreenViewModel splashScreenViewModel;
 
     @Override
@@ -27,12 +28,14 @@ public class SplashScreenActivity extends AppCompatActivity {
         splashScreenViewModel.activityCommand.observe(this, activityCommand -> {
             switch (activityCommand) {
                 case OPEN_LOGIN_ACTIVITY: {
-                    startActivity(new Intent(SplashScreenActivity.this, LoginActivity.class));
+                    startActivity(new Intent(SplashScreenActivity.this,
+                            LoginActivity.class));
                     finish();
                     break;
                 }
                 case OPEN_NOTESCROLL_ACTIVITY: {
-                    startActivity(new Intent(SplashScreenActivity.this, NotesScrollActivity.class));
+                    startActivity(new Intent(SplashScreenActivity.this,
+                            NotesScrollActivity.class));
                     finish();
                     break;
                 }

@@ -18,9 +18,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import ru.kudasheva.noteskeeper.data.models.CommentData;
-import ru.kudasheva.noteskeeper.data.models.NoteData;
-import ru.kudasheva.noteskeeper.data.models.UserData;
+import ru.kudasheva.noteskeeper.models.datamodels.CommentData;
+import ru.kudasheva.noteskeeper.models.datamodels.NoteData;
+import ru.kudasheva.noteskeeper.models.datamodels.UserData;
 
 public class Util {
     private static final String TAG = Util.class.getSimpleName();

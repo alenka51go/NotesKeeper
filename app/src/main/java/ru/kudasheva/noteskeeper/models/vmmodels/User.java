@@ -1,14 +1,14 @@
-package ru.kudasheva.noteskeeper.vmmodels;
+package ru.kudasheva.noteskeeper.models.vmmodels;
 
 import java.util.List;
 
-import ru.kudasheva.noteskeeper.data.models.UserData;
-import ru.kudasheva.noteskeeper.friends.FriendInfoCard;
+import ru.kudasheva.noteskeeper.models.datamodels.UserData;
+import ru.kudasheva.noteskeeper.models.presentermodels.FriendInfoCard;
 
 public class User {
-    private String username;
-    private String fullName;
-    private List<String> friends;
+    private final String username;
+    private final String fullName;
+    private final List<String> friends;
 
     public User(UserData user) {
         username = user.getUsername();

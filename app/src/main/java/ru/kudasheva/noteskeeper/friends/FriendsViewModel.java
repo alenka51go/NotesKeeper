@@ -9,7 +9,8 @@ import java.util.function.Consumer;
 
 import ru.kudasheva.noteskeeper.data.DBManager;
 import ru.kudasheva.noteskeeper.data.SingleLiveEvent;
-import ru.kudasheva.noteskeeper.vmmodels.User;
+import ru.kudasheva.noteskeeper.models.presentermodels.FriendInfoCard;
+import ru.kudasheva.noteskeeper.models.vmmodels.User;
 
 public class FriendsViewModel extends ViewModel {
     private static final String TAG = FriendsViewModel.class.getSimpleName();

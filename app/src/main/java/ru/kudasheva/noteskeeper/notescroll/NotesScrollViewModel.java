@@ -12,25 +12,23 @@ import java.util.List;
 
 import ru.kudasheva.noteskeeper.MyApplication;
 import ru.kudasheva.noteskeeper.data.DBManager;
-import ru.kudasheva.noteskeeper.data.models.NoteData;
-import ru.kudasheva.noteskeeper.vmmodels.Card;
-import ru.kudasheva.noteskeeper.vmmodels.User;
+import ru.kudasheva.noteskeeper.models.presentermodels.NoteShortCard;
+import ru.kudasheva.noteskeeper.models.vmmodels.Card;
+import ru.kudasheva.noteskeeper.models.vmmodels.User;
 
 public class NotesScrollViewModel extends ViewModel {
     private static final String TAG = NotesScrollViewModel.class.getSimpleName();
 
-    private boolean isMenuOpen = false;
+    private static final String APP_PREFERENCES = "appsettings";
+    private static final String APP_PREFERENCES_NAME = "appsettings";
 
     public User user = DBManager.getInstance().getUser();
+    public NoteShortCard openedNote;
+    public Boolean menuIsOpen = false;
 
     public MutableLiveData<NotesScrollViewModel.Commands> activityCommand = new MutableLiveData<>();
     public MutableLiveData<List<NoteShortCard>> notes = new MutableLiveData<>();
     public MutableLiveData<Boolean> progressIsVisible = new MutableLiveData<>();
-
-    public NoteShortCard openedNote;
-
-    private static final String APP_PREFERENCES = "appsettings";
-    private static final String APP_PREFERENCES_NAME = "appsettings";
 
     public void updateData() {
         progressIsVisible.setValue(true);
@@ -38,8 +36,8 @@ public class NotesScrollViewModel extends ViewModel {
         DBManager.getInstance().getNotes((loadedNotes) -> {
             progressIsVisible.postValue(false);
 
-            Log.d(TAG, "Size " + loadedNotes.size());
             notes.postValue(convertToShortNotes(loadedNotes));
+            Log.d(TAG, "Size " + loadedNotes.size());
         });
     }
 
@@ -62,17 +60,17 @@ public class NotesScrollViewModel extends ViewModel {
     }
 
     public void onMenuClicked() {
-        if (isMenuOpen) {
+        if (menuIsOpen) {
+            menuIsOpen = false;
             activityCommand.setValue(Commands.CLOSE_MENU);
-            isMenuOpen = false;
         } else {
+            menuIsOpen = true;
             activityCommand.setValue(Commands.OPEN_MENU);
-            isMenuOpen = true;
         }
     }
 
     public void animationEnd() {
-        if (!isMenuOpen) {
+        if (!menuIsOpen) {
             activityCommand.setValue(Commands.HIDE_EXTRA_MENU_INFO);
         }
     }

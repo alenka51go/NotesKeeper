@@ -1,7 +1,5 @@
 package ru.kudasheva.noteskeeper.splashscreen;
 
-import static java.lang.Thread.sleep;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
@@ -9,16 +7,12 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.google.gson.Gson;
-
-import java.util.concurrent.ExecutionException;
-
 import ru.kudasheva.noteskeeper.MyApplication;
 import ru.kudasheva.noteskeeper.data.DBManager;
-import ru.kudasheva.noteskeeper.data.models.UserData;
 
 public class SplashScreenViewModel extends ViewModel {
     private static final String TAG = SplashScreenViewModel.class.getSimpleName();
+
     private static final String APP_PREFERENCES = "appsettings";
     private static final String APP_PREFERENCES_NAME = "appsettings";
 

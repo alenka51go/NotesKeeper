@@ -1,29 +1,27 @@
-package ru.kudasheva.noteskeeper.vmmodels;
+package ru.kudasheva.noteskeeper.models.vmmodels;
 
 import android.util.Log;
-
-import androidx.core.app.NavUtils;
 
 import java.util.Date;
 import java.util.List;
 
 import ru.kudasheva.noteskeeper.data.Util;
-import ru.kudasheva.noteskeeper.data.models.CommentData;
-import ru.kudasheva.noteskeeper.data.models.NoteData;
-import ru.kudasheva.noteskeeper.data.models.UserData;
-import ru.kudasheva.noteskeeper.notebrowse.InfoCard;
-import ru.kudasheva.noteskeeper.notescroll.NoteShortCard;
+import ru.kudasheva.noteskeeper.models.datamodels.CommentData;
+import ru.kudasheva.noteskeeper.models.datamodels.NoteData;
+import ru.kudasheva.noteskeeper.models.datamodels.UserData;
+import ru.kudasheva.noteskeeper.models.presentermodels.InfoCard;
+import ru.kudasheva.noteskeeper.models.presentermodels.NoteShortCard;
 
 public class Card {
     private static final String TAG = Card.class.getSimpleName();
 
-    private String documentId;
-    private User user;
-    private String title;
-    private String text;
-    private Date date;
-    private List<String> sharedUsernames;
-    private Type type;
+    private final String documentId;
+    private final User user;
+    private final String title;
+    private final String text;
+    private final Date date;
+    private final List<String> sharedUsernames;
+    private final Type type;
 
     public Card(NoteData noteData, UserData userData) {
         user = new User(userData);
@@ -83,7 +81,8 @@ public class Card {
 
     public NoteShortCard createShortCard() {
         if (type == Type.NOTE) {
-            return new NoteShortCard(documentId, title, getDate(), sharedUsernames.size() > 1);
+            return new NoteShortCard(documentId, title,
+                    getDate(), sharedUsernames.size() > 1);
         }
         Log.d(TAG, "Card can't be converted to ShortCard");
         return null;

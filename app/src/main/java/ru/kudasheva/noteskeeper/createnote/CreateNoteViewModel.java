@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.Locale;
 
 import ru.kudasheva.noteskeeper.data.DBManager;
-import ru.kudasheva.noteskeeper.data.models.NoteData;
-import ru.kudasheva.noteskeeper.vmmodels.User;
+import ru.kudasheva.noteskeeper.models.datamodels.NoteData;
+import ru.kudasheva.noteskeeper.models.vmmodels.User;
 
 public class CreateNoteViewModel extends ViewModel {
     private final User user = DBManager.getInstance().getUser();

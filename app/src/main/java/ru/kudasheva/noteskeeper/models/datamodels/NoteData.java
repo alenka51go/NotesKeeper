@@ -1,8 +1,7 @@
-package ru.kudasheva.noteskeeper.data.models;
+package ru.kudasheva.noteskeeper.models.datamodels;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)

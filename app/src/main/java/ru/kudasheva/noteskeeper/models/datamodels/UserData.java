@@ -1,4 +1,4 @@
-package ru.kudasheva.noteskeeper.data.models;
+package ru.kudasheva.noteskeeper.models.datamodels;
 
 import java.util.List;
 
@@ -10,17 +10,6 @@ public class UserData {
     private List<String> friends;
 
     public UserData() {}
-
-    public UserData(String firstname) {
-        _id = firstname;
-        this.firstname = firstname;
-    }
-
-    public UserData(String firstname, String lastname) {
-        _id = firstname + ' ' + lastname;
-        this.firstname = firstname;
-        this.lastname = lastname;
-    }
 
     public UserData(String _id, String _rev, String firstname, String lastname, List<String> friends) {
         this._id = _id;

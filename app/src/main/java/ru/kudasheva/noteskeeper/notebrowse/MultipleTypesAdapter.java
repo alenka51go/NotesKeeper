@@ -1,7 +1,7 @@
 package ru.kudasheva.noteskeeper.notebrowse;
 
-import static ru.kudasheva.noteskeeper.notebrowse.InfoCard.COMMENT_ROW_TYPE;
-import static ru.kudasheva.noteskeeper.notebrowse.InfoCard.NOTE_ROW_TYPE;
+import static ru.kudasheva.noteskeeper.models.presentermodels.InfoCard.COMMENT_ROW_TYPE;
+import static ru.kudasheva.noteskeeper.models.presentermodels.InfoCard.NOTE_ROW_TYPE;
 
 import android.app.Activity;
 import android.util.Log;
@@ -22,6 +22,7 @@ import ru.kudasheva.noteskeeper.data.ChangeListener;
 import ru.kudasheva.noteskeeper.data.DBManager;
 import ru.kudasheva.noteskeeper.databinding.CommentBinding;
 import ru.kudasheva.noteskeeper.databinding.NoteBinding;
+import ru.kudasheva.noteskeeper.models.presentermodels.InfoCard;
 
 public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdapter.AbstractViewHolder> {
     private static final String TAG = MultipleTypesAdapter.class.getSimpleName();
@@ -42,73 +43,55 @@ public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdap
                 }
             }
 
-            activity.runOnUiThread(() -> {
-                int pos = getIndexOfItemByDocumentId(documentId);
-                if (pos == -1) {
-                    switch (event) {
-                        case DELETED:
-                            break;
-                        case UPDATED:
-                            DBManager.getInstance().getUser((String) properties.get("userId"), (user) -> {
-                                activity.runOnUiThread(() -> {
-                                    dataSet.add(new InfoCard(documentId,
-                                            (String) properties.get("text"),
-                                            user.getFullName(),
-                                            (String) properties.get("date"),
-                                            COMMENT_ROW_TYPE));
-                                    notifyItemChanged(dataSet.size() - 1);
-                                    Log.d(TAG, "Item " + documentId + " inserted to position " + (dataSet.size() - 1));
-                                });
+            int pos = getIndexOfItemByDocumentId(documentId);
+            if (pos == -1) {
+                switch (event) {
+                    case DELETED:
+                        break;
+                    case UPDATED:
+                        DBManager.getInstance().getUser((String) properties.get("userId"), (user) -> {
+                            activity.runOnUiThread(() -> {
+                                dataSet.add(new InfoCard(documentId,
+                                        (String) properties.get("text"),
+                                        user.getFullName(),
+                                        (String) properties.get("date"),
+                                        COMMENT_ROW_TYPE));
+                                notifyItemChanged(dataSet.size() - 1);
+                                Log.d(TAG, "Item " + documentId + " inserted to position " + (dataSet.size() - 1));
                             });
-                            break;
-                    }
-                } else {
-                    switch (event) {
-                        case DELETED:
+                        });
+                        break;
+                }
+            } else {
+                switch (event) {
+                    case DELETED:
+                        activity.runOnUiThread(() -> {
                             dataSet.remove(pos);
                             notifyItemRemoved(pos);
                             Log.d(TAG, "Item at position " + pos + " removed");
-                            break;
-                        case UPDATED:
-                            DBManager.getInstance().getUser((String) properties.get("userId"), (user) -> {
-                                activity.runOnUiThread(() -> {
-                                    dataSet.set(pos, new InfoCard(documentId,
-                                            (String) properties.get("text"),
-                                            user.getFullName(),
-                                            (String) properties.get("date"),
-                                            COMMENT_ROW_TYPE));
-                                    notifyItemChanged(pos);
-                                    Log.d(TAG, "Item at position " + pos + " changed");
-                                });
+                        });
+                        break;
+                    case UPDATED:
+                        DBManager.getInstance().getUser((String) properties.get("userId"), (user) -> {
+                            activity.runOnUiThread(() -> {
+                                dataSet.set(pos, new InfoCard(documentId,
+                                        (String) properties.get("text"),
+                                        user.getFullName(),
+                                        (String) properties.get("date"),
+                                        COMMENT_ROW_TYPE));
+                                notifyItemChanged(pos);
+                                Log.d(TAG, "Item at position " + pos + " changed");
                             });
-                            break;
-                    }
+                        });
+                        break;
                 }
-            });
+            }
         };
 
         DBManager.getInstance().setNotesChangeListener(hashCode(), changeListener);
     }
 
-    private String getCurrentNoteId() {
-        for (int i = 0; i < dataSet.size(); i++) {
-            if (dataSet.get(i).getType() == NOTE_ROW_TYPE) {
-                return dataSet.get(i).getId();
-            }
-        }
-        return null;
-    }
-
-    private int getIndexOfItemByDocumentId(String documentId) {
-        for (int i = 0; i < dataSet.size(); i++) {
-            if (dataSet.get(i).getId().equals(documentId)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    void setItems(List<InfoCard> dates) {
+    public void setItems(List<InfoCard> dates) {
         MultipleTypesAdapter.MultiDiffUtilCallback cardDiffUtilCallback =
                 new MultipleTypesAdapter.MultiDiffUtilCallback(dataSet, dates);
         DiffUtil.DiffResult cardDiffResult = DiffUtil.calculateDiff(cardDiffUtilCallback);
@@ -145,16 +128,16 @@ public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdap
     }
 
     public abstract static class AbstractViewHolder extends RecyclerView.ViewHolder {
+
         public AbstractViewHolder(@NonNull View itemView) {
             super(itemView);
         }
-
         abstract void bindContent(InfoCard item);
+
     }
-
     public static class NoteViewHolder extends AbstractViewHolder {
-        NoteBinding binding;
 
+        NoteBinding binding;
         public NoteViewHolder(@NonNull View itemView) {
             super(itemView);
             binding = DataBindingUtil.bind(itemView);
@@ -164,11 +147,11 @@ public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdap
         void bindContent(InfoCard item) {
             binding.setFullNote(item);
         }
+
     }
-
     public static class CommentViewHolder extends AbstractViewHolder {
-        CommentBinding binding;
 
+        CommentBinding binding;
         public CommentViewHolder(@NonNull View itemView) {
             super(itemView);
             binding = DataBindingUtil.bind(itemView);
@@ -178,12 +161,12 @@ public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdap
         void bindContent(InfoCard item) {
             binding.setCommentData(item);
         }
-    }
 
+    }
     public static class MultiDiffUtilCallback extends DiffUtil.Callback {
+
         private final List<InfoCard> oldList;
         private final List<InfoCard> newList;
-
         public MultiDiffUtilCallback(List<InfoCard> oldList, List<InfoCard> newList) {
             this.oldList = oldList;
             this.newList = newList;
@@ -216,5 +199,24 @@ public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdap
                     && oldCard.getName().equals(newCard.getName())
                     && oldCard.getText().equals(newCard.getText());
         }
+
+    }
+
+    private String getCurrentNoteId() {
+        for (int i = 0; i < dataSet.size(); i++) {
+            if (dataSet.get(i).getType() == NOTE_ROW_TYPE) {
+                return dataSet.get(i).getId();
+            }
+        }
+        return null;
+    }
+
+    private int getIndexOfItemByDocumentId(String documentId) {
+        for (int i = 0; i < dataSet.size(); i++) {
+            if (dataSet.get(i).getId().equals(documentId)) {
+                return i;
+            }
+        }
+        return -1;
     }
 }

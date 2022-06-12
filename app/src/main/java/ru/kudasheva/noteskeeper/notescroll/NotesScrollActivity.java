@@ -29,10 +29,9 @@ public class NotesScrollActivity extends AppCompatActivity  implements SwipeRefr
 
     private NotesScrollViewModel notesScrollViewModel;
     private ActivityNotesScrollBinding binding;
-
     private CustomRecyclerAdapter noteAdapter;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-    private ProgressDialog progressDialog = null;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,8 +48,8 @@ public class NotesScrollActivity extends AppCompatActivity  implements SwipeRefr
     }
 
     private void observeLiveData() {
-        notesScrollViewModel.progressIsVisible.observe(this, (res) -> {
-            if (res) {
+        notesScrollViewModel.progressIsVisible.observe(this, (visible) -> {
+            if (visible) {
                 if (progressDialog == null) {
                     progressDialog = new ProgressDialog(this, R.style.MyTheme);
                     progressDialog.setCancelable(false);
@@ -133,8 +132,8 @@ public class NotesScrollActivity extends AppCompatActivity  implements SwipeRefr
         noteAdapter = new CustomRecyclerAdapter(onUserClickListener, this);
         binding.recyclerViewNotesShortCard.setAdapter(noteAdapter);
 
-        mSwipeRefreshLayout = binding.swipeContainer;
-        mSwipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout = binding.swipeContainer;
+        swipeRefreshLayout.setOnRefreshListener(this);
     }
 
     @Override
@@ -142,7 +141,7 @@ public class NotesScrollActivity extends AppCompatActivity  implements SwipeRefr
         Log.d(TAG, "Refresh recycled container");
         new Handler().postDelayed(() -> {
             notesScrollViewModel.updateData();
-            mSwipeRefreshLayout.setRefreshing(false);
-        }, 1500);
+            swipeRefreshLayout.setRefreshing(false);
+        }, 1000);
     }
 }

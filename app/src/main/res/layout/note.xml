@@ -4,7 +4,7 @@
     <data>
         <variable
             name="fullNote"
-            type="ru.kudasheva.noteskeeper.notebrowse.InfoCard" />
+            type="ru.kudasheva.noteskeeper.models.presentermodels.InfoCard" />
     </data>
 
     <LinearLayout

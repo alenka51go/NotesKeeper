@@ -1,7 +1,7 @@
-package ru.kudasheva.noteskeeper.notebrowse;
+package ru.kudasheva.noteskeeper.models.presentermodels;
 
-import ru.kudasheva.noteskeeper.data.models.CommentData;
-import ru.kudasheva.noteskeeper.data.models.NoteData;
+import ru.kudasheva.noteskeeper.models.datamodels.CommentData;
+import ru.kudasheva.noteskeeper.models.datamodels.NoteData;
 
 public class InfoCard {
     public static int NOTE_ROW_TYPE =   0;
