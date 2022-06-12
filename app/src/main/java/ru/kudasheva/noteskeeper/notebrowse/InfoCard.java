@@ -1,11 +1,11 @@
 package ru.kudasheva.noteskeeper.notebrowse;
 
-import ru.kudasheva.noteskeeper.data.models.Comment;
-import ru.kudasheva.noteskeeper.data.models.Note;
+import ru.kudasheva.noteskeeper.data.models.CommentData;
+import ru.kudasheva.noteskeeper.data.models.NoteData;
 
 public class InfoCard {
-    static int NOTE_ROW_TYPE =   0;
-    static int COMMENT_ROW_TYPE = 1;
+    public static int NOTE_ROW_TYPE =   0;
+    public static int COMMENT_ROW_TYPE = 1;
 
     private final String id;
     private final String userName;
@@ -21,14 +21,14 @@ public class InfoCard {
         this.type = type;
     }
 
-    public static InfoCard from(Comment comment, String username) {
-        return new InfoCard(comment.get_id(), comment.getText(),
-                username, comment.getDate(), COMMENT_ROW_TYPE);
+    public static InfoCard from(CommentData commentData, String username) {
+        return new InfoCard(commentData.get_id(), commentData.getText(),
+                username, commentData.getDate(), COMMENT_ROW_TYPE);
     }
 
-    public static InfoCard from(Note note, String username) {
-        return new InfoCard(note.get_id(), note.getText(),
-                username, note.getDate(), NOTE_ROW_TYPE);
+    public static InfoCard from(NoteData noteData, String username) {
+        return new InfoCard(noteData.get_id(), noteData.getText(),
+                username, noteData.getDate(), NOTE_ROW_TYPE);
     }
 
     public String getId() {

@@ -29,7 +29,7 @@
                 android:paddingStart="20dp"
                 android:paddingTop="10dp"
                 android:paddingEnd="15dp"
-                android:text="@{viewModel.username}"
+                android:text="@{viewModel.user.fullName}"
                 android:textSize="35sp" />
 
             <RelativeLayout

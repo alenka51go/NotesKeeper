@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Database;
-import com.couchbase.lite.Document;
 import com.couchbase.lite.DocumentChange;
 import com.couchbase.lite.LiveQuery;
 import com.couchbase.lite.Manager;
@@ -13,6 +12,7 @@ import com.couchbase.lite.QueryRow;
 import com.couchbase.lite.UnsavedRevision;
 import com.couchbase.lite.View;
 import com.couchbase.lite.android.AndroidContext;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 
@@ -30,13 +30,13 @@ import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 import ru.kudasheva.noteskeeper.MyApplication;
-import ru.kudasheva.noteskeeper.data.models.Comment;
-import ru.kudasheva.noteskeeper.data.models.FullNoteData;
-import ru.kudasheva.noteskeeper.data.models.Note;
-import ru.kudasheva.noteskeeper.data.models.User;
-import ru.kudasheva.noteskeeper.friends.FriendInfoCard;
+import ru.kudasheva.noteskeeper.data.models.CommentData;
+import ru.kudasheva.noteskeeper.data.models.UserData;
+import ru.kudasheva.noteskeeper.vmmodels.Document;
+import ru.kudasheva.noteskeeper.data.models.NoteData;
 import ru.kudasheva.noteskeeper.friends.FriendsViewModel;
-import ru.kudasheva.noteskeeper.notescroll.NoteShortCard;
+import ru.kudasheva.noteskeeper.vmmodels.Card;
+import ru.kudasheva.noteskeeper.vmmodels.User;
 
 public class DBManager {
     private static final String TAG = DBManager.class.getSimpleName();
@@ -58,7 +58,7 @@ public class DBManager {
 
     private static DBManager sInstance;
 
-    private User currentUser;
+    private UserData currentUserData;
 
     private Manager manager;
     private Database database;
@@ -161,7 +161,7 @@ public class DBManager {
             for (DocumentChange change : event.getChanges()) {
                 Log.d(TAG, "Change: " + change);
 
-                Document doc = database.getExistingDocument(change.getDocumentId());
+                com.couchbase.lite.Document doc = database.getExistingDocument(change.getDocumentId());
                 Log.d(TAG, "Doc from db: " + doc);
 
                 Map<String, Object> properties = null;
@@ -237,10 +237,10 @@ public class DBManager {
         Log.d(TAG, "Database replication started");
     }
 
-    public void startReplication(User user) {
-        currentUser = user;
+    public void startReplication(String userInfoGson) {
+        currentUserData = new Gson().fromJson(userInfoGson, UserData.class);
         executor.submit(() -> {
-            databaseReplicator.setPullUserIdFilter(currentUser.getUsername());
+            databaseReplicator.setPullUserIdFilter(currentUserData.getUsername());
             databaseReplicator.startReplication();
         });
     }
@@ -259,31 +259,27 @@ public class DBManager {
         });
     }
 
-    public String getUsername() {
-        return currentUser.getUsername();
+    public User getUser() {
+        return new User(currentUserData);
     }
 
-    public String getFullUsername() {
-        return currentUser.getFullUsername();
-    }
-
-    public void addNote(Note note) {
+    public void addNote(NoteData noteData) {
         executor.submit(() -> {
-            final Document doc = database.createDocument();
+            final com.couchbase.lite.Document doc = database.createDocument();
             UnsavedRevision unsavedRevision = doc.createRevision();
 
             try {
-                Map<String, Object> noteMap = Util.objectToMap(note);
+                Map<String, Object> noteMap = Util.objectToMap(noteData);
                 unsavedRevision.setProperties(noteMap);
                 unsavedRevision.save();
 
-                Log.d(TAG, "Note in map: " + note.toString());
+                Log.d(TAG, "Note in map: " + noteData.toString());
 
             } catch (CouchbaseLiteException e) {
                 Log.d(TAG, "ERROR - " + e);
                 e.printStackTrace();
             } catch (JSONException e) {
-                Log.d(TAG, "Could not convert Note to Map: " + note.toString());
+                Log.d(TAG, "Could not convert Note to Map: " + noteData.toString());
                 e.printStackTrace();
             }
 
@@ -291,23 +287,23 @@ public class DBManager {
         });
     }
 
-    public void addComment(Comment comment) {
+    public void addComment(CommentData commentData) {
         executor.submit(() -> {
-            final Document doc = database.createDocument();
+            final com.couchbase.lite.Document doc = database.createDocument();
             UnsavedRevision unsavedRevision = doc.createRevision();
 
             try {
-                Map<String, Object> noteMap = Util.objectToMap(comment);
+                Map<String, Object> noteMap = Util.objectToMap(commentData);
                 unsavedRevision.setProperties(noteMap);
                 unsavedRevision.save();
 
-                Log.d(TAG, "Comment in map: " + comment.toString());
+                Log.d(TAG, "Comment in map: " + commentData.toString());
 
             } catch (CouchbaseLiteException e) {
                 Log.d(TAG, "ERROR - " + e);
                 e.printStackTrace();
             } catch (JSONException e) {
-                Log.d(TAG, "Could not convert Comment to Map: " + comment.toString());
+                Log.d(TAG, "Could not convert Comment to Map: " + commentData.toString());
                 e.printStackTrace();
             }
 
@@ -318,14 +314,14 @@ public class DBManager {
     public void deleteNote(String noteId, Consumer<Boolean> consumer) {
         executor.submit(() -> {
             boolean res = false;
-            Document doc = database.getExistingDocument(noteId);
+            com.couchbase.lite.Document doc = database.getExistingDocument(noteId);
             if (doc != null) {
                 Log.d(TAG, "Start deleting note with id " + noteId + " ...");
 
                 if (Objects.equals(doc.getProperties().get("type"), NOTE_TYPE)) {
-                    List<Comment> commentsList = getComments(noteId);
-                    for (Comment comment : commentsList) {
-                        deleteDoc(comment.get_id());
+                    List<CommentData> commentsList = getCommentsData(noteId);
+                    for (CommentData commentData : commentsList) {
+                        deleteDoc(commentData.get_id());
                     }
                 }
                 Log.d(TAG, "All comments was successfully deleted.");
@@ -340,7 +336,7 @@ public class DBManager {
 
     private boolean deleteDoc(String docId) {
         try {
-            Document doc = database.getExistingDocument(docId);
+            com.couchbase.lite.Document doc = database.getExistingDocument(docId);
 
             if (doc != null) {
                 Log.d(TAG, "Document with id " + docId + " was found. Removing...");
@@ -367,8 +363,8 @@ public class DBManager {
         return false;
     }
 
-    private Note getNote(String noteId) {
-        Document doc = database.getExistingDocument(noteId);
+    private NoteData getNoteData(String noteId) {
+        com.couchbase.lite.Document doc = database.getExistingDocument(noteId);
 
         if (null != doc) {
             Log.d(TAG, "Document with id " + noteId + " was found.");
@@ -379,10 +375,10 @@ public class DBManager {
         return null;
     }
 
-    public void getNotes(Consumer<List<Note>> consumer) {
+    public void getNotes(Consumer<List<Card>> consumer) {
         executor.submit(() -> {
             Log.d(TAG, "Load User notes:");
-            List<Note> notes = new ArrayList<>();
+            List<Card> cards = new ArrayList<>();
 
             Log.d(TAG, "Before query request");
             QueryEnumerator qr = notesQuery.getRows();
@@ -392,18 +388,18 @@ public class DBManager {
                 Map<String, Object> noteProperties = row.getDocument().getProperties();
                 Log.d(TAG, "type is: " + noteProperties.get("type"));
 
-                Note note = Util.convertToNote(noteProperties);
-                notes.add(note);
+                NoteData noteData = Util.convertToNote(noteProperties);
+                cards.add(new Card(noteData, currentUserData));
             }
             Log.d(TAG, "After query request");
-            Log.d(TAG, "notes: " + notes.size());
+            Log.d(TAG, "notes: " + cards.size());
 
-            consumer.accept(notes);
+            consumer.accept(cards);
         });
     }
 
-    private List<Comment> getComments(String noteId) {
-        List<Comment> comments = new ArrayList<>();
+    private List<CommentData> getCommentsData(String noteId) {
+        List<CommentData> commentData = new ArrayList<>();
 
         Log.d(TAG, "Load User comments: ");
 
@@ -411,12 +407,12 @@ public class DBManager {
             Map<String, Object> commentProperties = row.getDocument().getProperties();
             Log.d(TAG, "type is: " + commentProperties.get("type"));
             if (noteId.equals(commentProperties.get("noteId"))) {
-                comments.add(Util.convertToComment(commentProperties));
+                commentData.add(Util.convertToComment(commentProperties));
             }
         }
 
-        Log.d(TAG, "comments: " + comments.size());
-        return comments;
+        Log.d(TAG, "comments: " + commentData.size());
+        return commentData;
     }
 
     public void getFriends(Consumer<List<User>> consumer) {
@@ -427,25 +423,40 @@ public class DBManager {
     }
 
     private List<User> getFriends() {
-        List<String> friendsId = currentUser.getFriends();
+        List<String> friendsId = currentUserData.getFriends();
         List<User> friends = new ArrayList<>();
 
         for (int i = 0; i < friendsId.size(); i++) {
             String userId = friendsId.get(i);
-            friends.add(getUser(userId));
+            UserData userData = getUserData(userId);
+            if (userData != null) {
+                friends.add(new User(userData));
+            }
         }
         return friends;
     }
 
+    public void getUserInfoGson(String username, Consumer<String> consumer) {
+        executor.submit(() -> {
+            UserData userData = getUserData(username);
+            String json = new Gson().toJson(userData);
+            consumer.accept(json);
+        });
+    }
+
     public void getUser(String username, Consumer<User> consumer) {
         executor.submit(() -> {
-            User user = getUser(username);
+            UserData userData = getUserData(username);
+            User user = null;
+            if (userData != null) {
+                user = new User(userData);
+            }
             consumer.accept(user);
         });
     }
 
-    private User getUser(String username) {
-        Document doc = userDatabase.getExistingDocument(username);
+    private UserData getUserData(String username) {
+        com.couchbase.lite.Document doc = userDatabase.getExistingDocument(username);
 
         if (null != doc) {
             Log.d(TAG, "Document with id " + username + " was found.");
@@ -458,7 +469,7 @@ public class DBManager {
 
     public void tryToAddFriend(String username, Consumer<FriendsViewModel.ResultFriendAddition> consumer) {
         executor.submit(() -> {
-            if (currentUser.checkIfFriendAdded(username)) {
+            if (currentUserData.checkIfFriendAdded(username)) {
                 Log.d(TAG, "User with username " + username + " already added to list of friends");
                 consumer.accept(FriendsViewModel.ResultFriendAddition.ALREADY_ADDED);
                 return;
@@ -470,17 +481,17 @@ public class DBManager {
                 return;
             }
 
-            Document doc = userDatabase.getExistingDocument(currentUser.getUsername());
+            com.couchbase.lite.Document doc = userDatabase.getExistingDocument(currentUserData.getUsername());
             if (doc != null) {
-                Log.d(TAG, "Document with id " + currentUser.getUsername() + " was found.");
+                Log.d(TAG, "Document with id " + currentUserData.getUsername() + " was found.");
 
-                currentUser.addFriend(username);
+                currentUserData.addFriend(username);
                 final Map<String, Object> docUserProperties;
                 try {
-                    docUserProperties = Util.objectToMap(currentUser);
+                    docUserProperties = Util.objectToMap(currentUserData);
                     Log.d(TAG, "Convert User to Map: " + docUserProperties);
                 } catch (JSONException e) {
-                    Log.d(TAG, "Could not convert User to Map: " + currentUser.toString());
+                    Log.d(TAG, "Could not convert User to Map: " + currentUserData.toString());
                     consumer.accept(FriendsViewModel.ResultFriendAddition.ERROR);
                     return;
                 }
@@ -497,28 +508,28 @@ public class DBManager {
                     consumer.accept(FriendsViewModel.ResultFriendAddition.ERROR);
                 }
             } else {
-                Log.d(TAG, "There is no such user in database + " + currentUser.getUsername());
+                Log.d(TAG, "There is no such user in database + " + currentUserData.getUsername());
                 consumer.accept(FriendsViewModel.ResultFriendAddition.DOESNT_EXIT);
             }
         });
     }
 
-    public void getFullNoteData(String noteId, Consumer<FullNoteData> consumer) {
+    public void getDocument(String noteId, Consumer<Document> consumer) {
         executor.submit(() -> {
-            Note note = getNote(noteId);
-            if (note == null) {
+            NoteData noteData = getNoteData(noteId);
+            if (noteData == null) {
                 Log.d(TAG, "Note with id " + noteId + " wasn't found");
                 return;
             }
 
-            Map<Comment, User> userComments = new HashMap<>();
-            List<Comment> comments = getComments(note.get_id());
-            for (Comment comment : comments) {
-                User user = getUser(comment.getUserId());
-                userComments.put(comment, user);
+            Map<CommentData, UserData> userComments = new HashMap<>();
+            List<CommentData> commentData = getCommentsData(noteData.get_id());
+            for (CommentData comment : commentData) {
+                UserData userData = getUserData(comment.getUserId());
+                userComments.put(comment, userData);
             }
 
-            consumer.accept(new FullNoteData(currentUser, note, userComments));
+            consumer.accept(new Document(currentUserData, noteData, userComments));
         });
         Log.d(TAG, "Finish getting note with id: " + noteId);
     }

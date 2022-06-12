@@ -9,10 +9,12 @@ import java.util.function.Consumer;
 
 import ru.kudasheva.noteskeeper.data.DBManager;
 import ru.kudasheva.noteskeeper.data.SingleLiveEvent;
-import ru.kudasheva.noteskeeper.data.models.User;
+import ru.kudasheva.noteskeeper.vmmodels.User;
 
 public class FriendsViewModel extends ViewModel {
     private static final String TAG = FriendsViewModel.class.getSimpleName();
+
+    private final User user = DBManager.getInstance().getUser();
 
     public SingleLiveEvent<String> snackBarMessage = new SingleLiveEvent<>();
     public MutableLiveData<Commands> command = new MutableLiveData<>();
@@ -24,6 +26,12 @@ public class FriendsViewModel extends ViewModel {
     }
 
     public void tryToAddFriend(String username, Consumer<Boolean> consumer) {
+        if (username.equals(user.getUsername())) {
+            snackBarMessage.postValue("Can't add yourself to friend list");
+            consumer.accept(false);
+            return;
+        }
+
         progressIsVisible.setValue(true);
         DBManager.getInstance().tryToAddFriend(username, (result) -> {
             boolean isFriendAdded = false;
@@ -72,7 +80,7 @@ public class FriendsViewModel extends ViewModel {
     private List<FriendInfoCard> convertToFriendsInfoCard(List<User> friends) {
         List<FriendInfoCard> friendInfoCards = new ArrayList<>();
         for (User friend : friends) {
-            friendInfoCards.add(new FriendInfoCard((friend.getFullUsername())));
+            friendInfoCards.add(friend.createFriendInfoCard());
         }
         return friendInfoCards;
     }

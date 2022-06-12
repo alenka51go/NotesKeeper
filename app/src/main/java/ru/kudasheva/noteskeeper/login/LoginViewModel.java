@@ -11,7 +11,6 @@ import com.google.gson.Gson;
 import ru.kudasheva.noteskeeper.MyApplication;
 import ru.kudasheva.noteskeeper.data.DBManager;
 import ru.kudasheva.noteskeeper.data.SingleLiveEvent;
-import ru.kudasheva.noteskeeper.data.models.User;
 
 public class LoginViewModel extends ViewModel {
     private static final String TAG = LoginViewModel.class.getSimpleName();
@@ -26,15 +25,14 @@ public class LoginViewModel extends ViewModel {
     public void onLogInClicked() {
         String inputUsername = username.getValue();
 
-        DBManager.getInstance().getUser(inputUsername, (user) -> {
-            if (user != null) {
+        DBManager.getInstance().getUserInfoGson(inputUsername, (userInfoGson) -> {
+            if (userInfoGson != null) {
                 SharedPreferences mSettings = MyApplication.getInstance().getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = mSettings.edit();
-                String json = new Gson().toJson(user);
-                editor.putString(APP_PREFERENCES_NAME, json);
+                editor.putString(APP_PREFERENCES_NAME, userInfoGson);
                 editor.apply();
 
-                DBManager.getInstance().startReplication(user);
+                DBManager.getInstance().startReplication(userInfoGson);
                 activityCommand.postValue(Commands.OPEN_NOTE_SCROLL_ACTIVITY);
             } else {
                 snackBarMessage.setValue(inputUsername + " doesn't exist!");

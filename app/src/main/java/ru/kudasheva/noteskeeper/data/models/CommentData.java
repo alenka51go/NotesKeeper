@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ser.std.IterableSerializer;
 
 import java.util.List;
 
-public class Comment {
+public class CommentData {
     private String _id;
     private String _rev;
     private String noteId;
@@ -14,7 +14,7 @@ public class Comment {
     private List<String> sharedUsers;
     private final String type = "comment";
 
-    public Comment(String id, String rev, String userId, String noteId, String text, String date, List<String> sharedUsers) {
+    public CommentData(String id, String rev, String userId, String noteId, String text, String date, List<String> sharedUsers) {
         _id = id;
         _rev = rev;
         this.userId = userId;
@@ -24,7 +24,7 @@ public class Comment {
         this.sharedUsers = sharedUsers;
     }
 
-    public Comment(String userId, String noteId, String text, String date, List<String> sharedUsers) {
+    public CommentData(String userId, String noteId, String text, String date, List<String> sharedUsers) {
         this.userId = userId;
         this.noteId = noteId;
         this.text = text;
@@ -46,5 +46,9 @@ public class Comment {
 
     public String getText() {
         return text;
+    }
+
+    public List<String> getSharedUsers() {
+        return sharedUsers;
     }
 }

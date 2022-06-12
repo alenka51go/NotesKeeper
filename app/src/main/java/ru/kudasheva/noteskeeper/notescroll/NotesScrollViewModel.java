@@ -12,14 +12,16 @@ import java.util.List;
 
 import ru.kudasheva.noteskeeper.MyApplication;
 import ru.kudasheva.noteskeeper.data.DBManager;
-import ru.kudasheva.noteskeeper.data.models.Note;
+import ru.kudasheva.noteskeeper.data.models.NoteData;
+import ru.kudasheva.noteskeeper.vmmodels.Card;
+import ru.kudasheva.noteskeeper.vmmodels.User;
 
 public class NotesScrollViewModel extends ViewModel {
     private static final String TAG = NotesScrollViewModel.class.getSimpleName();
 
     private boolean isMenuOpen = false;
 
-    public String username = DBManager.getInstance().getFullUsername();
+    public User user = DBManager.getInstance().getUser();
 
     public MutableLiveData<NotesScrollViewModel.Commands> activityCommand = new MutableLiveData<>();
     public MutableLiveData<List<NoteShortCard>> notes = new MutableLiveData<>();
@@ -90,10 +92,10 @@ public class NotesScrollViewModel extends ViewModel {
         HIDE_EXTRA_MENU_INFO
     }
 
-    private List<NoteShortCard> convertToShortNotes(List<Note> notes) {
+    private List<NoteShortCard> convertToShortNotes(List<Card> notes) {
         List<NoteShortCard> shortCards = new ArrayList<>();
-        for (Note note : notes) {
-            NoteShortCard noteShortCard = new NoteShortCard(note);
+        for (Card note : notes) {
+            NoteShortCard noteShortCard = note.createShortCard();
             shortCards.add(noteShortCard);
         }
         return shortCards;

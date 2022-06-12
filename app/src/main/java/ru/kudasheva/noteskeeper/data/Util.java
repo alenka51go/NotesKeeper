@@ -1,22 +1,29 @@
 package ru.kudasheva.noteskeeper.data;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
-import ru.kudasheva.noteskeeper.data.models.Comment;
-import ru.kudasheva.noteskeeper.data.models.Note;
-import ru.kudasheva.noteskeeper.data.models.User;
+import ru.kudasheva.noteskeeper.data.models.CommentData;
+import ru.kudasheva.noteskeeper.data.models.NoteData;
+import ru.kudasheva.noteskeeper.data.models.UserData;
 
 public class Util {
+    private static final String TAG = Util.class.getSimpleName();
 
     public static <T> Map<String, Object> objectToMap(T obj) throws JSONException {
         String jsonString = new Gson().toJson(obj);
@@ -60,23 +67,38 @@ public class Util {
         return objects;
     }
 
-    public static Note convertToNote(Map<String, Object> noteProperties) {
-        return new Note((String) noteProperties.get("_id"),  (String) noteProperties.get("_rev"),
+    public static NoteData convertToNote(Map<String, Object> noteProperties) {
+        return new NoteData((String) noteProperties.get("_id"),  (String) noteProperties.get("_rev"),
                 (String) noteProperties.get("userId"), (String) noteProperties.get("title"),
                 (String) noteProperties.get("text"), (String) noteProperties.get("date"),
                 (List<String>) noteProperties.get("sharedUsers"));
     }
 
-    public static Comment convertToComment(Map<String, Object> commentProperties) {
-        return new Comment((String) commentProperties.get("_id"),  (String) commentProperties.get("_rev"),
+    public static CommentData convertToComment(Map<String, Object> commentProperties) {
+        return new CommentData((String) commentProperties.get("_id"),  (String) commentProperties.get("_rev"),
                 (String) commentProperties.get("userId"), (String) commentProperties.get("noteId"),
                 (String) commentProperties.get("text"), (String) commentProperties.get("date"),
                 (List<String>) commentProperties.get("sharedUsers"));
     }
 
-    public static User convertToUser(Map<String, Object> userProperties) {
-        return new User((String) userProperties.get("_id"),  (String) userProperties.get("_rev"),
+    public static UserData convertToUser(Map<String, Object> userProperties) {
+        return new UserData((String) userProperties.get("_id"),  (String) userProperties.get("_rev"),
                 (String) userProperties.get("firstname"), (String) userProperties.get("lastname"),
                 (List<String>) userProperties.get("friends"));
+    }
+
+    public static Date convertDate(String date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy 'at' h:mm a", Locale.getDefault());
+        try {
+            return sdf.parse(date);
+        } catch (ParseException e) {
+            Log.d(TAG, "Incorrect date format");
+        }
+        return null;
+    }
+
+    public static String convertDate(Date date) {
+        SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy 'at' h:mm a", Locale.getDefault());
+        return df.format(date);
     }
 }

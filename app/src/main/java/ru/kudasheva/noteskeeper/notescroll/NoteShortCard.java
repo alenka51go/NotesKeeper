@@ -1,7 +1,5 @@
 package ru.kudasheva.noteskeeper.notescroll;
 
-import ru.kudasheva.noteskeeper.data.models.Note;
-
 public class NoteShortCard {
     private String id;
     private String header;
@@ -13,13 +11,6 @@ public class NoteShortCard {
         this.header = header;
         this.date = date;
         this.shared = shared;
-    }
-
-    public NoteShortCard(Note note) {
-        this.id = note.get_id();
-        this.header = note.getTitle();
-        this.date = note.getDate();
-        this.shared = note.getSharedUsers().size() > 1;
     }
 
     public boolean isShared() {

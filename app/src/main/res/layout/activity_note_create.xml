@@ -43,7 +43,7 @@
             android:text="@={viewModel.noteBody}"
 
             android:autofillHints="Note"
-            android:background="@color/note"
+            android:background="@color/noteData"
             android:gravity="top|start"
             android:hint="@string/enter_text"
             android:inputType="textMultiLine"

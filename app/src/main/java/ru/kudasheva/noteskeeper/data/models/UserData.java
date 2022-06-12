@@ -2,27 +2,27 @@ package ru.kudasheva.noteskeeper.data.models;
 
 import java.util.List;
 
-public class User {
+public class UserData {
     private String _id;
     private String _rev;
     private String firstname;
     private String lastname;
     private List<String> friends;
 
-    public User() {}
+    public UserData() {}
 
-    public User(String firstname) {
+    public UserData(String firstname) {
         _id = firstname;
         this.firstname = firstname;
     }
 
-    public User(String firstname, String lastname) {
+    public UserData(String firstname, String lastname) {
         _id = firstname + ' ' + lastname;
         this.firstname = firstname;
         this.lastname = lastname;
     }
 
-    public User(String _id, String _rev, String firstname, String lastname, List<String> friends) {
+    public UserData(String _id, String _rev, String firstname, String lastname, List<String> friends) {
         this._id = _id;
         this._rev = _rev;
         this.firstname = firstname;

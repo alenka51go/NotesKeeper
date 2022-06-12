@@ -10,16 +10,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 import ru.kudasheva.noteskeeper.data.DBManager;
-import ru.kudasheva.noteskeeper.data.models.Note;
-import ru.kudasheva.noteskeeper.data.models.User;
-import ru.kudasheva.noteskeeper.friends.FriendInfoCard;
+import ru.kudasheva.noteskeeper.data.models.NoteData;
+import ru.kudasheva.noteskeeper.vmmodels.User;
 
 public class CreateNoteViewModel extends ViewModel {
-    private final String username = DBManager.getInstance().getUsername();
-    private final String userFullName = DBManager.getInstance().getFullUsername();
+    private final User user = DBManager.getInstance().getUser();
 
     private final List<String> selectedFriends = new ArrayList<>();
     public String[]  contactList;
@@ -38,7 +35,7 @@ public class CreateNoteViewModel extends ViewModel {
             for (int i = 0; i < friends.size(); i++) {
                 User user = friends.get(i);
                 usernameContactList.add(user.getUsername());
-                contactList[i] = user.getFullUsername();
+                contactList[i] = user.getFullName();
             }
 
             checkedItems = new boolean[contactList.length];
@@ -50,10 +47,10 @@ public class CreateNoteViewModel extends ViewModel {
     }
 
     public void onSaveNoteButtonClicked() {
-        selectedFriends.add(username);
-        Note note = new Note(username, title.getValue(), noteBody.getValue(),
+        selectedFriends.add(user.getUsername());
+        NoteData noteData = new NoteData(user.getUsername(), title.getValue(), noteBody.getValue(),
                 getCurrentDate(), selectedFriends);
-        DBManager.getInstance().addNote(note);
+        DBManager.getInstance().addNote(noteData);
 
         activityCommand.setValue(Commands.CLOSE_ACTIVITY);
     }

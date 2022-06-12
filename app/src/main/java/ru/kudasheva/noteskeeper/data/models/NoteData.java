@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Note {
+public class NoteData {
     private String _id;
     private String _rev;
     private String userId;
@@ -16,10 +16,10 @@ public class Note {
     private List<String> sharedUsers;
     private final String type = "note";
 
-    public Note() {}
+    public NoteData() {}
 
-    public Note(String userId, String title, String text,
-                String date, List<String> sharedUsers) {
+    public NoteData(String userId, String title, String text,
+                    String date, List<String> sharedUsers) {
         this.userId = userId;
         this.title = title;
         this.text = text;
@@ -27,8 +27,8 @@ public class Note {
         this.sharedUsers = sharedUsers;
     }
 
-    public Note(String _id, String _rev, String userId, String title, String text,
-                String date, List<String> sharedUsers) {
+    public NoteData(String _id, String _rev, String userId, String title, String text,
+                    String date, List<String> sharedUsers) {
         this._id = _id;
         this._rev = _rev;
         this.userId = userId;

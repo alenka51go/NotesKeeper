@@ -20,11 +20,8 @@ import java.util.Objects;
 
 import ru.kudasheva.noteskeeper.data.ChangeListener;
 import ru.kudasheva.noteskeeper.data.DBManager;
-import ru.kudasheva.noteskeeper.data.models.User;
 import ru.kudasheva.noteskeeper.databinding.CommentBinding;
 import ru.kudasheva.noteskeeper.databinding.NoteBinding;
-import ru.kudasheva.noteskeeper.notescroll.CustomRecyclerAdapter;
-import ru.kudasheva.noteskeeper.notescroll.NoteShortCard;
 
 public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdapter.AbstractViewHolder> {
     private static final String TAG = MultipleTypesAdapter.class.getSimpleName();
@@ -56,7 +53,7 @@ public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdap
                                 activity.runOnUiThread(() -> {
                                     dataSet.add(new InfoCard(documentId,
                                             (String) properties.get("text"),
-                                            user.getFullUsername(),
+                                            user.getFullName(),
                                             (String) properties.get("date"),
                                             COMMENT_ROW_TYPE));
                                     notifyItemChanged(dataSet.size() - 1);
@@ -77,7 +74,7 @@ public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdap
                                 activity.runOnUiThread(() -> {
                                     dataSet.set(pos, new InfoCard(documentId,
                                             (String) properties.get("text"),
-                                            user.getFullUsername(),
+                                            user.getFullName(),
                                             (String) properties.get("date"),
                                             COMMENT_ROW_TYPE));
                                     notifyItemChanged(pos);
@@ -179,7 +176,7 @@ public class MultipleTypesAdapter extends RecyclerView.Adapter<MultipleTypesAdap
 
         @Override
         void bindContent(InfoCard item) {
-            binding.setComment(item);
+            binding.setCommentData(item);
         }
     }
 

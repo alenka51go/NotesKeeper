@@ -2,36 +2,27 @@ package ru.kudasheva.noteskeeper.notebrowse;
 
 import android.util.Log;
 
-import androidx.databinding.ObservableField;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import ru.kudasheva.noteskeeper.data.DBManager;
 import ru.kudasheva.noteskeeper.data.SingleLiveEvent;
-import ru.kudasheva.noteskeeper.data.models.Comment;
-import ru.kudasheva.noteskeeper.data.models.Note;
-import ru.kudasheva.noteskeeper.data.models.User;
+import ru.kudasheva.noteskeeper.data.models.CommentData;
+import ru.kudasheva.noteskeeper.data.models.NoteData;
+import ru.kudasheva.noteskeeper.vmmodels.Card;
+import ru.kudasheva.noteskeeper.vmmodels.User;
 
 public class NoteBrowseViewModel  extends ViewModel {
     private static final String TAG = NoteBrowseViewModel.class.getSimpleName();
 
-    private final String username = DBManager.getInstance().getUsername();
-    private final String fullUsername = DBManager.getInstance().getFullUsername();
-    private Note openedNote;
+    private final User user = DBManager.getInstance().getUser();
+    private Card openedNote;
 
     public SingleLiveEvent<String> snackBarMessage = new SingleLiveEvent<>();
 
@@ -44,20 +35,20 @@ public class NoteBrowseViewModel  extends ViewModel {
     public void initData(String noteId) {
         progressIsVisible.setValue(true); // TODO установить крутилку
 
-        DBManager.getInstance().getFullNoteData(noteId, (fullNoteData) -> {
+        DBManager.getInstance().getDocument(noteId, (document) -> {
             progressIsVisible.postValue(false);
 
-            openedNote = fullNoteData.note;
-            title.postValue(fullNoteData.note.getTitle());
-            dataContainer.postValue(fullNoteData.createInfoCards());
-            if (!fullNoteData.note.getUserId().equals(username)) {
+            openedNote = document.getNote();
+            title.postValue(openedNote.getTitle());
+            dataContainer.postValue(document.createInfoCards());
+            if (!openedNote.getOwnerUsername().equals(user.getUsername())) {
                 activityCommand.setValue(Commands.REMOVE_ACTION_BUTTON);
             }
         });
     }
 
     public void onSendButtonClicked() {
-        Log.d(TAG, "Current user: " + username);
+        Log.d(TAG, "Current user: " + user.getUsername());
         Log.d(TAG, "Comment: " + userCommentLiveData.getValue());
         Log.d(TAG, "Date: " + getCurrentDate());
 
@@ -67,15 +58,15 @@ public class NoteBrowseViewModel  extends ViewModel {
             return;
         }
 
-        Comment comment = new Comment(username, openedNote.get_id(), commentText, getCurrentDate(), openedNote.getSharedUsers());
-        DBManager.getInstance().addComment(comment);
+        CommentData commentData = new CommentData(user.getUsername(), openedNote.getDocumentId(), commentText, getCurrentDate(), openedNote.getSharedUsernames());
+        DBManager.getInstance().addComment(commentData);
 
         userCommentLiveData.setValue("");
     }
 
     public void update() {
         progressIsVisible.postValue(true);
-        DBManager.getInstance().getFullNoteData(openedNote.get_id(), (fullNoteData) -> {
+        DBManager.getInstance().getDocument(openedNote.getDocumentId(), (fullNoteData) -> {
             progressIsVisible.postValue(false);
             dataContainer.postValue(fullNoteData.createInfoCards());
         });
@@ -93,7 +84,7 @@ public class NoteBrowseViewModel  extends ViewModel {
 
     public void deleteNote() {
         progressIsVisible.postValue(true);
-        DBManager.getInstance().deleteNote(openedNote.get_id(), (result) -> {
+        DBManager.getInstance().deleteNote(openedNote.getDocumentId(), (result) -> {
             progressIsVisible.postValue(false);
             if (!result) {
                 Log.d(TAG, "Can't delete note");
