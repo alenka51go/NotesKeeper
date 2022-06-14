@@ -4,7 +4,7 @@
     <data>
         <variable
             name="friendInfo"
-            type="ru.kudasheva.noteskeeper.models.presentermodels.FriendInfoCard" />
+            type="ru.kudasheva.noteskeeper.presentation.models.FriendCard" />
     </data>
 
     <LinearLayout

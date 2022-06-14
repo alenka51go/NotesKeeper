@@ -5,14 +5,14 @@
 
         <variable
             name="shortNote"
-            type="ru.kudasheva.noteskeeper.models.presentermodels.NoteShortCard" />
+            type="ru.kudasheva.noteskeeper.presentation.models.NoteShortCard" />
     </data>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="6dp"
-        android:background="@color/noteData">
+        android:background="@color/noteDocument">
 
         <LinearLayout
             android:id="@+id/text_block"

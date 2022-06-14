@@ -6,7 +6,7 @@
 
         <variable
             name="viewModel"
-            type="ru.kudasheva.noteskeeper.friends.FriendsViewModel" />
+            type="ru.kudasheva.noteskeeper.presentation.friends.FriendsViewModel" />
     </data>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

@@ -5,7 +5,7 @@
     <data>
         <variable
             name="viewModel"
-            type="ru.kudasheva.noteskeeper.notebrowse.NoteBrowseViewModel" />
+            type="ru.kudasheva.noteskeeper.presentation.notebrowse.NoteBrowseViewModel" />
     </data>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

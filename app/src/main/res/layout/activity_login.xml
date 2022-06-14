@@ -3,7 +3,7 @@
     <data>
         <variable
             name="viewModel"
-            type="ru.kudasheva.noteskeeper.login.LoginViewModel" />
+            type="ru.kudasheva.noteskeeper.presentation.login.LoginViewModel" />
     </data>
     <LinearLayout
         android:layout_width="match_parent"

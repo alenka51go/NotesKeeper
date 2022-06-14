@@ -5,7 +5,7 @@
 
         <variable
             name="viewModel"
-            type="ru.kudasheva.noteskeeper.notescroll.NotesScrollViewModel" />
+            type="ru.kudasheva.noteskeeper.presentation.notescroll.NotesScrollViewModel" />
     </data>
 
 
