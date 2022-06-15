@@ -37,13 +37,13 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
                 return;
             }
 
-            int pos = getIndexOfItemByDocumentId(documentId);
-            if (pos == -1) {
-                switch (event) {
-                    case DELETED:
-                        break;
-                    case UPDATED:
-                        activity.runOnUiThread(() -> {
+            activity.runOnUiThread(() -> {
+                int pos = getIndexOfItemByDocumentId(documentId);
+                if (pos == -1) {
+                    switch (event) {
+                        case DELETED:
+                            break;
+                        case UPDATED:
                             boolean isSharedNote = ((List<String>) properties.get("sharedUsers")).size() > 1;
                             noteList.add(new NoteShortCard(documentId,
                                     (String) properties.get("title"),
@@ -51,20 +51,16 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
                                     isSharedNote));
                             notifyItemChanged(noteList.size() - 1);
                             Log.d(TAG, "Item " + documentId + " inserted to position " + (noteList.size() - 1));
-                        });
-                        break;
-                }
-            } else {
-                switch (event) {
-                    case DELETED:
-                        activity.runOnUiThread(() -> {
+                            break;
+                    }
+                } else {
+                    switch (event) {
+                        case DELETED:
                             noteList.remove(pos);
                             notifyItemRemoved(pos);
                             Log.d(TAG, "Item at position " + pos + " removed");
-                        });
-                        break;
-                    case UPDATED:
-                        activity.runOnUiThread(() -> {
+                            break;
+                        case UPDATED:
                             boolean isSharedNote = ((List<String>) properties.get("sharedUsers")).size() > 1;
                             noteList.set(pos, new NoteShortCard(documentId,
                                     (String) properties.get("title"),
@@ -72,10 +68,10 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
                                     isSharedNote));
                             notifyItemChanged(pos);
                             Log.d(TAG, "Item at position " + pos + " changed");
-                        });
-                        break;
+                            break;
+                    }
                 }
-            }
+            });
         };
 
         int hashCode = hashCode();
@@ -121,6 +117,7 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
     class CustomViewHolder extends RecyclerView.ViewHolder {
 
         ShortNoteInfoBinding binding;
+
         public CustomViewHolder(View itemView) {
             super(itemView);
             binding = DataBindingUtil.bind(itemView);
@@ -131,14 +128,17 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
         }
 
     }
+
     public interface OnNoteClickListener {
 
         void onNoteClick(NoteShortCard note);
     }
+
     public static class NoteDiffUtilCallback extends DiffUtil.Callback {
 
         private final List<NoteShortCard> oldList;
         private final List<NoteShortCard> newList;
+
         public NoteDiffUtilCallback(List<NoteShortCard> oldList, List<NoteShortCard> newList) {
             this.oldList = oldList;
             this.newList = newList;
