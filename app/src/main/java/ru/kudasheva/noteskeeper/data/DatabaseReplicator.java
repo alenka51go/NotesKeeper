@@ -72,6 +72,7 @@ public class DatabaseReplicator {
         Map<String, Object> helper = new HashMap<>();
         helper.put("userId", userId);
         helper.put("sharedUsers", inKeyValueMap);
+        helper.put("_deleted", true);
 
         List<Object> orKeyValueList = new ArrayList<>(helper.entrySet());
 
@@ -80,6 +81,8 @@ public class DatabaseReplicator {
 
         Map<String, Object> params =  new HashMap<>();
         params.put("selector", keyValue);
+
+        Log.d(TAG, params.toString());
 
         mPullReplication.setFilterParams(params);
     }
