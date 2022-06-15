@@ -1,4 +1,4 @@
-# NoteKeeper
+# NotesKeeper
 
 Android-приложение для пользовательских заметок с NoSQL базы данных – CouchDB.
 
