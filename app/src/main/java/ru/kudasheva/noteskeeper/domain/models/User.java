@@ -1,5 +1,6 @@
 package ru.kudasheva.noteskeeper.domain.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ru.kudasheva.noteskeeper.data.models.UserDocument;
@@ -14,6 +15,12 @@ public class User {
         username = user.getUsername();
         fullName = user.getFullUsername();
         friends = user.getFriends();
+    }
+
+    public User() {
+        username = "Null";
+        fullName = "Full Null";
+        friends = new ArrayList<>();
     }
 
     public String getUsername() {

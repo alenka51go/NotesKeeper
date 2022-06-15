@@ -5,11 +5,7 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import ru.kudasheva.noteskeeper.data.DBManager;
 import ru.kudasheva.noteskeeper.data.SingleLiveEvent;
@@ -36,7 +32,7 @@ public class NoteBrowseViewModel  extends ViewModel {
     public void initData(String noteId) {
         progressIsVisible.setValue(true);
 
-        DBManager.getInstance().getDocument(noteId, (document) -> {
+        DBManager.getInstance().getFullRecord(noteId, (document) -> {
             progressIsVisible.postValue(false);
 
             openedNote = document.getNote();
@@ -69,7 +65,7 @@ public class NoteBrowseViewModel  extends ViewModel {
 
     public void update() {
         progressIsVisible.postValue(true);
-        DBManager.getInstance().getDocument(openedNote.getDocumentId(), (document) -> {
+        DBManager.getInstance().getFullRecord(openedNote.getDocumentId(), (document) -> {
             progressIsVisible.postValue(false);
             dataContainer.postValue(document.createInfoCards());
         });

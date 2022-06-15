@@ -172,7 +172,7 @@ public class DBManager {
                 Map<String, Object> properties = null;
                 ChangeListener.Event docEvent;
 
-                if (doc == null) { // Doc is deleted
+                if (Objects.equals(doc.getProperties().get("deleted"), "1")) { // Doc is deleted
                     docEvent = ChangeListener.Event.DELETED;
                     Log.d(TAG, "Doc " + change.getDocumentId() + " is deleted");
                 } else {
@@ -319,55 +319,76 @@ public class DBManager {
     }
 
     public void deleteNote(String noteId, Consumer<Boolean> consumer) {
-        executor.submit(() -> {
-            boolean res = false;
-            com.couchbase.lite.Document doc = database.getExistingDocument(noteId);
-            if (doc != null) {
-                Log.d(TAG, "Start deleting note with id " + noteId + " ...");
+        com.couchbase.lite.Document doc = database.getExistingDocument(noteId);
+        if (doc != null) {
+            Log.d(TAG, "Start deleting note with id " + noteId + " ...");
 
-                if (Objects.equals(doc.getProperties().get("type"), NOTE_TYPE)) {
-                    List<CommentDocument> commentsList = getCommentsData(noteId);
-                    for (CommentDocument commentDocument : commentsList) {
-                        deleteDoc(commentDocument.get_id());
-                    }
+            if (Objects.equals(doc.getProperties().get("type"), NOTE_TYPE)) {
+                List<CommentDocument> commentsList = getCommentsData(noteId);
+                for (CommentDocument commentDocument : commentsList) {
+                    deleteDoc(commentDocument.get_id(), null);
                 }
-                Log.d(TAG, "All comments was successfully deleted.");
-
-                res = deleteDoc(noteId);
-            } else {
-                Log.d(TAG, "There is no such note in Database " + noteId);
             }
-            consumer.accept(res);
-        });
+            Log.d(TAG, "All comments was successfully deleted.");
+            deleteDoc(noteId, consumer);
+
+        } else {
+            Log.d(TAG, "There is no such note in Database " + noteId);
+        }
     }
 
-    private boolean deleteDoc(String docId) {
-        try {
+    private void deleteDoc(String docId, Consumer<Boolean> consumer) {
+        executor.submit(() -> {
+            boolean res;
             com.couchbase.lite.Document doc = database.getExistingDocument(docId);
 
             if (doc != null) {
                 Log.d(TAG, "Document with id " + docId + " was found. Removing...");
 
-                boolean res = doc.delete();
+                Map<String, Object> docProperties;
+                try {
+                    if (Objects.equals(doc.getProperties().get("type"), "note")) {
+                        NoteDocument noteDoc = Util.convertToNote(doc.getProperties());
+                        noteDoc.delete();
+                        docProperties = Util.objectToMap(noteDoc);
+                    } else {
+                        CommentDocument commDoc = Util.convertToComment(doc.getProperties());
+                        commDoc.delete();
+                        docProperties = Util.objectToMap(commDoc);
+                    }
+                    Log.d(TAG, "Convert Record to Map: " + docProperties);
+                } catch (JSONException e) {
+                    Log.d(TAG, "Could not convert Record to Map: " + docId);
+                    if (consumer != null) {
+                        consumer.accept(false);
+                    }
+                    return;
+                }
 
-                if (!res) {
-                    Log.e(TAG, "Failed to remove document " + docId);
-
+                try {
                     doc.update(newRevision -> {
-                        Log.w(TAG, "Removing through update");
-                        newRevision.setIsDeletion(true);
+                        Log.d(TAG, "update");
+                        newRevision.setUserProperties(docProperties);
                         return true;
                     });
+                } catch (CouchbaseLiteException e) {
+                    Log.d(TAG, "CouchbaseLite Error!");
+                    if (consumer != null) {
+                        consumer.accept(false);
+                    }
+                    return;
                 }
-                return true;
+
+                res = true;
             } else {
                 Log.d(TAG, "There is no such doc in Database " + docId);
+                res = false;
             }
-        } catch (CouchbaseLiteException e) {
-            Log.d(TAG, "Failed to delete doc with id:" + docId + ". Reason: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return false;
+
+            if (consumer != null) {
+                consumer.accept(res);
+            }
+        });
     }
 
     private NoteDocument getNoteData(String noteId) {
@@ -388,7 +409,7 @@ public class DBManager {
             List<Record> records = new ArrayList<>();
 
             int checkCount = 0;
-            while(notesQuery.getRows() == null) {
+            while (notesQuery.getRows() == null) {
                 checkCount++;
 
                 Log.d(TAG, "Query rows is not ready. Attempt: " + checkCount);
@@ -415,7 +436,9 @@ public class DBManager {
                 Log.d(TAG, "type is: " + noteProperties.get("type"));
 
                 NoteDocument noteDocument = Util.convertToNote(noteProperties);
-                records.add(new Record(noteDocument, currentUserDocument));
+                if (!noteDocument.idDeleted()) {
+                    records.add(new Record(noteDocument, currentUserDocument));
+                }
             }
             Log.d(TAG, "After query request");
             Log.d(TAG, "notes: " + records.size());
@@ -433,7 +456,10 @@ public class DBManager {
             Map<String, Object> commentProperties = row.getDocument().getProperties();
             Log.d(TAG, "type is: " + commentProperties.get("type"));
             if (noteId.equals(commentProperties.get("noteId"))) {
-                commentData.add(Util.convertToComment(commentProperties));
+                CommentDocument commentDocument = Util.convertToComment(commentProperties);
+                if (!commentDocument.isDeleted()) {
+                    commentData.add(commentDocument);
+                }
             }
         }
 
@@ -540,7 +566,7 @@ public class DBManager {
         });
     }
 
-    public void getDocument(String noteId, Consumer<FullRecord> consumer) {
+    public void getFullRecord(String noteId, Consumer<FullRecord> consumer) {
         executor.submit(() -> {
             NoteDocument noteDocument = getNoteData(noteId);
             if (noteDocument == null) {

@@ -80,6 +80,7 @@ public class DatabaseReplicator {
 
         Map<String, Object> params =  new HashMap<>();
         params.put("selector", keyValue);
+        Log.d(TAG, "Selector: " + keyValue);
 
         mPullReplication.setFilterParams(params);
     }

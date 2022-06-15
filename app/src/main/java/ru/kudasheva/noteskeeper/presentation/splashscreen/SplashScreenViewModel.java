@@ -28,7 +28,6 @@ public class SplashScreenViewModel extends ViewModel {
         SharedPreferences mSettings = MyApplication.getInstance().getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         String userInfoGson = mSettings.getString(APP_PREFERENCES_NAME, null);
 
-
         if (userInfoGson != null) {
             Log.d(TAG, "Save user info: " + userInfoGson);
             UserDocument user = new Gson().fromJson(userInfoGson, UserDocument.class);

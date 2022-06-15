@@ -72,14 +72,14 @@ public class Util {
         return new NoteDocument((String) noteProperties.get("_id"),  (String) noteProperties.get("_rev"),
                 (String) noteProperties.get("userId"), (String) noteProperties.get("title"),
                 (String) noteProperties.get("text"), (String) noteProperties.get("date"),
-                (List<String>) noteProperties.get("sharedUsers"));
+                (List<String>) noteProperties.get("sharedUsers"), (String) noteProperties.get("deleted"));
     }
 
     public static CommentDocument convertToComment(Map<String, Object> commentProperties) {
         return new CommentDocument((String) commentProperties.get("_id"),  (String) commentProperties.get("_rev"),
                 (String) commentProperties.get("userId"), (String) commentProperties.get("noteId"),
                 (String) commentProperties.get("text"), (String) commentProperties.get("date"),
-                (List<String>) commentProperties.get("sharedUsers"));
+                (List<String>) commentProperties.get("sharedUsers"), (String) commentProperties.get("deleted"));
     }
 
     public static UserDocument convertToUser(Map<String, Object> userProperties) {

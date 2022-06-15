@@ -13,6 +13,7 @@ public class NoteDocument {
     private String date;
     private String text;
     private List<String> sharedUsers;
+    private String deleted = "0";
     private final String type = "note";
 
     public NoteDocument() {}
@@ -35,6 +36,18 @@ public class NoteDocument {
         this.text = text;
         this.date = date;
         this.sharedUsers = sharedUsers;
+    }
+
+    public NoteDocument(String _id, String _rev, String userId, String title, String text,
+                        String date, List<String> sharedUsers, String deleted) {
+        this._id = _id;
+        this._rev = _rev;
+        this.userId = userId;
+        this.title = title;
+        this.text = text;
+        this.date = date;
+        this.sharedUsers = sharedUsers;
+        this.deleted = deleted;
     }
 
     public String get_id() {
@@ -63,5 +76,13 @@ public class NoteDocument {
 
     public List<String> getSharedUsers() {
         return sharedUsers;
+    }
+
+    public void delete() {
+        deleted = "1";
+    }
+
+    public boolean idDeleted() {
+        return deleted.equals("1");
     }
 }
